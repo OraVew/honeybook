@@ -7,7 +7,7 @@ export default function Features() {
         <div className="flex flex-col lg:flex-row items-center h-full">
           <div className="lg:w-1/2 p-8 h-full flex justify-center">
             <Image
-              src="/bday4.jpg"
+              src="/bday4.JPG"
               alt="Placeholder Image"
               width={500}
               height={500}
