@@ -2,6 +2,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export default function Footer() {
+  const scrollToContactForm = (e) => {
+    e.preventDefault();
+    document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth' });
+  };
+  
   return (
     <footer className="bg-gray-100 py-10">
       <div className="container mx-auto">
@@ -25,8 +30,8 @@ export default function Footer() {
           {/* Navigation Links */}
           <div className="lg:w-1/3 flex justify-center mb-6 lg:mb-0">
             <nav className="space-x-6">
-              <Link href="/contact" className="text-gray-600 hover:text-gray-800">
-                <a>Contact</a>
+            <Link href="#contactForm" onClick={scrollToContactForm} className="text-gray-600 hover:text-gray-800">
+                Contact
               </Link>
               <a
                 href="https://www.instagram.com/theoravew"
@@ -114,7 +119,6 @@ export default function Footer() {
         {/* Footer Bottom */}
         <div className="mt-10 text-center text-gray-600">
           <p>COPYRIGHT 2024 ORAVEW. ALL RIGHTS RESERVED.</p>
-          <p>Site Credit</p>
         </div>
       </div>
     </footer>

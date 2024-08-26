@@ -21,7 +21,7 @@ export default function Offerings() {
           </div>
           <div className="max-w-xs bg-white p-6 rounded-lg shadow-lg">
             <Image
-              src="/gameroom5.JPG"
+              src="/gameroom5.jpg"
               alt="Amenities"
               width={300}
               height={300}
@@ -34,7 +34,7 @@ export default function Offerings() {
           </div>
           <div className="max-w-xs bg-white p-6 rounded-lg shadow-lg">
             <Image
-              src="/bday5.JPG"
+              src="/bday5.jpg"
               alt="Hourly Pricing"
               width={300}
               height={300}
