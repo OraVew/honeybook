@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import './ContactForm.css';
+import './contactForm.css';
 import { useRouter } from 'next/router';
 
 export default function ContactForm() {
@@ -32,7 +32,7 @@ export default function ContactForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // 1. Send data to Zapier
+    // 1. Send data to ZapierFix
     const webhookUrl = '/api/proxy';
 
 try {
