@@ -1,0 +1,38 @@
+/* virtualTour.css */
+
+.container {
+    max-width: 600px;
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    margin: auto;
+    text-align: center;
+  }
+  
+  h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #d69600; /* Gold color */
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    font-size: 1.125rem;
+    color: #333333;
+    margin-top: 1rem;
+    line-height: 1.5;
+  }
+  
+  p.highlight {
+    color: #6a1b9a; /* Purple color */
+    font-weight: bold;
+  }
+  
+  .calendly-inline-widget {
+    margin-top: 2.5rem;
+    min-width: 320px;
+    height: 700px;
+  }
+  

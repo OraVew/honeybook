@@ -1,0 +1,29 @@
+.input-field {
+    background-color: white; /* Set the background color to white */
+    border-color: #ccc; /* Default border color */
+    transition: border-color 0.3s ease; /* Smooth transition for border color */
+    color: black;
+    width: 100%; /* Ensure full width for all input fields */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.input-field:focus {
+    border-color: #7B61FF; /* Purple border when focused */
+    outline: none; /* Remove the default outline */
+}
+
+.input-field::placeholder {
+    color: #aaa; /* Placeholder text color */
+}
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container,
+.react-datepicker__input-container input {
+    width: 100%; /* Ensure DatePicker input is 100% width */
+    display: block;
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+button:hover {
+    background-color: #7B61FF; /* Change background color on hover */
+}
