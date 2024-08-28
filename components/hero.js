@@ -1,41 +1,58 @@
-'use client'; // Required for components that use hooks in Next.js 13+
+'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function Hero() {
   // Array of image URLs located in the public folder or via external URLs
   const images = [
-    './hero1.jpg',
-    './hero.jpg',
-    './zenfest.jpg',
-    './bday7.JPG',
-    './bday1.JPG',
+    '/hero1.jpg',
+    '/hero.jpg',
+    '/zenfest.jpg',
+    '/bday7.JPG',
+    '/bday1.JPG',
     // Add more image URLs as needed
   ];
 
-  // State to track the current background image
-  const [currentImage, setCurrentImage] = useState(images[0]);
+  // State to track the current background image index
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // Function to shuffle the background image
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImage((prevImage) => {
-        const currentIndex = images.indexOf(prevImage);
-        const nextIndex = (currentIndex + 1) % images.length;
-        return images[nextIndex];
-      });
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 5000); // Change image every 5 seconds
 
     // Cleanup the interval on component unmount
     return () => clearInterval(interval);
-  }, [images]);
+  }, [images.length]);
 
   return (
     <section className="relative h-screen bg-gray-200">
+      {/* Preload images */}
+      {images.map((src, index) => (
+        <Image
+          key={index}
+          src={src}
+          alt={`Background image ${index + 1}`}
+          layout="fill"
+          objectFit="cover"
+          priority={index === 0} // Only prioritize loading the first image
+          style={{ display: 'none' }} // Hide images from view; they are only preloaded
+        />
+      ))}
+
+      {/* Background transition */}
       <div
-        className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
-        style={{ backgroundImage: `url(${currentImage})` }}
+        className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+        style={{ 
+          backgroundImage: `url(${images[currentIndex]})`,
+          opacity: 1,
+          animation: 'fade 5s ease-in-out infinite'
+        }}
       ></div>
+
+      {/* Hero content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full bg-opacity-50 bg-gray-800">
         <div className="text-center">
           <p className="text-lg font-semibold" style={{ color: "#D69600" }}>
@@ -54,6 +71,15 @@ export default function Hero() {
           </button>
         </div>
       </div>
+
+      {/* Add keyframes for fade transition */}
+      <style jsx>{`
+        @keyframes fade {
+          0% { opacity: 0; }
+          50% { opacity: 1; }
+          100% { opacity: 0; }
+        }
+      `}</style>
     </section>
   );
 }
