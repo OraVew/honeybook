@@ -34,7 +34,7 @@ export default function VirtualTourForm() {
     <section className="section">
       <div className="container">
         <h2>FINAL STEP</h2>
-        <p>Schedule a virtual walk-through with our team below so you can see our space from any location at any time.</p>
+        <p>Schedule a virtual walk-through with our event planner below so you can see our space, learn more about us, and plan your event from any location at any time.</p>
         <p className="highlight">
           We've already filled in all your info for you, you just need to select a date and a 15-minute time slot.
         </p>
