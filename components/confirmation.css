@@ -1,0 +1,68 @@
+/* General container styling */
+.confirmation-page-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f7fafc; /* Light gray background similar to bg-gray-100 */
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* Card container styling */
+.confirmation-card-container {
+    max-width: 28rem; /* Matches max-w-lg */
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.5rem; /* Rounded corners similar to rounded-lg */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05); /* Tailwind's shadow-lg */
+}
+
+/* Heading styling */
+.confirmation-heading {
+    font-size: 1.5rem; /* Equivalent to text-2xl */
+    font-weight: 700; /* Equivalent to font-bold */
+    color: #1a202c; /* Tailwind's text-gray-900 */
+    margin-bottom: 1.5rem; /* Equivalent to mb-6 */
+    text-align: center;
+}
+
+/* Paragraph styling */
+.confirmation-paragraph {
+    color: #4a5568; /* Tailwind's text-gray-700 */
+    margin-bottom: 1.5rem; /* Equivalent to mb-6 */
+    text-align: center;
+}
+
+/* Event details list styling */
+.event-details-list {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+    color: #4a5568; /* Tailwind's text-gray-700 */
+}
+
+.event-details-list li {
+    margin-bottom: 0.75rem;
+}
+
+/* Button styling */
+.confirmation-button {
+    width: 100%; /* Full width button */
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background-color: #D69600; /* Yellow similar to bg-yellow-500 */
+    color: white;
+    font-weight: 700; /* Equivalent to font-bold */
+    border-radius: 0.375rem; /* Equivalent to rounded */
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+    text-align: center;
+    cursor: pointer;
+    border: none;
+}
+
+.confirmation-button:hover {
+    background-color: #7B61FF; /* Change background color on hover */
+}

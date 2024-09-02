@@ -9,12 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@stripe/react-stripe-js": "^2.8.0",
+    "@stripe/stripe-js": "^4.4.0",
     "date-fns": "^3.6.0",
+    "googleapis": "^143.0.0",
+    "moment-timezone": "^0.5.45",
     "next": "14.2.6",
     "react": "^18",
     "react-datepicker": "^7.3.0",
     "react-dom": "^18",
+    "react-stripe-checkout": "^2.6.3",
     "sharp": "^0.33.5",
+    "stripe": "^16.9.0",
     "swiper": "^11.1.10"
   },
   "devDependencies": {

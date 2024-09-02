@@ -11,7 +11,7 @@ export default function ContactForm() {
     email: '',
     phone: '',
   });
-  
+
   const router = useRouter();
 
   const handleDateChange = (date) => {
@@ -31,18 +31,18 @@ export default function ContactForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // 1. Send data to Zapier
+
+    // 1. Send data to Zapier or your API
     const webhookUrl = '/api/proxy';
 
-try {
-  await fetch(webhookUrl, {
-    method: 'POST',
-    body: JSON.stringify(formData),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+    try {
+      await fetch(webhookUrl, {
+        method: 'POST',
+        body: JSON.stringify(formData),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
       // 2. Redirect to the inquiry page
       router.push({
