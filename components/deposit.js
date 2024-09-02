@@ -17,13 +17,13 @@ function CheckoutForm({ name, email, phone, pricingOption, startTime, eventType 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-  
+
     if (!stripe || !elements) {
       return;
     }
-  
+
     const cardElement = elements.getElement(CardElement);
-  
+
     try {
       const { error, paymentMethod } = await stripe.createPaymentMethod({
         type: 'card',
@@ -34,14 +34,14 @@ function CheckoutForm({ name, email, phone, pricingOption, startTime, eventType 
           phone,
         },
       });
-  
+
       if (error) {
         setError(error.message);
         setLoading(false);
         return;
       }
-  
-      const response = await fetch('/api/process-payment', {
+
+      const paymentResponse = await fetch('/api/process-payment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -52,12 +52,31 @@ function CheckoutForm({ name, email, phone, pricingOption, startTime, eventType 
           bookingDetails: { name, email, phone, pricingOption, startTime, eventType },
         }),
       });
-  
-      if (!response.ok) {
+
+      if (!paymentResponse.ok) {
         throw new Error('Payment failed');
       }
-  
-      // Redirect to confirmation page upon successful payment, passing the details as query parameters
+
+      const paymentData = await paymentResponse.json();
+
+      // After successful payment, send data to Zapier through the proxy including paymentIntentId
+      await fetch('/api/paymentproxy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          pricingOption,
+          startTime,
+          eventType,
+          paymentIntentId: paymentData.paymentIntentId,
+        }),
+      });
+
+      // Redirect to confirmation page upon successful payment
       router.push({
         pathname: '/confirmation',
         query: {
@@ -75,7 +94,6 @@ function CheckoutForm({ name, email, phone, pricingOption, startTime, eventType 
       setLoading(false);
     }
   };
-  
 
   const handleVirtualTour = () => {
     router.push({
@@ -154,3 +172,4 @@ export default function Deposit() {
     </div>
   );
 }
+

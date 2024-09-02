@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     try {
       const { paymentMethodId, amount, bookingDetails } = req.body;
 
-      // Create a Payment Intent with a dynamic return_url based on environment
+      // Create a Payment Intent
       const paymentIntent = await stripe.paymentIntents.create({
         amount,
         currency: 'usd',
@@ -15,10 +15,10 @@ export default async function handler(req, res) {
         description: `Deposit for ${bookingDetails.eventType} on ${new Date(bookingDetails.startTime).toLocaleString('en-US', { timeZone: 'America/Chicago' })}`,
         receipt_email: bookingDetails.email,
         confirm: true,
-        return_url: process.env.NEXT_PUBLIC_CONFIRMATION_URL, // Use environment variable for return_url
+        return_url: process.env.NEXT_PUBLIC_CONFIRMATION_URL, // Use environment variable
       });
 
-      res.status(200).json({ success: true, clientSecret: paymentIntent.client_secret });
+      res.status(200).json({ success: true, paymentIntentId: paymentIntent.id });
     } catch (error) {
       console.error('Payment processing error:', error);
       res.status(500).json({ error: 'Payment failed' });
@@ -28,3 +28,4 @@ export default async function handler(req, res) {
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
+
