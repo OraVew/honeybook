@@ -62,30 +62,36 @@ export default function LeadForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // Convert eventTime to CST with AM/PM format
+    const eventTimeCST = formData.eventTime 
+      ? moment.tz(formData.eventTime, 'America/Chicago').format('h:mm A') 
+      : null;
+  
     const webhookUrl = '/api/qualifyproxy';
-
+  
     try {
-      // Submit form data to the webhook, including the event time
+      // Submit form data to the webhook, including the event time in CST with AM/PM
       const response = await fetch(webhookUrl, {
         method: 'POST',
         body: JSON.stringify({
           ...formData,
           eventTime: formData.eventTime ? moment(formData.eventTime).format('HH:mm') : null, // Send time only to Zapier
+          eventTimeCST, // Include the CST formatted event time with AM/PM
           startTime: formData.startTime.toISOString(), // Combined date/time object for availability check
         }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to submit form data');
       }
-
+  
       // Check availability based on the combined date/time object and pricing option
       const availability = await checkAvailability(formData.startTime, formData.pricingOption);
-
+  
       if (availability.isAvailable) {
         // Redirect to the deposit page with necessary query parameters
         router.push({
@@ -134,6 +140,7 @@ export default function LeadForm() {
       // Optionally, display an error message to the user
     }
   };
+  
 
   /**
    * Function to check availability based on the combined date/time object and pricing option.
