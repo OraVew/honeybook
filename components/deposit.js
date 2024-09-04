@@ -48,7 +48,7 @@ function CheckoutForm({ name, email, phone, pricingOption, startTime, eventType 
         },
         body: JSON.stringify({
           paymentMethodId: paymentMethod.id,
-          amount: 1000, // $10 in cents
+          amount: 5000, // $10 in cents
           bookingDetails: { name, email, phone, pricingOption, startTime, eventType },
         }),
       });
@@ -152,11 +152,11 @@ export default function Deposit() {
   return (
     <div className="page-container">
       <div className="card-container">
-        <h1 className="heading">Lock Your Event Date</h1>
+        <h1 className="heading">Reserve Your Event Date?</h1>
         <p className="paragraph">
           We have checked our calendar for your event date, start time, and duration to confirm that we currently have that window open.
           <br />
-          To guarantee that your selected event date and time remain reserved exclusively for you until your tour, we require a deposit. We operate on a first-come, first-served basis, and a $10 deposit will hold your reservation from now until your tour with us, ensuring no one else can book it while you’re deciding. Once the deposit is received, we will reach out to schedule your tour. For longer holds, a 50% deposit will secure your reservation until 7 days before your event when the balance is due.
+          This is a refundable priority fee that guarantees your selected event date and time will be reserved exclusively until your tour with our venue manager in person or virtually. We operate on a first-come, first-served basis, and this $50 deposit will hold your reservation from now until your tour with us, ensuring no one else can book it while you’re deciding. Once the deposit is received, we will reach out to schedule your tour. To complete your reservation, a 50% deposit will be required after your tour. Finally, the balance is due 7 days before your reserved event date.
         </p>
         <Elements stripe={stripePromise}>
           <CheckoutForm
