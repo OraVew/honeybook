@@ -32,19 +32,25 @@ export default function ContactForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 1. Send data to Zapier or your API
+    // 1. Capture the current date and time for "Inquiry Date"
+    const inquiryDate = new Date(); // This will store the current date and time
+
+    // 2. Send data to Zapier or your API
     const webhookUrl = '/api/proxy';
 
     try {
       await fetch(webhookUrl, {
         method: 'POST',
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          inquiryDate: inquiryDate.toISOString(), // Send the Inquiry Date in ISO format
+        }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      // 2. Redirect to the inquiry page
+      // 3. Redirect to the inquiry page
       router.push({
         pathname: '/inquiry', // Redirect to the inquiry page
         query: {
@@ -52,6 +58,7 @@ export default function ContactForm() {
           email: formData.email,
           phone: formData.phone,
           eventDate: formData.eventDate ? formData.eventDate.toISOString().split('T')[0] : null, // Send date as YYYY-MM-DD
+          inquiryDate: inquiryDate.toISOString(), // Send the inquiry date and time
         },
       });
     } catch (error) {
@@ -126,7 +133,7 @@ export default function ContactForm() {
           </div>
           <button
             type="submit"
-            className="w-full py-3 bg-[#D69600] text-white font-bold rounded hover:bg-#7B61FF transition duration-300 ease-in-out"
+            className="w-full py-3 bg-[#D69600] text-white font-bold rounded hover:bg-[#7B61FF] transition duration-300 ease-in-out"
           >
             Check now
           </button>
