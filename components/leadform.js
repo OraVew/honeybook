@@ -71,7 +71,12 @@ export default function LeadForm() {
     const webhookUrl = '/api/qualifyproxy';
   
     try {
-      // Submit form data to the webhook, including the event time in CST with AM/PM
+      // Check availability based on the combined date/time object and pricing option
+      const availability = await checkAvailability(formData.startTime, formData.pricingOption);
+  
+      const availabilityStatus = availability.isAvailable ? 'Available' : 'Not Available';
+  
+      // Submit form data to the webhook, including availability status and the event time in CST with AM/PM
       const response = await fetch(webhookUrl, {
         method: 'POST',
         body: JSON.stringify({
@@ -79,6 +84,7 @@ export default function LeadForm() {
           eventTime: formData.eventTime ? moment(formData.eventTime).format('HH:mm') : null, // Send time only to Zapier
           eventTimeCST, // Include the CST formatted event time with AM/PM
           startTime: formData.startTime.toISOString(), // Combined date/time object for availability check
+          availabilityStatus, // Send "Available" or "Not Available" based on the check
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -89,11 +95,8 @@ export default function LeadForm() {
         throw new Error('Failed to submit form data');
       }
   
-      // Check availability based on the combined date/time object and pricing option
-      const availability = await checkAvailability(formData.startTime, formData.pricingOption);
-  
+      // Redirect based on availability and flexibility
       if (availability.isAvailable) {
-        // Redirect to the deposit page with necessary query parameters
         router.push({
           pathname: '/depositpage',
           query: {
@@ -107,7 +110,6 @@ export default function LeadForm() {
           },
         });
       } else if (formData.flexibility === 'Yes') {
-        // Redirect to the event planning consultation scheduling page
         router.push({
           pathname: '/virtualtour',
           query: {
@@ -121,7 +123,6 @@ export default function LeadForm() {
           },
         });
       } else {
-        // Redirect to the 'Not Available' page
         router.push({
           pathname: '/virtualtour',
           query: {
@@ -140,6 +141,7 @@ export default function LeadForm() {
       // Optionally, display an error message to the user
     }
   };
+  
   
 
   /**
