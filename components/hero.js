@@ -7,10 +7,14 @@ export default function Hero() {
   // Array of image URLs located in the public folder or via external URLs
   const images = [
     '/hero1.jpg',
-    '/hero.jpg',
+    '/bdayhero.jpg',
+    '/cocktailhero.jpg',
+    '/babyhero2.JPEG',
+    '/babyhero.jpg',
     '/zenfest.jpg',
-    '/bday7.JPG',
+    '/bday6.JPG',
     '/bday1.JPG',
+    '/hero.jpg',
     // Add more image URLs as needed
   ];
 

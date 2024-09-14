@@ -7,7 +7,7 @@ export default function RecentEventsCarousel() {
     {
       title: 'Birthday Celebrations',
       description: 'The perfect blank canvas to create whatever you can dream of.',
-      image: '/bday7.png',
+      image: '/bday6.JPG',
     },
     {
       title: 'Baby Showers',
