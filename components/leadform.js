@@ -98,7 +98,7 @@ export default function LeadForm() {
       // Redirect based on availability and flexibility
       if (availability.isAvailable) {
         router.push({
-          pathname: '/depositpage',
+          pathname: '/deposittourpage',
           query: {
             name: formData.name,
             email: formData.email,
