@@ -9,7 +9,9 @@ import Offerings from '../components/offerings.js';
 import CTA from '../components/cta.js';
 import Footer from '../components/footer.js';
 import Header from '@/components/header.js';
-import RecentEventsCarousel from '@/components/recentevents';
+import BirthdayReceptionCarousel from '../components/birthdayreceptioncarousel.js';
+import BabyShowerCarousel from '../components/babyshowerscarousel.js';
+import EngagementDinnerCarousel from '../components/engagementdinnercarousel.js';
 import ContactForm from '@/components/contactform';
 
 export default function Home() {
@@ -31,7 +33,11 @@ export default function Home() {
       {/* Offerings Section */}
       <Offerings />
 
-      <RecentEventsCarousel/>
+      <BirthdayReceptionCarousel/>
+
+      <BabyShowerCarousel />
+
+      <EngagementDinnerCarousel />
 
       {/* Call-to-Action (CTA) Section */}
       <CTA />

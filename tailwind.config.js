@@ -13,7 +13,7 @@ module.exports = {
         dark: '#1a1a1a',     // Dark background color
       },
       fontFamily: {
-        sans: ['Helvetica', 'Arial', 'sans-serif'],
+        sans: ['"Open Sans"', 'Helvetica', 'Arial', 'sans-serif'],
       },
     },
   },

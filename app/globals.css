@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,7 +8,7 @@
 body {
   background-color: #1a1a1a; /* Dark background */
   color: #ffffff; /* Light text */
-  font-family: 'Helvetica', 'Arial', 'sans-serif';
+  font-family: 'Open Sans', 'Helvetica', 'Arial', 'sans-serif';
 }
 
 h1, h2, h3, h4, h5, h6 {
