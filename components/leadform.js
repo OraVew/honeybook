@@ -64,11 +64,11 @@ export default function LeadForm() {
     e.preventDefault();
   
     // Convert eventTime to CST with AM/PM format
-    const eventTimeCST = formData.eventTime 
-      ? moment.tz(formData.eventTime, 'America/Chicago').format('h:mm A') 
+    const eventTimeCST = formData.eventTime
+      ? moment.tz(formData.eventTime, 'America/Chicago').format('h:mm A')
       : null;
   
-    const webhookUrl = '/api/qualifyproxy';
+    const webhookUrl = '/api/qualifyproxy'; // Replace with your webhook URL
   
     try {
       // Check availability based on the combined date/time object and pricing option
@@ -95,10 +95,11 @@ export default function LeadForm() {
         throw new Error('Failed to submit form data');
       }
   
-      // Redirect based on availability and flexibility
+      // Redirect based on availability
       if (availability.isAvailable) {
+        // Redirect to the Build Your Event page with the form data as query parameters
         router.push({
-          pathname: '/deposittourpage',
+          pathname: '/build-events',
           query: {
             name: formData.name,
             email: formData.email,
@@ -110,6 +111,7 @@ export default function LeadForm() {
           },
         });
       } else if (formData.flexibility === 'Yes') {
+        // Redirect to a virtual tour page if flexible
         router.push({
           pathname: '/virtualtour',
           query: {
@@ -123,6 +125,7 @@ export default function LeadForm() {
           },
         });
       } else {
+        // Redirect to a different page if not flexible
         router.push({
           pathname: '/virtualtour',
           query: {
@@ -141,6 +144,7 @@ export default function LeadForm() {
       // Optionally, display an error message to the user
     }
   };
+  
   
   
 
