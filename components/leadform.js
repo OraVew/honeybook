@@ -248,7 +248,7 @@ export default function LeadForm() {
                 <span className="ml-2 text-purple-600 font-semibold">
                   ALL INCLUSIVE + GAME ROOM, 6HR TOTAL -{' '}
                 </span>
-                <span className="normal-font"> Starting at $999, no cleaning fee</span>
+                <span className="normal-font"> Starting at $899, no cleaning fee</span>
               </label>
               <label className="block">
                 <input
