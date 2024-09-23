@@ -68,7 +68,7 @@ export default function BuildEventPage() {
 
       // 3. Redirect to the virtual tour page
       router.push({
-        pathname: '/virtualtour', // Redirect to the virtual tour page
+        pathname: '/deposittourpage', // Redirect to the virtual tour page
         query: {
           name: formData.name,
           email: formData.email,
