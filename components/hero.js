@@ -72,7 +72,7 @@ export default function Hero() {
               document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth' })
             }
           >
-            Book Your Event
+            Get a Quote
           </button>
         </div>
       </div>
