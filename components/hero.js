@@ -6,15 +6,15 @@ import Image from 'next/image';
 export default function Hero() {
   // Array of image URLs located in the public folder or via external URLs
   const images = [
-    '/hero1.jpg',
-    '/bdayhero.jpg',
-    '/cocktailhero.jpg',
-    '/babyhero2.JPEG',
-    '/babyhero.jpg',
-    '/zenfest.jpg',
-    '/bday6.JPG',
-    '/bday1.JPG',
-    '/hero.jpg',
+    '/hero1.webp',       // Convert images to WebP format
+    '/bdayhero.webp',
+    '/cocktailhero.webp',
+    '/babyhero2.webp',
+    '/babyhero.webp',
+    '/zenfest.webp',
+    '/bday6.webp',
+    '/bday1.webp',
+    '/hero.webp',
     // Add more image URLs as needed
   ];
 
@@ -51,6 +51,7 @@ export default function Hero() {
               layout="fill"
               objectFit="cover"
               priority={index === 0} // Only prioritize loading the first image
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Serve smaller sizes on mobile
               style={{ visibility: 'hidden' }} // Hide the actual img tag, we're using the div background
             />
           </div>
@@ -72,7 +73,7 @@ export default function Hero() {
               document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth' })
             }
           >
-            Get a Quote
+            Get quote
           </button>
         </div>
       </div>

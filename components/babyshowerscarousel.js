@@ -49,16 +49,7 @@ export default function BabyShowerCarousel() {
           {babyShowerEvents.map((event, index) => (
             <SwiperSlide key={index}>
               <div className="flex flex-col md:flex-row items-center h-auto">
-                <div className="relative w-full md:w-1/2 flex justify-center">
-                  <Image
-                    src={event.image}
-                    alt={event.title}
-                    width={600}
-                    height={400}
-                    className="rounded-lg shadow-lg"
-                  />
-                </div>
-                <div className="mt-6 md:mt-0 md:ml-10 flex flex-col justify-center w-full md:w-1/2">
+              <div className="mt-6 md:mt-0 md:ml-10 flex flex-col justify-center w-full md:w-1/2">
                   <h3 className="text-3xl font-semibold text-gray-800">{event.title}</h3>
                   <p className="mt-4 text-gray-600">{event.description}</p>
                   <div className="mt-6">
@@ -74,6 +65,17 @@ export default function BabyShowerCarousel() {
                     </a>
                   </div>
                 </div>
+                
+                <div className="relative w-full md:w-1/2 flex justify-center">
+                  <Image
+                    src={event.image}
+                    alt={event.title}
+                    width={600}
+                    height={400}
+                    className="rounded-lg shadow-lg"
+                  />
+                </div>
+                
               </div>
             </SwiperSlide>
           ))}
