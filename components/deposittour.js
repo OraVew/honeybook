@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
-import './virtualtourform.css';  // Import the new CSS file
+import './deposittour.css'; // Import the new CSS file
 
 export default function DepositTour() {
   const router = useRouter();
@@ -10,48 +10,119 @@ export default function DepositTour() {
     phone: '',
   });
 
+  const [estimatedTotal, setEstimatedTotal] = useState(0);
+  const [breakdown, setBreakdown] = useState({});
+  const [showPriorityPass, setShowPriorityPass] = useState(false); // Show/Hide Priority Pass Calendly widget
+  const [showEventConsultation, setShowEventConsultation] = useState(false); // Show/Hide Event Consultation Calendly widget
+
+  // Create a reference for the Calendly widget container
+  const calendlyRef = useRef(null);
+
   useEffect(() => {
-    const { name, email, phone } = router.query;
+    const { name, email, phone, estimatedTotal, estimatedBreakdown } = router.query;
+
     setUserData({
       name: name || '',
       email: email || '',
       phone: phone || '',
     });
 
-    const script = document.createElement('script');
-    script.src = 'https://assets.calendly.com/assets/external/widget.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
+    setEstimatedTotal(Number(estimatedTotal) || 0);
+    setBreakdown(JSON.parse(estimatedBreakdown) || {});
   }, [router.query]);
 
-  const calendlyUrl = `https://calendly.com/oravew/virtual-tour-with-a-member-of-our-team-clone?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=d69600&name=${encodeURIComponent(userData.name)}&email=${encodeURIComponent(userData.email)}&a1=${encodeURIComponent(userData.phone)}`;
+  useEffect(() => {
+    if (showPriorityPass || showEventConsultation) {
+      const script = document.createElement('script');
+      script.src = 'https://assets.calendly.com/assets/external/widget.js';
+      script.async = true;
+      document.body.appendChild(script);
 
-  // ...rest of the code remains the same
+      // Scroll to the Calendly widget container when the widget is shown
+      calendlyRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-return (
-  <section className="section">
-    <div className="container">
-      <h2>Reserve Your Event Date with Confidence</h2>
-      <p>
-        We understand how important it is to secure your perfect event date. Introducing our <strong style={{ color: '#D69600' }}>Refundable Priority Pass</strong> – reserve your desired date and time <em>exclusively for you</em> for 7 days while you finalize your plans, <strong>risk-free</strong>.
-      </p>
-      <p>
-        The pass is fully refundable if you decide not to proceed, and if you choose to move forward, the fee is <strong>applied toward your booking</strong>. It's a win-win!
-      </p>
-      <p className="highlight">
-        We've pre-filled your information for your convenience. Simply select a date and a 15-minute time slot to get started.
-      </p>
-      <div
-        className="calendly-inline-widget"
-        data-url={calendlyUrl}
-        style={{ minWidth: '320px', height: '700px' }}
-      ></div>
-    </div>
-  </section>
-);
+      return () => {
+        document.body.removeChild(script);
+      };
+    }
+  }, [showPriorityPass, showEventConsultation]);
 
+  const handleCardClick = (widgetType) => {
+    // Reset visibility of both widgets
+    setShowPriorityPass(false);
+    setShowEventConsultation(false);
+
+    // Show the appropriate widget based on the card clicked
+    if (widgetType === 'priorityPass') {
+      setShowPriorityPass(true);
+    } else if (widgetType === 'eventConsultation') {
+      setShowEventConsultation(true);
+    }
+  };
+
+  const priorityPassUrl = `https://calendly.com/oravew/virtual-tour-with-a-member-of-our-team-clone?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=d69600&name=${encodeURIComponent(
+    userData.name
+  )}&email=${encodeURIComponent(userData.email)}&a1=${encodeURIComponent(userData.phone)}`;
+
+  const eventConsultationUrl = `https://calendly.com/oravew/event-consultation?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=d69600&name=${encodeURIComponent(
+    userData.name
+  )}&email=${encodeURIComponent(userData.email)}&a1=${encodeURIComponent(userData.phone)}`;
+
+  return (
+    <section className="section bg-gray-100 py-10">
+      <div className="container mx-auto px-4 max-w-4xl">
+        {/* Estimated Total and Breakdown */}
+        <div className="breakdown-container">
+          <h3>Estimated Venue Total</h3>
+          <ul>
+            {Object.entries(breakdown).map(([key, value]) => (
+              <li key={key}>
+                <span>{key}</span>
+                <span>{value.toLocaleString()}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="breakdown-total">
+            <span>Total</span>
+            <span>${estimatedTotal.toLocaleString()}</span>
+          </div>
+        </div>
+
+        {/* Options Section */}
+        <div className="cards-container">
+          {/* Priority Pass Appointment */}
+          <div
+            className="card gold"
+            onClick={() => handleCardClick('priorityPass')}
+          >
+            <h3>Reserve Now for $25</h3>
+            <p>
+              Schedule a virtual tour with our venue manager to finalize details for your reservation.
+            </p>
+          </div>
+
+          {/* Event Consultation */}
+          <div
+            className="card purple"
+            onClick={() => handleCardClick('eventConsultation')}
+          >
+            <h3>Still Thinking?</h3>
+            <p>
+              Schedule a virtual consultation and walk-through with our event planner to discuss your event details.
+            </p>
+          </div>
+        </div>
+
+        {/* Calendly Inline Widgets */}
+        <div ref={calendlyRef}>
+          {showPriorityPass && (
+            <div className="calendly-inline-widget" data-url={priorityPassUrl}></div>
+          )}
+          {showEventConsultation && (
+            <div className="calendly-inline-widget" data-url={eventConsultationUrl}></div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 }

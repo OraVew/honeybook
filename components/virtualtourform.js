@@ -28,7 +28,8 @@ export default function VirtualTourForm() {
     };
   }, [router.query]);
 
-  const calendlyUrl = `https://calendly.com/oravew/event-consultation?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=d69600&name=${encodeURIComponent(userData.name)}&email=${encodeURIComponent(userData.email)}&a1=${encodeURIComponent(userData.phone)}`;
+  const eventPlannerEmail = 'cscallender78@gmail.com';
+  const calendlyUrl = `https://calendly.com/oravew/event-consultation?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=d69600&name=${encodeURIComponent(userData.name)}&email=${encodeURIComponent(userData.email)}&a1=${encodeURIComponent(userData.phone)}&guests=${encodeURIComponent(eventPlannerEmail)}`;
 
   return (
     <section className="section">

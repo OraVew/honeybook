@@ -25,36 +25,37 @@ export default function Hero() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 5000); // Change image every 5 seconds
+    }, 4000); // Change image every 4 seconds
 
     // Cleanup the interval on component unmount
     return () => clearInterval(interval);
   }, [images.length]);
 
   return (
-    <section className="relative h-screen bg-gray-200">
-      {/* Preload images */}
-      {images.map((src, index) => (
-        <Image
-          key={index}
-          src={src}
-          alt={`Background image ${index + 1}`}
-          layout="fill"
-          objectFit="cover"
-          priority={index === 0} // Only prioritize loading the first image
-          style={{ display: 'none' }} // Hide images from view; they are only preloaded
-        />
-      ))}
-
-      {/* Background transition */}
-      <div
-        className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-        style={{ 
-          backgroundImage: `url(${images[currentIndex]})`,
-          opacity: 1,
-          animation: 'fade 5s ease-in-out infinite'
-        }}
-      ></div>
+    <section className="relative h-screen overflow-hidden">
+      {/* Container to hold all the images */}
+      <div className="absolute inset-0">
+        {images.map((src, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentIndex ? 'opacity-100' : 'opacity-0'}`}
+            style={{
+              backgroundImage: `url(${src})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            <Image
+              src={src}
+              alt={`Background image ${index + 1}`}
+              layout="fill"
+              objectFit="cover"
+              priority={index === 0} // Only prioritize loading the first image
+              style={{ visibility: 'hidden' }} // Hide the actual img tag, we're using the div background
+            />
+          </div>
+        ))}
+      </div>
 
       {/* Hero content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full bg-opacity-50 bg-gray-800">
@@ -75,15 +76,6 @@ export default function Hero() {
           </button>
         </div>
       </div>
-
-      {/* Add keyframes for fade transition */}
-      <style jsx>{`
-        @keyframes fade {
-          0% { opacity: 0; }
-          50% { opacity: 1; }
-          100% { opacity: 0; }
-        }
-      `}</style>
     </section>
   );
 }

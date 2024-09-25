@@ -16,6 +16,9 @@ export default function LeadForm() {
     startTime: null,       // Combined date/time object
     eventType: '',
     flexibility: '',
+    coPlanner: 'No',       // New field to track if user has co-planners
+    coPlannerName: '',     // Separate field for co-planner's name
+    coPlannerPhone: '',    // Separate field for co-planner's phone number
   });
 
   const router = useRouter();
@@ -76,7 +79,7 @@ export default function LeadForm() {
   
       const availabilityStatus = availability.isAvailable ? 'Available' : 'Not Available';
   
-      // Submit form data to the webhook, including availability status and the event time in CST with AM/PM
+      // Submit form data to the webhook, including the separated co-planner fields
       const response = await fetch(webhookUrl, {
         method: 'POST',
         body: JSON.stringify({
@@ -85,6 +88,8 @@ export default function LeadForm() {
           eventTimeCST, // Include the CST formatted event time with AM/PM
           startTime: formData.startTime.toISOString(), // Combined date/time object for availability check
           availabilityStatus, // Send "Available" or "Not Available" based on the check
+          coPlannerName: formData.coPlannerName, // Include coPlanner name
+          coPlannerPhone: formData.coPlannerPhone, // Include coPlanner phone number
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -95,58 +100,33 @@ export default function LeadForm() {
         throw new Error('Failed to submit form data');
       }
   
-      // Redirect based on availability
-      if (availability.isAvailable) {
-        // Redirect to the Build Your Event page with the form data as query parameters
-        router.push({
-          pathname: '/build-events',
-          query: {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            pricingOption: formData.pricingOption,
-            startTime: formData.startTime.toISOString(),
-            eventDate: formData.eventDate,
-            eventType: formData.eventType,
-          },
-        });
-      } else if (formData.flexibility === 'Yes') {
-        // Redirect to a virtual tour page if flexible
-        router.push({
-          pathname: '/virtualtour',
-          query: {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            pricingOption: formData.pricingOption,
-            startTime: formData.startTime.toISOString(),
-            eventDate: formData.eventDate,
-            eventType: formData.eventType,
-          },
-        });
-      } else {
-        // Redirect to a different page if not flexible
-        router.push({
-          pathname: '/virtualtour',
-          query: {
-            name: formData.name,
-            email: formData.email,
-            phone: formData.phone,
-            pricingOption: formData.pricingOption,
-            startTime: formData.startTime.toISOString(),
-            eventDate: formData.eventDate,
-            eventType: formData.eventType,
-          },
-        });
-      }
+      // Redirect based on availability, include all formData in the query parameters
+      const nextPage = availability.isAvailable
+        ? '/build-events'
+        : formData.flexibility === 'Yes'
+        ? '/virtualtour'
+        : '/virtualtour';
+
+      router.push({
+        pathname: nextPage,
+        query: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          pricingOption: formData.pricingOption,
+          startTime: formData.startTime.toISOString(),
+          eventDate: formData.eventDate,
+          eventType: formData.eventType,
+          coPlanner: formData.coPlanner,
+          coPlannerName: formData.coPlannerName, // Include coPlanner name in query
+          coPlannerPhone: formData.coPlannerPhone, // Include coPlanner phone in query
+        },
+      });
     } catch (error) {
       console.error('Error submitting form data:', error);
       // Optionally, display an error message to the user
     }
   };
-  
-  
-  
 
   /**
    * Function to check availability based on the combined date/time object and pricing option.
@@ -219,7 +199,7 @@ export default function LeadForm() {
         <form className="mt-10" onSubmit={handleSubmit}>
           <div className="mb-8">
             <label className="block text-lg text-gray-800 font-bold mb-4">
-              Which Pricing Options Are You Interested In?
+              Which Pricing Option Are You Interested In?
             </label>
             <div className="space-y-3">
               <label className="block">
@@ -232,9 +212,9 @@ export default function LeadForm() {
                   required
                 />
                 <span className="ml-2 text-gray-800 font-semibold">
-                  STANDARD HOURLY, 4HR MINIMUM -{' '}
+                  STANDARD HOURLY, 50 GUESTS MAX, 4HR MINIMUM -{' '}
                 </span>
-                <span className="normal-font"> $125/hr + $125 cleaning fee</span>
+                <span className="normal-font"> Starting at $625 flat ($125/hr + $125 cleaning fee)</span>
               </label>
               <label className="block">
                 <input
@@ -246,9 +226,9 @@ export default function LeadForm() {
                   required
                 />
                 <span className="ml-2 text-purple-600 font-semibold">
-                  ALL INCLUSIVE + GAME ROOM, 6HR TOTAL -{' '}
+                  ALL INCLUSIVE, GAME ROOM, PHOTO LOUNGE, 60 GUESTS MAX, 6HR TOTAL -{' '}
                 </span>
-                <span className="normal-font"> Starting at $899, no cleaning fee</span>
+                <span className="normal-font"> Starting at $899 flat (no cleaning fee)</span>
               </label>
               <label className="block">
                 <input
@@ -260,9 +240,9 @@ export default function LeadForm() {
                   required
                 />
                 <span className="ml-2 text-yellow-600 font-semibold">
-                  VIP EXPERIENCE, 8HR TOTAL -{' '}
+                  VIP EXPERIENCE, 60 GUESTS MAX, 10HR TOTAL -{' '}
                 </span>
-                <span className="normal-font"> Starting at $2999, no cleaning fee</span>
+                <span className="normal-font"> Starting at $2999 flat (no cleaning fee)</span>
               </label>
             </div>
           </div>
@@ -322,6 +302,67 @@ export default function LeadForm() {
               </label>
             </div>
           </div>
+          {/* New Question for Co-Planners */}
+          <div className="mb-8">
+            <label className="block text-lg text-gray-800 font-bold mb-2">
+              Do you have any co-planners or advisors for your event? (Decorator, family, etc)
+            </label>
+            <div className="space-y-3">
+              <label className="block">
+                <input
+                  type="radio"
+                  name="coPlanner"
+                  value="Yes"
+                  checked={formData.coPlanner === 'Yes'}
+                  onChange={handleChange}
+                  required
+                />
+                <span className="ml-2 normal-font">Yes</span>
+              </label>
+              <label className="block">
+                <input
+                  type="radio"
+                  name="coPlanner"
+                  value="No"
+                  checked={formData.coPlanner === 'No'}
+                  onChange={handleChange}
+                  required
+                />
+                <span className="ml-2 normal-font">No</span>
+              </label>
+            </div>
+          </div>
+          {/* Optional Co-Planner Name and Phone Fields */}
+          {formData.coPlanner === 'Yes' && (
+            <>
+              <div className="mb-8">
+                <label className="block text-lg text-gray-800 font-bold mb-2">
+                  Co-Planner's Name (Optional)
+                </label>
+                <input
+                  type="text"
+                  name="coPlannerName"
+                  value={formData.coPlannerName}
+                  onChange={handleChange}
+                  placeholder="Ex: John Doe"
+                  className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+              <div className="mb-8">
+                <label className="block text-lg text-gray-800 font-bold mb-2">
+                  Co-Planner's Phone Number (Optional)
+                </label>
+                <input
+                  type="text"
+                  name="coPlannerPhone"
+                  value={formData.coPlannerPhone}
+                  onChange={handleChange}
+                  placeholder="Ex: (123) 456-7890"
+                  className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+            </>
+          )}
           <input type="hidden" name="name" value={formData.name} />
           <input type="hidden" name="email" value={formData.email} />
           <input type="hidden" name="phone" value={formData.phone} />

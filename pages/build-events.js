@@ -21,11 +21,24 @@ export default function BuildEventPage() {
     photographer: false,
     marqueeLights: false,
     babyShowerCenterpieces: 0,
+    coPlannerName: '',   // Co-planner's name
+    coPlannerPhone: '',  // Co-planner's phone
+    photoBooth360: false, // New add-on 360 Photo Booth
+    instantPrintCamera: false, // New add-on Instant Print Camera
   });
 
   useEffect(() => {
     // Populate form data from query params if available
-    const { name, email, phone, pricingOption, eventDate, eventType } = router.query;
+    const {
+      name,
+      email,
+      phone,
+      pricingOption,
+      eventDate,
+      eventType,
+      coPlannerName,
+      coPlannerPhone,
+    } = router.query;
     setFormData((prevData) => ({
       ...prevData,
       name: name || '',
@@ -34,8 +47,97 @@ export default function BuildEventPage() {
       pricingOption: pricingOption || '',
       eventDate: eventDate || '',
       eventType: eventType || '',
+      coPlannerName: coPlannerName || '',
+      coPlannerPhone: coPlannerPhone || '',
     }));
   }, [router.query]);
+
+  // Function to calculate the estimated total with a detailed breakdown
+  const calculateEstimatedTotal = () => {
+    let total = 0;
+    let breakdown = {};
+
+    // Pricing Option Base Price
+    switch (formData.pricingOption) {
+      case 'Standard Hourly':
+        total += 625; // Flat rate for Standard Hourly
+        breakdown['Standard Hourly Package'] = '$625';
+        break;
+      case 'All Inclusive':
+        total += 899; // Flat rate for All Inclusive
+        breakdown['All Inclusive Package'] = '$899';
+        break;
+      case 'VIP Experience':
+        total += 2999; // Flat rate for VIP Experience
+        breakdown['VIP Experience Package'] = '$2999';
+        break;
+      default:
+        break;
+    }
+
+    // Add-ons Calculations
+    if (formData.extraChairs > 0) {
+      const chairCost = formData.extraChairs * (formData.chairType === 'regular' ? 2 : 5);
+      total += chairCost;
+      breakdown['Extra Chairs'] = `$${chairCost} (${formData.extraChairs} x ${formData.chairType === 'regular' ? '$2' : '$5'})`;
+    }
+
+    if (formData.extraTables > 0) {
+      const tableCost = formData.extraTables * 10;
+      total += tableCost;
+      breakdown['Extra Tables'] = `$${tableCost} (${formData.extraTables} x $10)`;
+    }
+
+    if (formData.extraTallBoys > 0) {
+      const tallBoyCost = formData.extraTallBoys * 10;
+      total += tallBoyCost;
+      breakdown['Extra Tall Boys'] = `$${tallBoyCost} (${formData.extraTallBoys} x $10)`;
+    }
+
+    // Game Room and Photo Lounge cost only if Standard Hourly
+    if (formData.pricingOption === 'Standard Hourly') {
+      if (formData.gameRoom) {
+        total += 200;
+        breakdown['Game Room'] = '$200';
+      }
+      if (formData.photoBooth) {
+        total += 150;
+        breakdown['Photo Lounge Room'] = '$150';
+      }
+    }
+
+    if (formData.photographer) {
+      total += 250;
+      breakdown['Photographer'] = '$250';
+    }
+
+    if (formData.marqueeLights) {
+      total += 100;
+      breakdown['Marquee Lights'] = '$100';
+    }
+
+    if (formData.babyShowerCenterpieces > 0) {
+      const centerpieceCost = formData.babyShowerCenterpieces * 10;
+      total += centerpieceCost;
+      breakdown['Baby Shower Centerpieces'] = `$${centerpieceCost} (${formData.babyShowerCenterpieces} x $10)`;
+    }
+
+    // New Add-ons
+    if (formData.photoBooth360) {
+      total += 300;
+      breakdown['360 Photo Booth'] = '$300';
+    }
+
+    if (formData.instantPrintCamera) {
+      total += 150;
+      breakdown['Instant Print Camera'] = '$150';
+    }
+
+    return {
+      total,
+      breakdown,
+    };
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -51,7 +153,10 @@ export default function BuildEventPage() {
     // 1. Capture the current date and time for "Inquiry Date"
     const inquiryDate = new Date(); // This will store the current date and time
 
-    // 2. Send data to Zapier or your API via proxy
+    // 2. Calculate the estimated total with breakdown
+    const { total, breakdown } = calculateEstimatedTotal();
+
+    // 3. Send data to Zapier or your API via proxy
     const webhookUrl = '/api/add-ons-proxy'; // Replace this with your proxy endpoint
 
     try {
@@ -60,22 +165,28 @@ export default function BuildEventPage() {
         body: JSON.stringify({
           ...formData,
           inquiryDate: inquiryDate.toISOString(), // Send the Inquiry Date in ISO format
+          estimatedTotal: total, // Send the estimated total
+          estimatedBreakdown: breakdown, // Send the detailed breakdown
         }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      // 3. Redirect to the virtual tour page
+      // 4. Redirect to the next page with query params
       router.push({
-        pathname: '/deposittourpage', // Redirect to the virtual tour page
+        pathname: '/deposittourpage', // Redirect to the next page
         query: {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
           pricingOption: formData.pricingOption,
-          eventDate: formData.eventDate ? formData.eventDate : null, // Send date as is
+          eventDate: formData.eventDate || null, // Send date as is
           eventType: formData.eventType,
+          coPlannerName: formData.coPlannerName,
+          coPlannerPhone: formData.coPlannerPhone,
+          estimatedTotal: total, // Include estimated total in query
+          estimatedBreakdown: JSON.stringify(breakdown), // Send breakdown as string
           inquiryDate: inquiryDate.toISOString(), // Send the inquiry date and time
         },
       });
@@ -89,7 +200,7 @@ export default function BuildEventPage() {
       <div className="container">
         <h2>Customize Your Event</h2>
         <p>Choose your event layout and add-ons below. We won&apos;t charge you now, but we will estimate your event cost now.</p>
-        <p className="event-info-text">Every event comes with 30 chairs, 5 tables, 4 tall boys, 2 couches, a 8x4ft food table, and our sound system.</p>
+        <p className="event-info-text">Every event comes with 30 chairs, 5 tables, 4 tall boys, 2 couches, an 8x4ft food table, and our sound system.</p>
         {/* Floor Plan Image */}
         <div className="floor-plan">
           <Image
@@ -245,6 +356,38 @@ export default function BuildEventPage() {
                 />
               </label>
             </div>
+
+            {/* New Add-ons */}
+            <div className="card">
+              <Image src="/images/photobooth360.png" alt="360 Photo Booth" width={300} height={300} className="rounded"/>
+              <h3>360 Photo Booth</h3>
+              <p>$300 for the event</p>
+              <label>
+                <input
+                  type="checkbox"
+                  name="photoBooth360"
+                  checked={formData.photoBooth360}
+                  onChange={handleChange}
+                />
+                <span>Add 360 Photo Booth</span>
+              </label>
+            </div>
+
+            <div className="card">
+              <Image src="/images/instantprintcamera.png" alt="Instant Print Camera" width={300} height={300} className="rounded"/>
+              <h3>DIY Instant Print Camera Rental</h3>
+              <p>$150 for 20 prints</p>
+              <label>
+                <input
+                  type="checkbox"
+                  name="instantPrintCamera"
+                  checked={formData.instantPrintCamera}
+                  onChange={handleChange}
+                />
+                <span>Add Instant Print Camera</span>
+              </label>
+            </div>
+
           </div>
 
           <button
