@@ -70,9 +70,9 @@ export default function ContactForm() {
     <section id="contactForm" className="py-20 bg-gray-100">
       <div className="container mx-auto max-w-lg bg-white p-8 rounded shadow-lg">
         <div className="text-center">
-          <h2 className="text-4xl font-bold text-gray-800">Check Availability Now</h2>
+          <h2 className="text-4xl font-bold text-gray-800">Let&apos;s Start With Basics</h2>
           <p className="mt-4 text-lg text-gray-600">
-            Do you want to check if we're available or visit us?
+          Tell us some basic details of your event and we'll tell you our availability, provide an instant quote, and customize a plan for you. 
           </p>
         </div>
         <form className="mt-10" onSubmit={handleSubmit}>
