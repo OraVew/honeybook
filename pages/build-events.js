@@ -218,7 +218,7 @@ export default function BuildEventPage() {
             <div className="card">
               <Image src="/images/chairs.jpg" alt="Chairs" width={300} height={300} className="rounded"/>
               <h3>Additional Chairs</h3>
-              <p>Includes 30 chairs. Extra chairs cost $2 for regular or $5 for Chivari.</p>
+              <p>Every event includes 30 chairs. Extra chairs cost $2 for regular or $5 for Chivari.</p>
               <label>
                 <span>How many extra chairs?</span>
                 <input
@@ -246,7 +246,7 @@ export default function BuildEventPage() {
             <div className="card">
               <Image src="/images/tables.jpg" alt="Tables" width={300} height={300} className="rounded"/>
               <h3>Additional Tables</h3>
-              <p>Includes 5 tables. Extra tables cost $10 each.</p>
+              <p>Every event includes 5 tables. Extra tables cost $10 each.</p>
               <label>
                 <span>How many extra tables?</span>
                 <input
@@ -263,7 +263,7 @@ export default function BuildEventPage() {
             <div className="card">
               <Image src="/images/tallboys.jpg" alt="Tall Boys" width={300} height={300} className="rounded"/>
               <h3>Additional Tall Boys</h3>
-              <p>Includes 4 tall boys. Extra tall boys cost $10 each.</p>
+              <p>Every event includes 4 tall boys. Extra tall boys cost $10 each.</p>
               <label>
                 <span>How many extra tall boys?</span>
                 <input
