@@ -95,7 +95,7 @@ export default function DepositTour() {
             className="card gold"
             onClick={() => handleCardClick('priorityPass')}
           >
-            <h3>Reserve Now for $25</h3>
+            <h3>Schedule a Reservervation Call</h3>
             <p>
               Schedule a virtual tour with our venue manager to finalize details for your reservation.
             </p>
@@ -106,7 +106,7 @@ export default function DepositTour() {
             className="card purple"
             onClick={() => handleCardClick('eventConsultation')}
           >
-            <h3>Still Thinking?</h3>
+            <h3>Speak with someone</h3>
             <p>
               Schedule a virtual consultation and walk-through with our event planner to discuss your event details.
             </p>
