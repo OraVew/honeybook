@@ -60,13 +60,15 @@ export default function DepositTour() {
     }
   };
 
+  const eventPlannerEmail = 'cscallender78@gmail.com';
+
   const priorityPassUrl = `https://calendly.com/oravew/virtual-tour-with-a-member-of-our-team-clone?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=d69600&name=${encodeURIComponent(
     userData.name
   )}&email=${encodeURIComponent(userData.email)}&a1=${encodeURIComponent(userData.phone)}`;
 
   const eventConsultationUrl = `https://calendly.com/oravew/event-consultation?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=d69600&name=${encodeURIComponent(
     userData.name
-  )}&email=${encodeURIComponent(userData.email)}&a1=${encodeURIComponent(userData.phone)}`;
+  )}&email=${encodeURIComponent(userData.email)}&a1=${encodeURIComponent(userData.phone)}&guests=${encodeURIComponent(eventPlannerEmail)}`;
 
   return (
     <section className="section bg-gray-100 py-10">

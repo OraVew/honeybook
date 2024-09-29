@@ -105,7 +105,7 @@ export default function LeadForm() {
         ? '/build-events'
         : formData.flexibility === 'Yes'
         ? '/virtualtour'
-        : '/virtualtour';
+        : '/notavailable';
 
       router.push({
         pathname: nextPage,
