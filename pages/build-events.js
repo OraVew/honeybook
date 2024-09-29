@@ -218,7 +218,7 @@ export default function BuildEventPage() {
             <div className="card">
               <Image src="/images/chairs.jpg" alt="Chairs" width={300} height={300} className="rounded"/>
               <h3>Additional Chairs</h3>
-              <p>Every event includes 30 chairs. Extra chairs cost $2 for regular or $5 for Chivari.</p>
+              <p>Every event includes 30 regular chairs. Extra chairs cost $2 for regular or $5 for Chivari. (If you want every guest seated with Chivari, make sure you choose the number of guests here.)</p>
               <label>
                 <span>How many extra chairs?</span>
                 <input
