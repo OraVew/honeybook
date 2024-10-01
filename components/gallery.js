@@ -21,6 +21,7 @@ const Gallery = () => {
     <section className="py-20 bg-gray-200">
     <div className={styles.container}>
     <h2 className="text-4xl font-bold text-gray-800 text-center">Gallery</h2>
+    <br></br>
       <div className={styles.galleryGrid}>
         {images.map((src, index) => (
           <div key={index} className={styles.galleryItem}>
