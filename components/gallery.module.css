@@ -1,0 +1,56 @@
+/* Center the gallery container on the page */
+.galleryContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Heading styling for consistency */
+.heading {
+  font-size: 1.5rem; /* Matches text-2xl */
+  font-weight: 700;
+  color: #ffffff; /* Light text */
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Grid for the gallery */
+.galleryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 images per row */
+  gap: 10px;
+  justify-items: center;
+  align-items: center;
+  max-width: 1200px; /* Limit the max width */
+  margin: 0 auto; /* Center the grid */
+}
+
+/* Each gallery item */
+.galleryItem {
+  width: 100%; /* Ensure images are responsive */
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px; /* Add slight rounding for consistency with card container */
+}
+
+/* Adjustments for smaller screens */
+@media screen and (max-width: 1024px) {
+  .galleryGrid {
+    grid-template-columns: repeat(3, 1fr); /* 3 images per row on medium screens */
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .galleryGrid {
+    grid-template-columns: repeat(2, 1fr); /* 2 images per row on small screens */
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .galleryGrid {
+    grid-template-columns: 1fr; /* 1 image per row on mobile */
+  }
+}
