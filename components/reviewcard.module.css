@@ -1,0 +1,61 @@
+.card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    width: 100%;
+    height: 300px; /* Keep fixed height for consistency */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .cardHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .logo {
+    margin-right: 12px; /* Keep some spacing between the logo and text */
+  }
+  
+  .textContainer {
+    flex-grow: 1; /* Ensures that the text remains aligned next to the logo */
+  }
+  
+  .reviewerName {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333333;
+  }
+  
+  .reviewDate {
+    font-size: 0.875rem;
+    color: #555555;
+  }
+  
+  .stars {
+    font-size: 1.5rem;
+    color: #d69600;
+    margin-bottom: 1rem;
+  }
+  
+  .starIcon {
+    color: #d69600;
+    margin-right: 4px;
+  }
+  
+  .reviewText {
+    font-size: 1rem;
+    color: #333333;
+    line-height: 1.5;
+    flex-grow: 1;
+  }
+  

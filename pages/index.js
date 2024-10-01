@@ -2,6 +2,7 @@
 import '../app/globals.css'
 import Head from 'next/head';
 
+import ReviewList from '../components/reviewlist.js';
 import Hero from '../components/hero.js';
 import Features from '../components/features.js';
 import UniqueValue from '../components/uniquevalue.js';
@@ -27,6 +28,8 @@ export default function Home() {
 
       {/* What Makes OraVew Different Section */}
       <UniqueValue />
+
+      <ReviewList/>
 
       {/* Offerings Section */}
       <Offerings />

@@ -38,3 +38,21 @@ input, textarea {
 input::placeholder, textarea::placeholder {
   color: #cccccc;
 }
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.reviewList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+  gap: 1.5rem;
+}
+
+@media screen and (max-width: 768px) {
+  .reviewList {
+    grid-template-columns: 1fr; /* One column on mobile */
+  }
+}

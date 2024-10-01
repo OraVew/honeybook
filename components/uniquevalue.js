@@ -8,7 +8,7 @@ export default function UniqueValue() {
           <h2 className="text-4xl font-bold text-gray-800">What makes OraVew different?</h2>
           <p className="mt-4 text-lg text-gray-600">
             We welcome outside catering and BYOB. No vendor restrictions, no service or gratuity fees, and no food and beverage minimums.
-            Our mid-sized event space can accommodate up to 50 people for seated service or cocktail event.
+            Our mid-sized event space can accommodate up to 60 people for seated service or cocktail event.
           </p>
           <button
             className="mt-6 px-6 py-3 bg-[#D69600] text-white font-semibold rounded hover:bg-[#7B61FF]"
