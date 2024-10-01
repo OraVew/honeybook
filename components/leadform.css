@@ -33,7 +33,7 @@
 }
 
 .container p:nth-child(3) {
-  color: #7b61ff; /* Purple text */
+  color: #ff0000; /* Purple text */
   font-weight: bold;
 }
 
@@ -113,4 +113,8 @@ form .font-semibold {
 
 .normal-font {
   font-weight: normal;
+}
+
+.custom-red-text {
+  color: #ff0000; /* Red text */
 }

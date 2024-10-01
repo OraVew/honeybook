@@ -192,7 +192,7 @@ export default function LeadForm() {
           <p className="mt-4 text-lg text-gray-800">
             We have other active inquiries for the date you're looking to book.
           </p>
-          <p className="mt-4 text-lg text-red-600 font-bold">
+          <p className="mt-4 text-lg text-red-600 font-bold custom-red-text">
             You can speed up your inquiry by answering a few additional questions so our team can assist you faster!
           </p>
         </div>
