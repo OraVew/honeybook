@@ -7,7 +7,7 @@ export default function CTA() {
         <div className="lg:w-1/2 p-8">
           <h2 className="text-4xl font-bold text-gray-800">Start Planning Your Custom Event</h2>
           <p className="mt-4 text-lg text-gray-600">
-            Ready to get started? Get in touch to start the planning process for your event, workshop, photoshoot, and more.
+            Ready to get started? Get in touch to start the planning process for your birthday, baby shower, engagement dinner, and more.
           </p>
           <button
             className="mt-6 px-6 py-3 bg-[#D69600] text-white font-semibold rounded hover:bg-[#7B61FF]"
