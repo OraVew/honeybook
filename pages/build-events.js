@@ -10,6 +10,7 @@ export default function BuildEventPage() {
     email: '',
     phone: '',
     pricingOption: '',
+    eventTime: '',
     eventDate: '',
     eventType: '',
     extraChairs: 0,
@@ -34,6 +35,7 @@ export default function BuildEventPage() {
       email,
       phone,
       pricingOption,
+      eventTime,
       eventDate,
       eventType,
       coPlannerName,
@@ -45,6 +47,7 @@ export default function BuildEventPage() {
       email: email || '',
       phone: phone || '',
       pricingOption: pricingOption || '',
+      eventTime: eventTime || '', // Save eventTime in formData
       eventDate: eventDate || '',
       eventType: eventType || '',
       coPlannerName: coPlannerName || '',
@@ -156,10 +159,11 @@ export default function BuildEventPage() {
     // 2. Calculate the estimated total with breakdown
     const { total, breakdown } = calculateEstimatedTotal();
 
-    // 3. Send data to Zapier or your API via proxy
+    // 3. Send data to Zapier or your API via proxy (webhook)
     const webhookUrl = '/api/add-ons-proxy'; // Replace this with your proxy endpoint
 
     try {
+      // Webhook request
       await fetch(webhookUrl, {
         method: 'POST',
         body: JSON.stringify({
@@ -173,231 +177,241 @@ export default function BuildEventPage() {
         },
       });
 
-      // 4. Redirect to the next page with query params
-      router.push({
-        pathname: '/deposittourpage', // Redirect to the next page
-        query: {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          pricingOption: formData.pricingOption,
-          eventDate: formData.eventDate || null, // Send date as is
-          eventType: formData.eventType,
-          coPlannerName: formData.coPlannerName,
-          coPlannerPhone: formData.coPlannerPhone,
-          estimatedTotal: total, // Include estimated total in query
-          estimatedBreakdown: JSON.stringify(breakdown), // Send breakdown as string
-          inquiryDate: inquiryDate.toISOString(), // Send the inquiry date and time
+      // 4. Save to MongoDB (extra API call)
+      const saveInquiryResponse = await fetch('/api/save-inquiry', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...formData,
+          inquiryDate: inquiryDate.toISOString(),
+          estimatedTotal: total,
+          estimatedBreakdown: breakdown,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
         },
       });
+
+      const data = await saveInquiryResponse.json();
+      if (saveInquiryResponse.ok) {
+        console.log('Inquiry saved with ID:', data.id);
+
+        // Redirect to the event-brochure page with query params
+        router.push({
+          pathname: '/event-brochure',
+          query: { id: data.id }, // Ensure data.id is correct
+        });
+        
+      } else {
+        console.error('Failed to save inquiry:', data.error);
+      }
     } catch (error) {
-      console.error('Error sending data to the webhook:', error);
+      console.error('Error submitting form:', error);
     }
   };
 
   return (
     <section className="bg-gray-100">
-      <div className="container">
-        <h2>Customize Your Event</h2>
-        <p>Choose your event layout and add-ons below. We won&apos;t charge you now, but we will estimate your event cost now.</p>
-        <p className="event-info-text">Every event comes with 30 chairs, 5 tables, 4 tall boys, 2 couches, an 8x4ft food table, and our sound system.</p>
-        {/* Floor Plan Image */}
-        <div className="floor-plan">
-          <Image
-            src="/images/floorplan1.jpg" // Replace with your actual image path
-            alt="Event Floor Plan"
-            width={800}  // Set appropriate width for larger screens
-            height={500} // Set appropriate height for larger screens
-            className="rounded shadow-lg w-full md:w-2/3" // Make it responsive for mobile
-          />
-        </div>
+    <div className="container">
+      <h2>Customize Your Event</h2>
+      <p>Choose your event layout and add-ons below. We won&apos;t charge you now, but we will estimate your event cost now.</p>
+      <p className="event-info-text">Every event comes with 30 chairs, 5 tables, 4 tall boys, 2 couches, an 8x4ft food table, and our sound system.</p>
+      {/* Floor Plan Image */}
+      <div className="floor-plan">
+        <Image
+          src="/images/floorplan1.jpg" // Replace with your actual image path
+          alt="Event Floor Plan"
+          width={800}  // Set appropriate width for larger screens
+          height={500} // Set appropriate height for larger screens
+          className="rounded shadow-lg w-full md:w-2/3" // Make it responsive for mobile
+        />
+      </div>
 
-        <form onSubmit={handleSubmit} className="form">
-          <div className="form-grid">
-            {/* Chairs */}
-            <div className="card">
-              <Image src="/images/chairs.jpg" alt="Chairs" width={300} height={300} className="rounded"/>
-              <h3>Additional Chairs</h3>
-              <p>Every event includes 30 regular chairs. Extra chairs cost $2 for regular or $5 for Chivari. (If you want every guest seated with Chivari, make sure you choose the number of guests here.)</p>
-              <label>
-                <span>How many extra chairs?</span>
-                <input
-                  type="number"
-                  name="extraChairs"
-                  min="0"
-                  value={formData.extraChairs}
-                  onChange={handleChange}
-                />
-              </label>
-              <label>
-                <span>Chair type</span>
-                <select
-                  name="chairType"
-                  value={formData.chairType}
-                  onChange={handleChange}
-                >
-                  <option value="regular">Regular ($2/chair)</option>
-                  <option value="chivari">Chivari ($5/chair)</option>
-                </select>
-              </label>
-            </div>
-
-            {/* Tables */}
-            <div className="card">
-              <Image src="/images/tables.jpg" alt="Tables" width={300} height={300} className="rounded"/>
-              <h3>Additional Tables</h3>
-              <p>Every event includes 5 tables. Extra tables cost $10 each.</p>
-              <label>
-                <span>How many extra tables?</span>
-                <input
-                  type="number"
-                  name="extraTables"
-                  min="0"
-                  value={formData.extraTables}
-                  onChange={handleChange}
-                />
-              </label>
-            </div>
-
-            {/* Tall Boys */}
-            <div className="card">
-              <Image src="/images/tallboys.jpg" alt="Tall Boys" width={300} height={300} className="rounded"/>
-              <h3>Additional Tall Boys</h3>
-              <p>Every event includes 4 tall boys. Extra tall boys cost $10 each.</p>
-              <label>
-                <span>How many extra tall boys?</span>
-                <input
-                  type="number"
-                  name="extraTallBoys"
-                  min="0"
-                  value={formData.extraTallBoys}
-                  onChange={handleChange}
-                />
-              </label>
-            </div>
-
-            {/* Game Room */}
-            <div className="card">
-              <Image src="/images/gameroom.jpg" alt="Game Room" width={300} height={300} className="rounded"/>
-              <h3>Game Room</h3>
-              <p>$200 (*Included in All-Inclusive package at no additional cost)</p>
-              <label>
-                <input
-                  type="checkbox"
-                  name="gameRoom"
-                  checked={formData.gameRoom}
-                  onChange={handleChange}
-                />
-                <span>Add Game Room</span>
-              </label>
-            </div>
-
-            {/* Photo Booth */}
-            <div className="card">
-              <Image src="/images/photobooth.jpg" alt="Photo Booth" width={300} height={300} className="rounded"/>
-              <h3>Photo Lounge Room</h3>
-              <p>$150 (*Included in All-Inclusive package at no additional cost)</p>
-              <label>
-                <input
-                  type="checkbox"
-                  name="photoBooth"
-                  checked={formData.photoBooth}
-                  onChange={handleChange}
-                />
-                <span>Add Photo Booth Room</span>
-              </label>
-            </div>
-
-            {/* Photographer */}
-            <div className="card">
-              <Image src="/images/photographer.jpg" alt="Photographer" width={300} height={300} className="rounded"/>
-              <h3>Photographer</h3>
-              <p>$250 for event coverage.</p>
-              <label>
-                <input
-                  type="checkbox"
-                  name="photographer"
-                  checked={formData.photographer}
-                  onChange={handleChange}
-                />
-                <span>Add Photographer</span>
-              </label>
-            </div>
-
-            {/* Marquee Lights */}
-            <div className="card">
-              <Image src="/images/marqueelights.jpg" alt="Marquee Lights" width={300} height={300} className="rounded"/>
-              <h3>Marquee Lights</h3>
-              <p>$100 for your birthday numbers.</p>
-              <label>
-                <input
-                  type="checkbox"
-                  name="marqueeLights"
-                  checked={formData.marqueeLights}
-                  onChange={handleChange}
-                />
-                <span>Add Marquee Lights</span>
-              </label>
-            </div>
-
-            {/* Baby Shower Centerpieces */}
-            <div className="card">
-              <Image src="/images/centerpieces.jpg" alt="Baby Shower Centerpieces" width={300} height={300} className="rounded"/>
-              <h3>Baby Shower Table Centerpieces</h3>
-              <p>$10 per table piece.</p>
-              <label>
-                <span>How many centerpieces?</span>
-                <input
-                  type="number"
-                  name="babyShowerCenterpieces"
-                  min="0"
-                  value={formData.babyShowerCenterpieces}
-                  onChange={handleChange}
-                />
-              </label>
-            </div>
-
-            {/* New Add-ons */}
-            <div className="card">
-              <Image src="/images/photobooth360.png" alt="360 Photo Booth" width={300} height={300} className="rounded"/>
-              <h3>360 Photo Booth</h3>
-              <p>$300 for the event</p>
-              <label>
-                <input
-                  type="checkbox"
-                  name="photoBooth360"
-                  checked={formData.photoBooth360}
-                  onChange={handleChange}
-                />
-                <span>Add 360 Photo Booth</span>
-              </label>
-            </div>
-
-            <div className="card">
-              <Image src="/images/instantprintcamera.png" alt="Instant Print Camera" width={300} height={300} className="rounded"/>
-              <h3>DIY Instant Print Camera Rental</h3>
-              <p>$150 for 20 prints</p>
-              <label>
-                <input
-                  type="checkbox"
-                  name="instantPrintCamera"
-                  checked={formData.instantPrintCamera}
-                  onChange={handleChange}
-                />
-                <span>Add Instant Print Camera</span>
-              </label>
-            </div>
-
+      <form onSubmit={handleSubmit} className="form">
+        <div className="form-grid">
+          {/* Chairs */}
+          <div className="card">
+            <Image src="/images/chairs.jpg" alt="Chairs" width={300} height={300} className="rounded"/>
+            <h3>Additional Chairs</h3>
+            <p>Every event includes 30 regular chairs. Extra chairs cost $2 for regular or $5 for Chivari. (If you want every guest seated with Chivari, make sure you choose the number of guests here.)</p>
+            <label>
+              <span>How many extra chairs?</span>
+              <input
+                type="number"
+                name="extraChairs"
+                min="0"
+                value={formData.extraChairs}
+                onChange={handleChange}
+              />
+            </label>
+            <label>
+              <span>Chair type</span>
+              <select
+                name="chairType"
+                value={formData.chairType}
+                onChange={handleChange}
+              >
+                <option value="regular">Regular ($2/chair)</option>
+                <option value="chivari">Chivari ($5/chair)</option>
+              </select>
+            </label>
           </div>
 
-          <button
-            type="submit"
-            className="submit-button"
-          >
-            SUBMIT YOUR LAYOUT
-          </button>
-        </form>
-      </div>
-    </section>
+          {/* Tables */}
+          <div className="card">
+            <Image src="/images/tables.jpg" alt="Tables" width={300} height={300} className="rounded"/>
+            <h3>Additional Tables</h3>
+            <p>Every event includes 5 tables. Extra tables cost $10 each.</p>
+            <label>
+              <span>How many extra tables?</span>
+              <input
+                type="number"
+                name="extraTables"
+                min="0"
+                value={formData.extraTables}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+
+          {/* Tall Boys */}
+          <div className="card">
+            <Image src="/images/tallboys.jpg" alt="Tall Boys" width={300} height={300} className="rounded"/>
+            <h3>Additional Tall Boys</h3>
+            <p>Every event includes 4 tall boys. Extra tall boys cost $10 each.</p>
+            <label>
+              <span>How many extra tall boys?</span>
+              <input
+                type="number"
+                name="extraTallBoys"
+                min="0"
+                value={formData.extraTallBoys}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+
+          {/* Game Room */}
+          <div className="card">
+            <Image src="/images/gameroom.jpg" alt="Game Room" width={300} height={300} className="rounded"/>
+            <h3>Game Room</h3>
+            <p>$200 (*Included in All-Inclusive package at no additional cost)</p>
+            <label>
+              <input
+                type="checkbox"
+                name="gameRoom"
+                checked={formData.gameRoom}
+                onChange={handleChange}
+              />
+              <span>Add Game Room</span>
+            </label>
+          </div>
+
+          {/* Photo Booth */}
+          <div className="card">
+            <Image src="/images/photobooth.jpg" alt="Photo Booth" width={300} height={300} className="rounded"/>
+            <h3>Photo Lounge Room</h3>
+            <p>$150 (*Included in All-Inclusive package at no additional cost)</p>
+            <label>
+              <input
+                type="checkbox"
+                name="photoBooth"
+                checked={formData.photoBooth}
+                onChange={handleChange}
+              />
+              <span>Add Photo Booth Room</span>
+            </label>
+          </div>
+
+          {/* Photographer */}
+          <div className="card">
+            <Image src="/images/photographer.jpg" alt="Photographer" width={300} height={300} className="rounded"/>
+            <h3>Photographer</h3>
+            <p>$250 for event coverage.</p>
+            <label>
+              <input
+                type="checkbox"
+                name="photographer"
+                checked={formData.photographer}
+                onChange={handleChange}
+              />
+              <span>Add Photographer</span>
+            </label>
+          </div>
+
+          {/* Marquee Lights */}
+          <div className="card">
+            <Image src="/images/marqueelights.jpg" alt="Marquee Lights" width={300} height={300} className="rounded"/>
+            <h3>Marquee Lights</h3>
+            <p>$100 for your birthday numbers.</p>
+            <label>
+              <input
+                type="checkbox"
+                name="marqueeLights"
+                checked={formData.marqueeLights}
+                onChange={handleChange}
+              />
+              <span>Add Marquee Lights</span>
+            </label>
+          </div>
+
+          {/* Baby Shower Centerpieces */}
+          <div className="card">
+            <Image src="/images/centerpieces.jpg" alt="Baby Shower Centerpieces" width={300} height={300} className="rounded"/>
+            <h3>Baby Shower Table Centerpieces</h3>
+            <p>$10 per table piece.</p>
+            <label>
+              <span>How many centerpieces?</span>
+              <input
+                type="number"
+                name="babyShowerCenterpieces"
+                min="0"
+                value={formData.babyShowerCenterpieces}
+                onChange={handleChange}
+              />
+            </label>
+          </div>
+
+          {/* New Add-ons */}
+          <div className="card">
+            <Image src="/images/photobooth360.png" alt="360 Photo Booth" width={300} height={300} className="rounded"/>
+            <h3>360 Photo Booth</h3>
+            <p>$300 for the event</p>
+            <label>
+              <input
+                type="checkbox"
+                name="photoBooth360"
+                checked={formData.photoBooth360}
+                onChange={handleChange}
+              />
+              <span>Add 360 Photo Booth</span>
+            </label>
+          </div>
+
+          <div className="card">
+            <Image src="/images/instantprintcamera.png" alt="Instant Print Camera" width={300} height={300} className="rounded"/>
+            <h3>DIY Instant Print Camera Rental</h3>
+            <p>$150 for 20 prints</p>
+            <label>
+              <input
+                type="checkbox"
+                name="instantPrintCamera"
+                checked={formData.instantPrintCamera}
+                onChange={handleChange}
+              />
+              <span>Add Instant Print Camera</span>
+            </label>
+          </div>
+
+        </div>
+
+        <button
+          type="submit"
+          className="submit-button"
+        >
+          SUBMIT YOUR LAYOUT
+        </button>
+      </form>
+    </div>
+  </section>
   );
 }

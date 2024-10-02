@@ -115,6 +115,7 @@ export default function LeadForm() {
           phone: formData.phone,
           pricingOption: formData.pricingOption,
           startTime: formData.startTime.toISOString(),
+          eventTime: eventTimeCST,
           eventDate: formData.eventDate,
           eventType: formData.eventType,
           coPlanner: formData.coPlanner,

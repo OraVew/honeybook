@@ -2,7 +2,6 @@
 
 /* Container Styling */
 .container {
-    max-width: 800px;
     background-color: #ffffff;
     padding: 2.5rem;
     border-radius: 12px;
@@ -143,3 +142,249 @@
     display: block;
   }
   
+  ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #d69600; /* Gold color for borders */
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #333;
+    transition: border-color 0.3s ease;
+  }
+  
+  input:focus {
+    border-color: #6a1b9a; /* Purple on focus */
+    outline: none;
+  }
+
+  button {
+    padding: 12px 24px;
+    background-color: #d69600; /* Gold */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s;
+  }
+  
+  button:hover {
+    background-color: #c88500;
+    transform: translateY(-3px);
+  }
+  
+  button:active {
+    transform: translateY(0);
+  }
+
+  p {
+    font-size: 1.125rem;
+    color: #333;
+    line-height: 1.6;
+    margin-top: 1rem;
+    padding: 0 10px;
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  /* Highlight important text */
+  p.highlight {
+    color: #6a1b9a; /* Purple for emphasis */
+    font-weight: bold;
+  }
+
+  .shareable-link input {
+    border: 1px solid #ddd;
+    padding: 10px;
+    width: 100%;
+    font-size: 1rem;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  
+  .shareable-link button {
+    margin-top: 10px;
+    padding: 12px 24px;
+    background-color: #d69600;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .shareable-link button:hover {
+    background-color: #c88500;
+  }
+
+  .comment-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .comment-list li:last-child {
+    border-bottom: none;
+  }
+  
+  form input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  }
+  
+  form button {
+    margin-top: 10px;
+    padding: 12px 24px;
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  form button:hover {
+    background-color: #218838;
+  }
+  
+  /* General Section Styling */
+.section {
+  padding: 60px 20px;  /* Adequate spacing for sections */
+  margin-bottom: 40px;  /* Space between sections */
+}
+
+/* Alternating Background Colors */
+.section:nth-child(even) {
+  background-color: #f7f7f7;  /* Light neutral background */
+}
+
+.section:nth-child(odd) {
+  background-color: #ffffff;  /* White background */
+}
+
+/* Heading Styling */
+.section h3 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Text Paragraph Styling */
+.section p {
+  font-size: 1.125rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+/* Button Styling */
+.button {
+  background-color: #d69600; /* Gold color */
+  color: #fff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+}
+
+.button:hover {
+  background-color: #c88500;
+}
+
+.button-centered {
+  display: block;
+  margin: 20px auto;
+  text-align: center;
+}
+
+/* Cards Container for Events */
+.cards-container {
+  display: flex;
+  gap: 20px;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 40px;
+}
+
+/* Specific Card Styling */
+.card {
+  flex: 1 1 300px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Specific Colors for Different Cards */
+.card.gold {
+  background-color: #d69600;
+  color: #fff;
+}
+
+.card.purple {
+  background-color: #6a1b9a;
+  color: #fff;
+}
+
+/* Input Fields Styling */
+input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #d69600;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #333;
+}
+
+input:focus {
+  border-color: #6a1b9a;
+  outline: none;
+}
+
+/* Comments List Styling */
+.comment-list li {
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.comment-list li:last-child {
+  border-bottom: none;
+}
+
+/* Form Button Styling */
+form button {
+  background-color: #28a745;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+form button:hover {
+  background-color: #218838;
+}
