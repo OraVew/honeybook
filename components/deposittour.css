@@ -1,26 +1,7 @@
 /* deposittour.css */
 
 /* Container Styling */
-/* Container Styling */
-.container {
-  background-color: #ffffff;
-  padding: 2.5rem;
-  border-radius: 12px;
-  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
-  margin: auto;
-  text-align: center;
-  max-width: 1200px; /* Restrict width for larger screens */
-  width: 100%; /* Ensure it takes up full width */
-}
 
-@media (max-width: 768px) {
-  .container {
-      padding: 1.5rem;
-      width: 100%; /* Ensure it takes up full width on mobile */
-      margin: 0; /* Remove the auto margin for mobile to allow full width */
-      border-radius: 0; /* Optional: remove border radius on mobile for edge-to-edge effect */
-  }
-}
 
   
   /* Heading Styling */
@@ -400,4 +381,48 @@ form button {
 
 form button:hover {
   background-color: #218838;
+}
+
+/* General Section Styling */
+.section {
+  padding: 60px 20px;  /* Adequate spacing for sections */
+  margin-bottom: 40px;  /* Space between sections */
+  width: 100%; /* Ensure full width */
+}
+
+@media (max-width: 768px) {
+    .section {
+        padding: 40px 10px; /* Less padding for mobile screens */
+        width: 100%; /* Full width for mobile */
+    }
+}
+
+/* Container Styling */
+.container {
+  background-color: #ffffff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+  margin: auto;
+  text-align: center;
+  max-width: 1200px; /* Restrict width for larger screens */
+  width: 100%; /* Ensure it takes up full width */
+}
+
+@media (max-width: 768px) {
+  .container {
+      padding: 1.5rem;
+      width: 100%; /* Ensure it takes up full width on mobile */
+      margin: 0; /* Remove the auto margin for mobile to allow full width */
+      border-radius: 0; /* Optional: remove border radius on mobile for edge-to-edge effect */
+  }
+}
+
+img, .image-container img {
+  max-width: 100%; /* Ensure the image does not exceed the container */
+  height: auto; /* Keep the image aspect ratio */
+}
+
+.floor-plan img {
+  width: 100%; /* Make floor plan image responsive */
 }
