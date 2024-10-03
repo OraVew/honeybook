@@ -147,7 +147,7 @@ export default function BuildEventBrochure() {
           </div>
           <div className="card purple" onClick={() => handleCardClick('eventConsultation')}>
             <h3>Speak with Event Planner Instead</h3>
-            <p>Schedule a virtual consultation with our event planner.</p>
+            <p>Schedule a free virtual consultation with our event planner.</p>
           </div>
         </div>
 
