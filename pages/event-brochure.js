@@ -254,6 +254,8 @@ export default function BuildEventBrochure() {
             ))}
           </ul>
 
+          <section className="section">
+
           <form onSubmit={handleCommentSubmit} className="mt-4">
             <input
               type="text"
@@ -273,6 +275,8 @@ export default function BuildEventBrochure() {
               Submit Comment
             </button>
           </form>
+          </section>
+
         </div>
         </section>
 
@@ -282,8 +286,9 @@ export default function BuildEventBrochure() {
         <Gallery />
         </section>
 
-
+        <section className="section">
         <ReviewList />
+        </section>
 
         {/* Calendly Widgets */}
         <div ref={calendlyRef}>
