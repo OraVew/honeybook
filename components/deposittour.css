@@ -1,272 +1,51 @@
-/* deposittour.css */
-
-/* Container Styling */
+/* General Styling */
 .container {
-    background-color: #ffffff;
-    padding: 2.5rem;
-    border-radius: 12px;
-    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
-    margin: auto;
-    text-align: center;
-  }
-  
-  /* Heading Styling */
-  h2 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #d69600; /* Gold color */
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-  }
-  
-  /* Paragraph Styling */
-  p {
-    font-size: 1.125rem;
-    color: #333333;
-    margin-top: 1rem;
-    line-height: 1.5;
-  }
-  
-  /* Highlighted Text Styling */
-  p.highlight {
-    color: #6a1b9a; /* Purple color */
-    font-weight: bold;
-  }
-  
-  /* Breakdown Section Styling */
-  .breakdown-container {
-    background-color: #f7f7f7;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
-  }
-  
-  .breakdown-container h3 {
-    font-size: 1.5rem;
-    color: #333;
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
-  
-  .breakdown-container ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .breakdown-container li {
-    font-size: 1rem;
-    color: #555;
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  
-  .breakdown-container li:last-child {
-    border-bottom: none;
-  }
-  
-  .breakdown-total {
-    font-size: 1.25rem;
-    font-weight: bold;
-    color: #d69600;
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1rem;
-  }
-  
-  /* UI Cards Styling */
-  .cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    justify-content: center;
-    margin-bottom: 2rem;
-  }
-  
-  .card {
-    flex: 1 1 300px;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    text-align: center;
-    cursor: pointer;
-    color: #fff; /* Ensure text is white for readability */
-    text-decoration: none;
-  }
-  
-  /* Ensuring white text for the paragraph inside cards */
-  .card p {
-    color: #fff; /* White color for paragraph text */
-  }
-  
-  .card h3 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-  
-  .card p {
-    font-size: 1rem;
-    line-height: 1.4;
-    margin-bottom: 1rem;
-  }
-  
-  /* Gold Card */
-  .card.gold {
-    background-color: #d69600; /* Gold color */
-  }
-  
-  /* Purple Card */
-  .card.purple {
-    background-color: #6a1b9a; /* Purple color */
-  }
-  
-  .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Calendly Inline Widget Styling */
-  .calendly-inline-widget {
-    margin-top: 2rem;
-    min-width: 320px;
-    height: 700px;
-    display: none; /* Hide widget initially */
-  }
-  
-  /* Show Calendly widget when a card is clicked */
-  .calendly-inline-widget[data-url]:not([data-url=""]) {
-    display: block;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding-left: 0;
-  }
-
-  input {
-    width: 100%;
-    padding: 10px;
-    border: 2px solid #d69600; /* Gold color for borders */
-    border-radius: 8px;
-    margin-top: 10px;
-    font-size: 1rem;
-    color: #333;
-    transition: border-color 0.3s ease;
-  }
-  
-  input:focus {
-    border-color: #6a1b9a; /* Purple on focus */
-    outline: none;
-  }
-
-  button {
-    padding: 12px 24px;
-    background-color: #d69600; /* Gold */
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: background-color 0.3s ease, transform 0.2s;
-  }
-  
-  button:hover {
-    background-color: #c88500;
-    transform: translateY(-3px);
-  }
-  
-  button:active {
-    transform: translateY(0);
-  }
-
-  p {
-    font-size: 1.125rem;
-    color: #333;
-    line-height: 1.6;
-    margin-top: 1rem;
-    padding: 0 10px;
-  }
-  
-  .text-center {
-    text-align: center;
-  }
-  
-  /* Highlight important text */
-  p.highlight {
-    color: #6a1b9a; /* Purple for emphasis */
-    font-weight: bold;
-  }
-
-  .shareable-link input {
-    border: 1px solid #ddd;
-    padding: 10px;
-    width: 100%;
-    font-size: 1rem;
-    border-radius: 8px;
-    margin-top: 10px;
-  }
-  
-  .shareable-link button {
-    margin-top: 10px;
-    padding: 12px 24px;
-    background-color: #d69600;
-    color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .shareable-link button:hover {
-    background-color: #c88500;
-  }
-
-  .comment-list li {
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .comment-list li:last-child {
-    border-bottom: none;
-  }
-  
-  form input[type="text"] {
-    width: 100%;
-    padding: 12px;
-    margin-top: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-  }
-  
-  form button {
-    margin-top: 10px;
-    padding: 12px 24px;
-    background-color: #28a745;
-    color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  form button:hover {
-    background-color: #218838;
-  }
-  
-  /* General Section Styling */
-.section {
-  padding: 60px 20px;  /* Adequate spacing for sections */
-  margin-bottom: 40px;  /* Space between sections */
+  background-color: #ffffff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+  margin: auto;
+  text-align: center;
 }
 
-/* Alternating Background Colors */
+.text-center {
+  text-align: center;
+}
+
+h2, h3 {
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 2.5rem;
+  color: #d69600; /* Gold color */
+  text-transform: uppercase;
+}
+
+h3 {
+  font-size: 2rem;
+  color: #333;
+}
+
+p {
+  font-size: 1.125rem;
+  color: #333;
+  line-height: 1.6;
+  margin-top: 1rem;
+}
+
+p.highlight {
+  color: #6a1b9a; /* Purple for emphasis */
+  font-weight: bold;
+}
+
+/* Section Styling */
+.section {
+  padding: 60px 20px;
+  margin-bottom: 40px;
+}
+
 .section:nth-child(even) {
   background-color: #f7f7f7;  /* Light neutral background */
 }
@@ -275,36 +54,20 @@
   background-color: #ffffff;  /* White background */
 }
 
-/* Heading Styling */
-.section h3 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-/* Text Paragraph Styling */
-.section p {
-  font-size: 1.125rem;
-  color: #333;
-  text-align: center;
-  margin-bottom: 20px;
-  line-height: 1.6;
-}
-
-/* Button Styling */
-.button {
-  background-color: #d69600; /* Gold color */
-  color: #fff;
+/* Buttons */
+.button, .shareable-link button, form button {
   padding: 12px 24px;
+  background-color: #d69600; /* Gold */
+  color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
   font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s;
 }
 
-.button:hover {
+.button:hover, .shareable-link button:hover, form button:hover {
   background-color: #c88500;
 }
 
@@ -314,7 +77,47 @@
   text-align: center;
 }
 
-/* Cards Container for Events */
+form button {
+  background-color: #28a745;
+}
+
+form button:hover {
+  background-color: #218838;
+}
+
+/* Inputs */
+input, form input[type="text"], .shareable-link input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #d69600;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #333;
+  transition: border-color 0.3s ease;
+}
+
+input:focus, form input[type="text"]:focus, .shareable-link input:focus {
+  border-color: #6a1b9a;
+  outline: none;
+}
+
+/* Lists */
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.comment-list li {
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.comment-list li:last-child {
+  border-bottom: none;
+}
+
+/* Cards */
 .cards-container {
   display: flex;
   gap: 20px;
@@ -323,7 +126,6 @@
   margin-top: 40px;
 }
 
-/* Specific Card Styling */
 .card {
   flex: 1 1 300px;
   background-color: #fff;
@@ -338,7 +140,6 @@
   box-shadow: 0 15px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Specific Colors for Different Cards */
 .card.gold {
   background-color: #d69600;
   color: #fff;
@@ -349,42 +150,76 @@
   color: #fff;
 }
 
-/* Input Fields Styling */
-input {
-  width: 100%;
-  padding: 12px;
-  border: 2px solid #d69600;
-  border-radius: 8px;
-  margin-bottom: 20px;
+.card p {
+  color: #fff; /* Ensure white text inside the card */
   font-size: 1rem;
-  color: #333;
+  line-height: 1.4;
+  margin-bottom: 1rem;
 }
 
-input:focus {
-  border-color: #6a1b9a;
-  outline: none;
+/* Breakdown Section */
+.breakdown-container {
+  background-color: #f7f7f7;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
 }
 
-/* Comments List Styling */
-.comment-list li {
-  padding: 12px 0;
-  border-bottom: 1px solid #eee;
+.breakdown-container ul {
+  padding: 0;
 }
 
-.comment-list li:last-child {
-  border-bottom: none;
-}
-
-/* Form Button Styling */
-form button {
-  background-color: #28a745;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  cursor: pointer;
+.breakdown-container li {
   font-size: 1rem;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-form button:hover {
-  background-color: #218838;
+.breakdown-total {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #d69600;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+/* Calendly Widget */
+.calendly-inline-widget {
+  margin-top: 2rem;
+  min-width: 320px;
+  height: 700px;
+  display: none; /* Hide widget initially */
+}
+
+.calendly-inline-widget[data-url]:not([data-url=""]) {
+  display: block;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  .cards-container {
+    flex-direction: column;
+  }
+
+  .card {
+    flex: 1 1 100%;
+    margin-bottom: 1.5rem;
+  }
 }
