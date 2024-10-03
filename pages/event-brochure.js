@@ -254,7 +254,6 @@ export default function BuildEventBrochure() {
             ))}
           </ul>
 
-          <section className="section">
 
           <form onSubmit={handleCommentSubmit} className="mt-4">
             <input
@@ -275,8 +274,6 @@ export default function BuildEventBrochure() {
               Submit Comment
             </button>
           </form>
-          </section>
-
         </div>
         </section>
 
