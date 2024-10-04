@@ -408,7 +408,7 @@ export default function BuildEventPage() {
           type="submit"
           className="submit-button"
         >
-          SUBMIT YOUR LAYOUT
+          SUBMIT YOUR EVENT
         </button>
       </form>
     </div>
