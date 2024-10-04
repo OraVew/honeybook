@@ -16,7 +16,7 @@ export default function UrgencyMeter({ eventDate }) {
       <h3 className={styles.heading}>We have other inquires open</h3>
       <div className={styles.activities}>
         <div className={styles.activityItem}>
-          <p className={`${styles.number} ${styles.red}`}>17</p>
+          <p className={`${styles.number} ${styles.red}`}>35</p>
           <p className={styles.label}>Inquiries this week</p>
         </div>
         <div className={styles.divider}></div> {/* Divider line */}
