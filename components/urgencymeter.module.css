@@ -1,0 +1,96 @@
+/* UrgencyMeter.module.css */
+.urgencyContainer {
+    font-family: 'Open Sans', sans-serif !important;
+    text-align: center !important;
+    margin-top: 2rem;
+  }
+  
+  .heading {
+    font-size: 1.5rem !important; /* Smaller for mobile */
+    font-weight: bold !important;
+    color: #333333 !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .activities {
+    display: flex !important;
+    justify-content: center !important;
+    gap: 2rem !important;
+    margin-top: 1.5rem !important;
+    align-items: center !important;
+    flex-wrap: wrap !important; /* For mobile responsiveness */
+  }
+  
+  .activityItem {
+    text-align: center !important;
+    min-width: 80px !important; /* Ensures consistent size on smaller screens */
+  }
+  
+  .number {
+    font-size: 2rem !important; /* Adjust size for numbers */
+    font-weight: 700 !important;
+  }
+  
+  .label {
+    font-size: 1rem !important; /* Smaller font size */
+    color: #6b7280 !important;
+  }
+  
+  .red {
+    color: #ff0000 !important;
+  }
+  
+  .purple {
+    color: #7b61ff !important;
+  }
+  
+  .green {
+    color: #32cd32 !important;
+  }
+  
+  .divider {
+    height: 50px !important; /* Height of the line */
+    width: 1px !important;
+    background-color: #cccccc !important;
+  }
+  
+  .urgencyText {
+    margin-top: 2rem !important;
+    font-size: 1.125rem !important;
+    color: #333333 !important;
+  }
+  
+  .speedUpText {
+    margin-top: 1rem !important;
+    font-size: 1.125rem !important;
+    font-weight: bold !important;
+  }
+  
+  .redText {
+    color: #ff0000 !important;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .activities {
+      flex-direction: column !important;
+      gap: 1rem !important; /* Smaller gap on mobile */
+    }
+  
+    .divider {
+      display: none !important; /* Remove divider on mobile */
+    }
+  
+    .heading {
+      font-size: 1.25rem !important; /* Smaller heading on mobile */
+    }
+  
+    .number {
+      font-size: 1.75rem !important; /* Adjust size for mobile */
+    }
+  
+    .label {
+      font-size: 0.875rem !important; /* Adjust label size for mobile */
+    }
+  }
+  

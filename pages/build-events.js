@@ -212,9 +212,9 @@ export default function BuildEventPage() {
   return (
     <section className="bg-gray-100">
     <div className="container">
-      <h2>Customize Your Event</h2>
-      <p>Choose your event layout and add-ons below. We won&apos;t charge you now, but we will estimate your event cost now.</p>
-      <p className="event-info-text">Every event comes with 30 chairs, 5 tables, 4 tall boys, 2 couches, an 8x4ft food table, and our sound system.</p>
+      <h2>Lastly, Customize Your Event</h2>
+      <p>Choose any decorations, furnitures, or photography you want us to provide for your event below.</p>
+      <p className="event-info-text">Every event comes with 30 chairs, 5 tables, 4 tall boys, 2 couches, 8x4ft food table, and our Bluetooth sound system included.</p>
       {/* Floor Plan Image */}
       <div className="floor-plan">
         <Image
