@@ -80,9 +80,9 @@ export default function BuildEventPage() {
 
     // Add-ons Calculations
     if (formData.extraChairs > 0) {
-      const chairCost = formData.extraChairs * (formData.chairType === 'regular' ? 2 : 5);
+      const chairCost = formData.extraChairs * (formData.chairType === 'regular' ? 2 : 7);
       total += chairCost;
-      breakdown['Extra Chairs'] = `$${chairCost} (${formData.extraChairs} x ${formData.chairType === 'regular' ? '$2' : '$5'})`;
+      breakdown['Extra Chairs'] = `$${chairCost} (${formData.extraChairs} x ${formData.chairType === 'regular' ? '$2' : '$7'})`;
     }
 
     if (formData.extraTables > 0) {
