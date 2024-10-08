@@ -35,12 +35,12 @@ export default async function handler(req, res) {
         timeMin: eventStart,
         timeMax: eventEnd,
         timeZone: 'America/Chicago',
-        items: [{ id: 'c_f64009fdd73360de1ae776964d11f0462b2a173ac1ddf90381d397df396fe5fd@group.calendar.google.com' }],
+        items: [{ id: 'c_5a2fe9a6cee20486f80ac3345fab917b10a53817116d37ac52bf337536a8c0d2@group.calendar.google.com' }],
       },
     });
 
     // Extract the busy times from the response
-    const busyTimes = response.data.calendars['c_f64009fdd73360de1ae776964d11f0462b2a173ac1ddf90381d397df396fe5fd@group.calendar.google.com'].busy;
+    const busyTimes = response.data.calendars['c_5a2fe9a6cee20486f80ac3345fab917b10a53817116d37ac52bf337536a8c0d2@group.calendar.google.com'].busy;
 
     // Check if the event overlaps with any busy times
     const isAvailable = !busyTimes.some(busyTime => {
