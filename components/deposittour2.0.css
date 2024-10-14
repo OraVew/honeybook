@@ -1,0 +1,366 @@
+/* General Styling */
+h2, h3, h4 {
+    color: #d69600; /* Gold color for headings */
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center; /* Center-align headings */
+  }
+  
+  h2 {
+    font-size: 2.5rem;
+    text-transform: uppercase;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+  }
+  
+  p, ul {
+    font-size: 1.125rem;
+    color: #333;
+    line-height: 1.6;
+    margin-top: 1rem;
+    text-align: center; /* Center-align paragraphs and list items */
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  p.highlight {
+    color: #7B61FF; /* Purple color for emphasis */
+    font-weight: bold;
+  }
+  
+  /* Containers */
+  .container, .breakdown-container {
+    background-color: #fff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    margin: 0 auto; /* Center container */
+    max-width: 1200px; /* Limit the width of the container */
+    width: 90%; /* Use 90% width for responsiveness */
+  }
+  
+  .breakdown-container {
+    background-color: #f7f7f7;
+    padding: 1.5rem;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+    text-align: center; /* Center-align text in breakdown */
+  }
+  
+  .breakdown-container ul {
+    padding: 0;
+  }
+  
+  .breakdown-container li {
+    font-size: 1rem;
+    color: #555;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: center; /* Center-align list items */
+  }
+  
+  .breakdown-container li:last-child {
+    border-bottom: none;
+  }
+  
+  .breakdown-total {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #d69600;
+    margin-top: 1rem;
+    text-align: center; /* Center-align total */
+  }
+  
+  /* Headings that should be black */
+  h3.black-text, h4.black-text {
+    color: #000; /* Black text for specific headings */
+  }
+  
+  /* Purple Buttons for Share, Like, and Comment */
+  .button-container {
+    text-align: center; /* Center-align buttons */
+    margin-top: 20px;
+  }
+  
+  button.share-btn, button.like-btn, button.comment-btn {
+    background-color: #7B61FF; /* Purple background */
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 10px; /* Spacing between buttons */
+    transition: background-color 0.3s ease, transform 0.2s;
+  }
+  
+  button.share-btn:hover, button.like-btn:hover, button.comment-btn:hover {
+    background-color: #7B61FF;
+  }
+  
+  /* White Text for Card Headings */
+  .card.gold h3, .card.purple h3 {
+    color: white;
+  }
+  
+  /* Image Grid */
+  .image-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+    gap: 20px; /* Space between grid items */
+    justify-items: center; /* Center grid items horizontally */
+    margin-top: 40px;
+  }
+  
+  .image-grid img {
+    width: 100%;
+    height: auto;
+    max-width: 300px; /* Limit the image size */
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .floorplan-image {
+    width: 80%; /* 80% of the parent component */
+    height: auto; /* Automatically adjust the height based on the width */
+    aspect-ratio: 3 / 2; /* Maintain the 3:2 aspect ratio */
+    display: block; /* Ensures the image doesn't have extra spacing */
+    margin: 0 auto; /* Center the image horizontally */
+  }
+  
+  /* Cards */
+  .cards-container, .offer-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center; /* Center the cards horizontally */
+    margin-top: 40px;
+  }
+  
+  .card, .offer-card {
+    flex: 1 1 300px;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .card:hover, .offer-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .card p, .offer-card p {
+    color: #fff; /* Ensure text is white inside cards */
+  }
+  
+  .offer-card {
+    max-width: 400px;
+  }
+  
+  .offer-card button {
+    padding: 12px 24px;
+    background-color: #d69600;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s;
+  }
+  
+  .offer-card button:hover {
+    background-color: #c88500;
+  }
+  
+  /* Card Colors */
+  .card.gold, .offer-card.gold {
+    background-color: #d69600;
+    color: white;
+  }
+  
+  .card.purple, .offer-card.purple {
+    background-color: #7B61FF;
+    color: white;
+  }
+  
+  /* Form and Input Styling */
+  input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #d69600;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: white;
+  }
+  
+  input:focus {
+    border-color: #7B61FF;
+    outline: none;
+  }
+  
+  button, form button {
+    padding: 12px 24px;
+    background-color: #d69600;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s;
+  }
+  
+  button:hover, form button:hover {
+    background-color: #c88500;
+  }
+  
+  /* Comment List */
+  .comment-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .comment-list li:last-child {
+    border-bottom: none;
+  }
+  
+  /* Section Styling */
+  .section {
+    padding: 60px 20px;
+    margin-bottom: 40px;
+  }
+  
+  .section:nth-child(even) {
+    background-color: #f7f7f7;
+  }
+  
+  .section:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .container, .section, .offer-card {
+      width: 100%;
+      padding: 40px 10px;
+    }
+  
+    /* Make sure images are full-width on mobile */
+    .image-grid {
+      grid-template-columns: 1fr; /* Ensure 1 image per row */
+    }
+  
+    .floorplan-image {
+      width: 80%; /* 80% of the parent component */
+      height: auto; /* Automatically adjust the height based on the width */
+      aspect-ratio: 3 / 2; /* Maintain the 3:2 aspect ratio */
+      display: block; /* Ensures the image doesn't have extra spacing */
+      margin: 0 auto; /* Center the image horizontally */
+    }
+  }
+  @media (max-width: 400px) {
+    .container, .section, .offer-card {
+      width: 100%;
+      padding: 40px 10px;
+    }
+  
+    /* Make sure images are full-width on mobile */
+    .image-grid {
+      grid-template-columns: 1fr; /* Ensure 1 image per row */
+    }
+  
+    .floorplan-image {
+      width: 80%; /* 80% of the parent component */
+      height: auto; /* Automatically adjust the height based on the width */
+      aspect-ratio: 3 / 2; /* Maintain the 3:2 aspect ratio */
+      display: block; /* Ensures the image doesn't have extra spacing */
+      margin: 0 auto; /* Center the image horizontally */
+    }
+  }
+  
+  /* Consistent Styling for All Images */
+  .consistent-image {
+    width: 80%; /* Fit 80% of the parent container */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Avoid extra spacing */
+    margin: 0 auto; /* Center the image horizontally */
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Shadow effect */
+  }
+  
+  /* Ensure grid images follow the same rules */
+  .image-grid img {
+    width: 80%; /* Same rule applies here */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 100%; /* Ensure no image overflows */
+    display: block;
+    margin: 0 auto;
+  }
+  
+  /* Responsive Design Adjustments */
+  @media (max-width: 768px) {
+    .image-grid {
+      grid-template-columns: 1fr; /* 1 image per row */
+    }
+  
+    .consistent-image {
+      width: 100%; /* Full width of the parent on smaller screens */
+    }
+  }
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%; /* Modal width at 80% of the screen width */
+    max-width: 800px; /* Cap the width for larger screens */
+    height: 80%; /* Modal height at 80% of the screen height */
+    max-height: 600px; /* Cap the height for larger screens */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: red;
+    z-index: 2000;
+  }
+  
+  .calendly-inline-widget {
+    width: 100%; /* Ensure Calendly widget takes full width of modal */
+    height: 100%; /* Ensure it takes full height of modal content */
+  }
+  
+  @media (max-width: 768px) {
+    .modal-content {
+      width: 90%;  /* Increase width to 90% for smaller screens */
+      height: 90%;  /* Increase height to 90% for smaller screens */
+      max-height: none;  /* Remove max height on small screens */
+    }
+  }
+  

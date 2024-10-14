@@ -5,21 +5,16 @@ import Image from 'next/image';
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleScrollToForm = () => {
-    document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <header className="bg-gray-100">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         {/* Logo */}
         <div className="flex items-center">
-          <Link href="/" className="text-gray-600 hover:text-gray-800">
+          <Link href="/">
             <a>
               <Image
                 src="/logo.png"
                 alt="Expert Team"
-                
                 className="rounded-lg h-10"
               />
             </a>
@@ -28,7 +23,18 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex space-x-6">
-          {/* Add Navigation Links Here */}
+          <Link href="/">
+            <a className="text-gray-600 hover:text-gray-800">Home</a>
+          </Link>
+          <Link href="/event-offerings">
+            <a className="text-gray-600 hover:text-gray-800">Event Offerings</a>
+          </Link>
+          <Link href="/faq">
+            <a className="text-gray-600 hover:text-gray-800">FAQs</a>
+          </Link>
+          <Link href="/contact">
+            <a className="text-gray-600 hover:text-gray-800">Contact</a>
+          </Link>
         </nav>
 
         {/* Instagram Icon */}
@@ -39,19 +45,15 @@ export default function Header() {
         </Link>
 
         {/* Book Your Event Button */}
-        <button
-          className="hidden lg:block ml-4 bg-[#D69600] text-white px-4 py-2 rounded hover:bg-[#7B61FF]"
-          onClick={handleScrollToForm}
-        >
-          Book Your Event
-        </button>
+        <Link href="/contact">
+          <a className="hidden lg:block ml-4 bg-[#D69600] text-white px-4 py-2 rounded hover:bg-[#7B61FF]">
+            Book Your Event
+          </a>
+        </Link>
 
         {/* Mobile Menu Button */}
         <button
-          onClick={() => {
-            setIsOpen(!isOpen);
-            handleScrollToForm();
-          }}
+          onClick={() => setIsOpen(!isOpen)}
           className="lg:hidden text-[#7B61FF] bg-[#D69600] hover:bg-[#7B61FF] focus:outline-none"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -59,7 +61,31 @@ export default function Header() {
           </svg>
         </button>
       </div>
+
+      {/* Mobile Navigation */}
+      {isOpen && (
+        <div className="lg:hidden bg-gray-100 p-4">
+          <nav className="flex flex-col space-y-4">
+            <Link href="/">
+              <a className="text-gray-600 hover:text-gray-800">Home</a>
+            </Link>
+            <Link href="/event-offerings">
+              <a className="text-gray-600 hover:text-gray-800">Event Offerings</a>
+            </Link>
+            <Link href="/faq">
+              <a className="text-gray-600 hover:text-gray-800">FAQs</a>
+            </Link>
+            <Link href="/contact">
+              <a className="text-gray-600 hover:text-gray-800">Contact</a>
+            </Link>
+            <Link href="/contact">
+              <a className="bg-[#D69600] text-white px-4 py-2 rounded hover:bg-[#7B61FF]">
+                Book Your Event
+              </a>
+            </Link>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
-

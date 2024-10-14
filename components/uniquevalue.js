@@ -1,6 +1,9 @@
 import Image from 'next/image';
+import { useRouter } from 'next/navigation'; // Import useRouter
 
 export default function UniqueValue() {
+  const router = useRouter(); // Initialize the router
+
   return (
     <section className="py-20 bg-gray-200">
       <div className="container mx-auto flex flex-col lg:flex-row items-center">
@@ -12,9 +15,9 @@ export default function UniqueValue() {
           </p>
           <button
             className="mt-6 px-6 py-3 bg-[#D69600] text-white font-semibold rounded hover:bg-[#7B61FF]"
-            onClick={() => document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth' })}
+            onClick={() => router.push('/contact')} // Route to contact page
           >
-            Check Availability
+            Book Now
           </button>
         </div>
         <div className="lg:w-1/2 p-8">

@@ -8,50 +8,51 @@ import UrgencyMeter from './urgencymeter.js'; // Adjust path as needed
 
 export default function LeadForm() {
   const [formData, setFormData] = useState({
-    eventDate: '',        // Date specified by the customer
+    eventDate: '',        
     name: '',
     email: '',
     phone: '',
-    pricingOption: '',
-    eventTime: null,       // Time only (without date)
-    startTime: null,       // Combined date/time object
+    eventTime: null,       
+    startTime: null,       
+    eventDuration: '',     
+    venueSearchDuration: '', 
+    secureVenueUrgency: '',  
+    helpNeeded: '',        
+    inquiryId: '',         
+    guestCount: 0,
+    budget: 0,
+    howDidYouFindUs: '',
     eventType: '',
-    flexibility: '',
-    venueSearchDuration: '', // New field: How long searching for a venue?
-    secureVenueUrgency: '',  // New field: How soon looking to secure a venue?
+    inquiryDate: '',   
+    hoursNeeded: 0,
+    lookingFrom: '',
+    planningToBook: '',
+    customerProfile: '',  // Add customerProfile to the form data
   });
-
-  const [showSecureVenueField, setShowSecureVenueField] = useState(false); // For conditional rendering
 
   const router = useRouter();
 
   useEffect(() => {
-    const storedData = localStorage.getItem('userData');
-    if (storedData) {
+    // Decode the inquiry data passed through the route and set it into the form
+    if (router.query.data) {
+      const decodedData = JSON.parse(decodeURIComponent(router.query.data));
       setFormData((prevData) => ({
         ...prevData,
-        ...JSON.parse(storedData),
-      }));
-    } else {
-      const { name, email, phone, eventDate } = router.query;
-      setFormData((prevData) => ({
-        ...prevData,
-        name: name || '',
-        email: email || '',
-        phone: phone || '',
-        eventDate: eventDate || '',
+        ...decodedData,
       }));
     }
-  }, [router.query]);
+
+    // Also capture the inquiryId from the route if available
+    if (router.query.inquiryId) {
+      setFormData((prevData) => ({
+        ...prevData,
+        inquiryId: router.query.inquiryId,
+      }));
+    }
+  }, [router.query.data, router.query.inquiryId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // If venue search duration is changed, show the next question
-    if (name === 'venueSearchDuration') {
-      setShowSecureVenueField(true);
-    }
-
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -59,106 +60,121 @@ export default function LeadForm() {
   };
 
   const handleTimeChange = (time) => {
-    setFormData((prevData) => {
-      const combinedDateTime = moment.tz(`${prevData.eventDate} ${moment(time).format('HH:mm')}`, 'America/Chicago').toDate();
-      return {
+    if (formData.eventDate && time) {
+      const combinedDateTime = moment.tz(`${moment(formData.eventDate).format('YYYY-MM-DD')} ${moment(time).format('HH:mm')}`, 'America/Chicago').toDate();
+      
+      setFormData((prevData) => ({
         ...prevData,
         eventTime: time,
         startTime: combinedDateTime,
-      };
-    });
+      }));
+    } else {
+      console.error('Invalid date or time');
+    }
+  };
+
+  // Function to determine the customer profile based on form data
+  const determineProfile = (data) => {
+    let profile = '';
+
+    if (
+      data.budget >= 500 &&
+      data.guestCount <= 60 &&
+      data.hoursNeeded >= 3 &&
+      (data.lookingFrom === '1 week' || data.lookingFrom === 'A while') &&
+      (data.planningToBook === 'This week' || data.planningToBook === 'Right now') &&
+      data.helpNeeded === 'Make a reservation'
+    ) {
+      profile = 'Ideal';
+    } else if (
+      data.budget >= 500 &&
+      data.guestCount <= 60 &&
+      data.hoursNeeded >= 3 &&
+      (data.lookingFrom === '1 week' || data.lookingFrom === 'A while') &&
+      (data.planningToBook === 'This week' || data.planningToBook === 'Right now') &&
+      data.helpNeeded === 'Ask the team a question'
+    ) {
+      profile = 'Middle';
+    } else if (
+      data.budget >= 500 &&
+      data.guestCount <= 60 &&
+      data.hoursNeeded >= 3 &&
+      (data.lookingFrom === '1 week' || data.lookingFrom === 'A while') &&
+      (data.planningToBook === 'Not soon' || data.planningToBook === 'This week') &&
+      data.helpNeeded === 'Ask the team a question'
+    ) {
+      profile = 'Low';
+    } else if (
+      data.budget >= 500 &&
+      data.guestCount <= 60 &&
+      data.hoursNeeded >= 3 &&
+      (data.lookingFrom === 'Started today') &&
+      (data.planningToBook === 'Not soon' || data.planningToBook === 'This week' || data.planningToBook === 'Right now') &&
+      (data.helpNeeded === 'Ask the team a question' || data.helpNeeded === 'Learn more about this venue' || data.helpNeeded === 'Make a reservation')
+    ) {
+      profile = 'Super Low';
+    } else {
+      profile = 'NotIdeal';
+    }
+
+    return profile;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Check if required fields are filled
-    if (!formData.venueSearchDuration || !formData.secureVenueUrgency) {
-      alert('Please complete the form.');
+  
+    // Ensure that inquiryId exists
+    const inquiryId = formData.inquiryId;
+    if (!inquiryId) {
+      console.error('Inquiry ID is missing');
+      window.alert('Inquiry ID is missing. Please try again.');
       return;
     }
 
-    // Convert eventTime to CST with AM/PM format
-    const eventTimeCST = formData.eventTime
-      ? moment.tz(formData.eventTime, 'America/Chicago').format('h:mm A')
-      : null;
+    // Ensure that startTime is valid before proceeding
+    if (!formData.startTime || isNaN(new Date(formData.startTime).getTime())) {
+      console.error('Invalid startTime');
+      window.alert('Please provide a valid start time and date.');
+      return;
+    }
 
-    const webhookUrl = '/api/qualifyproxy'; // Replace with your webhook URL
+    // Determine customer profile before submission
+    const customerProfile = determineProfile(formData);
+    
+    // Update form data with customer profile
+    const updatedInquiry = {
+      ...formData,
+      customerProfile, // Add customer profile to the data being sent
+      startTime: formData.startTime.toISOString(),
+    };
+
+    const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/2tyjxvh/';
 
     try {
-      const availability = await checkAvailability(formData.startTime, formData.pricingOption);
-      const availabilityStatus = availability.isAvailable ? 'Available' : 'Not Available';
-
-      // Submit form data to the webhook, including the new form fields
-      const response = await fetch(webhookUrl, {
-        method: 'POST',
+      await fetch(`/api/update-inquiry?inquiryId=${inquiryId}`, {
+        method: 'PUT',
         body: JSON.stringify({
-          ...formData,
-          eventTime: formData.eventTime ? moment(formData.eventTime).format('HH:mm') : null, 
-          eventTimeCST,
-          startTime: formData.startTime ? formData.startTime.toISOString() : null, // Make sure startTime is not null
-          availabilityStatus,
-          venueSearchDuration: formData.venueSearchDuration,  // Include venue search duration
-          secureVenueUrgency: formData.secureVenueUrgency,    // Include venue securing urgency
+          ...updatedInquiry,
+          webhookUrl: zapierWebhookUrl,
         }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to submit form data');
-      }
-
-      // Redirect based on availability, include all formData in the query parameters
-      const nextPage = availability.isAvailable
-        ? '/build-events'
-        : formData.flexibility === 'Yes'
-        ? '/virtualtour'
-        : '/notavailable';
-
+      // Redirect to the next page with the updated inquiry data
+      const encodedFormData = encodeURIComponent(JSON.stringify(updatedInquiry));
       router.push({
-        pathname: nextPage,
-        query: {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          pricingOption: formData.pricingOption,
-          startTime: formData.startTime ? formData.startTime.toISOString() : '', // Pass startTime only if available
-          eventTime: eventTimeCST,
-          eventDate: formData.eventDate,
-          eventType: formData.eventType,
-          flexibility: formData.flexibility,
-          venueSearchDuration: formData.venueSearchDuration,  // Pass this to the next page
-          secureVenueUrgency: formData.secureVenueUrgency,    // Pass this to the next page
-        },
+        pathname: '/dynamicoffer',
+        query: { data: encodedFormData, inquiryId },
       });
     } catch (error) {
-      console.error('Error submitting form data:', error);
+      console.error('Error updating inquiry:', error);
     }
   };
 
-  const checkAvailability = async (startTime, pricingOption) => {
-    if (!startTime || !pricingOption) {
-      return { isAvailable: false };
-    }
-
-    let eventDuration = 0;
-    switch (pricingOption) {
-      case 'Standard Hourly':
-        eventDuration = 4.5 * 60 * 60 * 1000; 
-        break;
-      case 'All Inclusive':
-        eventDuration = 6.5 * 60 * 60 * 1000;
-        break;
-      case 'VIP Experience':
-        eventDuration = 8.5 * 60 * 60 * 1000;
-        break;
-      default:
-        throw new Error('Invalid pricing option selected');
-    }
-
-    const endDateTime = new Date(startTime.getTime() + eventDuration);
+  const checkAvailability = async (startTime, eventDuration) => {
+    const endDateTime = new Date(startTime.getTime() + eventDuration * 60 * 60 * 1000);
 
     try {
       const response = await fetch('/api/check-availability', {
@@ -196,57 +212,7 @@ export default function LeadForm() {
 
         <form className="mt-10" onSubmit={handleSubmit}>
           <div className="mb-8">
-            <label className="block text-lg text-gray-800 font-bold mb-4">
-              Which Pricing Package Are You Interested In?
-            </label>
-            <div className="space-y-3">
-              <label className="block">
-                <input
-                  type="radio"
-                  name="pricingOption"
-                  value="Standard Hourly"
-                  checked={formData.pricingOption === 'Standard Hourly'}
-                  onChange={handleChange}
-                  required
-                />
-                <span className="ml-2 text-gray-800 font-semibold">
-                  STANDARD HOURLY, 50 GUESTS MAX, 4HR MINIMUM -{' '}
-                </span>
-                <span className="normal-font"> Starting at $625 flat ($125/hr + $125 cleaning fee)</span>
-              </label>
-              <label className="block">
-                <input
-                  type="radio"
-                  name="pricingOption"
-                  value="All Inclusive"
-                  checked={formData.pricingOption === 'All Inclusive'}
-                  onChange={handleChange}
-                  required
-                />
-                <span className="ml-2 text-purple-600 font-semibold">
-                  ALL INCLUSIVE, GAME ROOM, PHOTO LOUNGE, 60 GUESTS MAX, 6HR TOTAL -{' '}
-                </span>
-                <span className="normal-font"> Starting at $899 flat (no cleaning fee)</span>
-              </label>
-              <label className="block">
-                <input
-                  type="radio"
-                  name="pricingOption"
-                  value="VIP Experience"
-                  checked={formData.pricingOption === 'VIP Experience'}
-                  onChange={handleChange}
-                  required
-                />
-                <span className="ml-2 text-yellow-600 font-semibold">
-                  VIP EXPERIENCE, 60 GUESTS MAX, 10HR TOTAL -{' '}
-                </span>
-                <span className="normal-font"> Starting at $2999 flat (no cleaning fee)</span>
-              </label>
-            </div>
-          </div>
-
-          <div className="mb-8">
-            <label className="block text-lg text-gray-800 font-bold mb-2">Ideal Event Start Time</label>
+            <label className="block text-lg text-gray-800 font-bold mb-2">Ideal Event Start Time (CST)</label>
             <DatePicker
               selected={formData.eventTime}
               onChange={handleTimeChange}
@@ -262,90 +228,66 @@ export default function LeadForm() {
           </div>
 
           <div className="mb-8">
-            <label className="block text-lg text-gray-800 font-bold mb-2">What Is Your Event?</label>
+            <label className="block text-lg text-gray-800 font-bold mb-2">How many hours would be ideal for the full event?</label>
             <input
-              type="text"
-              name="eventType"
-              value={formData.eventType}
+              type="number"
+              name="hoursNeeded"
+              value={formData.hoursNeeded}
               onChange={handleChange}
-              placeholder="Ex: Birthday, Babyshower..."
+              placeholder="Ex: 6"
               className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             />
           </div>
 
           <div className="mb-8">
-            <label className="block text-lg text-gray-800 font-bold mb-2">
-              I Am Flexible on My Event Date and Time
-            </label>
-            <div className="space-y-3">
-              <label className="block">
-                <input
-                  type="radio"
-                  name="flexibility"
-                  value="Yes"
-                  checked={formData.flexibility === 'Yes'}
-                  onChange={handleChange}
-                  required
-                />
-                <span className="ml-2 normal-font">Yes, I am flexible</span>
-              </label>
-              <label className="block">
-                <input
-                  type="radio"
-                  name="flexibility"
-                  value="No"
-                  checked={formData.flexibility === 'No'}
-                  onChange={handleChange}
-                  required
-                />
-                <span className="ml-2 normal-font">No, I am not flexible</span>
-              </label>
-            </div>
-          </div>
-
-          <div className="mb-8">
-            <label className="block text-lg text-gray-800 font-bold mb-4">
-              How long have you been searching for a venue?
-            </label>
+            <label className="block text-lg text-gray-800 font-bold mb-2">How long have you been looking for a venue?</label>
             <select
-              name="venueSearchDuration"
-              value={formData.venueSearchDuration}
+              name="lookingFrom"
+              value={formData.lookingFrom}
               onChange={handleChange}
               className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             >
-              <option value="" disabled>Select an option</option>
+              <option value="" disabled selected>Select an option</option>
               <option value="Started today">Started today</option>
               <option value="1 week">1 week</option>
-              <option value="It's been a while">It's been a while</option>
+              <option value="A while">It's been a while</option>
             </select>
           </div>
 
-          {showSecureVenueField && (
-            <div className="mb-8">
-              <label className="block text-lg text-gray-800 font-bold mb-4">
-                How soon are you looking to secure a venue?
-              </label>
-              <select
-                name="secureVenueUrgency"
-                value={formData.secureVenueUrgency}
-                onChange={handleChange}
-                className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
-                required
-              >
-                <option value="" disabled>Select an option</option>
-                <option value="Right now">Right now</option>
-                <option value="This week">This week</option>
-                <option value="Not soon">Not soon</option>
-              </select>
-            </div>
-          )}
+          <div className="mb-8">
+            <label className="block text-lg text-gray-800 font-bold mb-2">When are you planning to book?</label>
+            <select
+              name="planningToBook"
+              value={formData.planningToBook}
+              onChange={handleChange}
+              className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
+            >
+              <option value="" disabled selected>Select an option</option>
+              <option value="Right now">Right now</option>
+              <option value="This week">This week</option>
+              <option value="Not soon">Not soon</option>
+            </select>
+          </div>
 
-          <input type="hidden" name="name" value={formData.name} />
-          <input type="hidden" name="email" value={formData.email} />
-          <input type="hidden" name="phone" value={formData.phone} />
-          <input type="hidden" name="eventDate" value={formData.eventDate} />
+          <div className="mb-8">
+            <label className="block text-lg text-gray-800 font-bold mb-2">What do you need our help with right now?</label>
+            <select
+              name="helpNeeded"
+              value={formData.helpNeeded}
+              onChange={handleChange}
+              className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+              required
+            >
+              <option value="" disabled selected>Select an option</option>
+              <option value="Learn more about this venue">Learn more about this venue</option>
+              <option value="Ask the team a question">Ask the team a question</option>
+              <option value="Make a reservation">Make a reservation</option>
+            </select>
+          </div>
+
           <button
             type="submit"
             className="w-full py-4 bg-yellow-500 text-white font-bold rounded hover:bg-yellow-600 transition duration-300 ease-in-out"

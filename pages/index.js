@@ -21,8 +21,6 @@ export default function Home() {
       {/* Hero Section */}
       <Hero />
 
-      <ContactForm/>
-
       {/* Features Section */}
       <Features />
 

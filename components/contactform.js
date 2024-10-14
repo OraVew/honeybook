@@ -8,8 +8,12 @@ export default function ContactForm() {
   const [formData, setFormData] = useState({
     eventDate: null,
     name: '',
-    email: '',
     phone: '',
+    email: '',
+    guestCount: '',
+    budget: '',
+    howDidYouFindUs: '',
+    eventType: '',
   });
 
   const router = useRouter();
@@ -33,34 +37,57 @@ export default function ContactForm() {
     e.preventDefault();
 
     // 1. Capture the current date and time for "Inquiry Date"
-    const inquiryDate = new Date(); // This will store the current date and time
+    const inquiryDate = new Date();
 
-    // 2. Send data to Zapier or your API
-    const webhookUrl = '/api/proxy';
+    // 2. Send data to the API which will forward it to MongoDB and return an inquiryId
+    const apiUrl = '/api/save-inquiry';
 
     try {
-      await fetch(webhookUrl, {
+      const response = await fetch(apiUrl, {
         method: 'POST',
         body: JSON.stringify({
           ...formData,
-          inquiryDate: inquiryDate.toISOString(), // Send the Inquiry Date in ISO format
+          inquiryDate: inquiryDate.toISOString(),
         }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      // 3. Redirect to the inquiry page
-      router.push({
-        pathname: '/inquiry', // Redirect to the inquiry page
-        query: {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          eventDate: formData.eventDate ? formData.eventDate.toISOString().split('T')[0] : null, // Send date as YYYY-MM-DD
-          inquiryDate: inquiryDate.toISOString(), // Send the inquiry date and time
-        },
-      });
+      const result = await response.json();
+
+      if (response.ok && result.id) {
+        // 3. Retrieve the inquiryId from the response
+        const inquiryId = result.id;
+
+        // 4. Send data to Zapier (including the inquiryId)
+        const zapierWebhookUrl = '/api/qualifyproxy'; // Replace with your actual Zapier webhook URL
+        await fetch(zapierWebhookUrl, {
+          method: 'POST',
+          body: JSON.stringify({
+            ...formData,
+            inquiryId, // Include the inquiryId in the Zapier webhook
+            inquiryDate: inquiryDate.toISOString(),
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        // 5. Redirect to the next page (inquiry page) with the encoded data and inquiryId
+        const encodedFormData = encodeURIComponent(JSON.stringify({
+          ...formData,
+          inquiryDate: inquiryDate.toISOString(),
+          inquiryId, // Include inquiryId in the route
+        }));
+
+        router.push({
+          pathname: '/inquiry',
+          query: { data: encodedFormData, inquiryId }, // Send inquiryId and encoded form data as query params
+        });
+      } else {
+        throw new Error('Failed to save inquiry');
+      }
     } catch (error) {
       console.error('Error submitting form data:', error);
     }
@@ -72,13 +99,13 @@ export default function ContactForm() {
         <div className="text-center">
           <h2 className="text-4xl font-bold text-gray-800">Let&apos;s Start With Basics</h2>
           <p className="mt-4 text-lg text-gray-600">
-          Tell us some basic details of your event and we'll tell you our availability, provide an instant quote, and customize a plan for you. 
+            Tell us some basic details of your event and we'll tell you our availability, answer your questions, provide an instant quote, and customize a plan for you.
           </p>
         </div>
         <form className="mt-10" onSubmit={handleSubmit}>
           <div className="mb-6">
             <label className="block text-gray-700 font-bold mb-2" htmlFor="eventDate">
-              When is your party?
+              Ideal Event Date
             </label>
             <DatePicker
               selected={formData.eventDate}
@@ -104,6 +131,20 @@ export default function ContactForm() {
             />
           </div>
           <div className="mb-6">
+            <label className="block text-gray-700 font-bold mb-2" htmlFor="phone">
+              Phone number
+            </label>
+            <input
+              type="tel"
+              name="phone"
+              placeholder="E.g. 541 444 0755"
+              value={formData.phone}
+              onChange={handleChange}
+              className="w-full p-2 border input-field rounded"
+              required
+            />
+          </div>
+          <div className="mb-6">
             <label className="block text-gray-700 font-bold mb-2" htmlFor="email">
               Your email
             </label>
@@ -118,24 +159,78 @@ export default function ContactForm() {
             />
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700 font-bold mb-2" htmlFor="phone">
-              Phone number
+            <label className="block text-gray-700 font-bold mb-2" htmlFor="guestCount">
+              Estimated Guest Count
             </label>
             <input
-              type="tel"
-              name="phone"
-              placeholder="E.g. 541 444 0755"
-              value={formData.phone}
+              type="number"
+              name="guestCount"
+              placeholder="E.g. 50"
+              value={formData.guestCount}
               onChange={handleChange}
               className="w-full p-2 border input-field rounded"
               required
             />
           </div>
+          <div className="mb-6">
+            <label className="block text-gray-700 font-bold mb-2" htmlFor="budget">
+              Budget
+            </label>
+            <input
+              type="text"
+              name="budget"
+              placeholder="E.g. $1000"
+              value={formData.budget}
+              onChange={handleChange}
+              className="w-full p-2 border input-field rounded"
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label className="block text-gray-700 font-bold mb-2" htmlFor="howDidYouFindUs">
+              How did you find us?
+            </label>
+            <select
+              name="howDidYouFindUs"
+              value={formData.howDidYouFindUs}
+              onChange={handleChange}
+              className="w-full p-2 border input-field rounded"
+              required
+            >
+              <option value="" disabled>Select an option</option>
+              <option value="Facebook">Facebook</option>
+              <option value="Instagram">Instagram</option>
+              <option value="Google">Google</option>
+              <option value="Peerspace/TagVenue/Splacer">Peerspace/TagVenue/Splacer</option>
+              <option value="Referral">Referral</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div className="mb-6">
+            <label className="block text-gray-700 font-bold mb-2" htmlFor="eventType">
+              Tell me more about this event
+            </label>
+            <select
+              name="eventType"
+              value={formData.eventType}
+              onChange={handleChange}
+              className="w-full p-2 border input-field rounded"
+              required
+            >
+              <option value="" disabled>Select an event type</option>
+              <option value="Birthday">Birthday</option>
+              <option value="Baby Shower">Baby Shower</option>
+              <option value="Engagement">Engagement</option>
+              <option value="Wedding">Wedding</option>
+              <option value="Memorial">Memorial</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
           <button
             type="submit"
             className="w-full py-3 bg-[#D69600] text-white font-bold rounded hover:bg-[#7B61FF] transition duration-300 ease-in-out"
           >
-            Check now
+            Check Availability
           </button>
         </form>
       </div>

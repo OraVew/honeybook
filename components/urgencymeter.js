@@ -13,7 +13,7 @@ const formatDate = (dateStr) => {
 export default function UrgencyMeter({ eventDate }) {
   return (
     <div className={styles.urgencyContainer}>
-      <h3 className={styles.heading}>We have other inquires open</h3>
+      <h3 className={styles.heading}>We have other open inquires</h3>
       <div className={styles.activities}>
         <div className={styles.activityItem}>
           <p className={`${styles.number} ${styles.red}`}>35</p>

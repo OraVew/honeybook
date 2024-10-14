@@ -87,7 +87,7 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     text-align: center;
     cursor: pointer;
-    color: #fff; /* Ensure text is white for readability */
+    color: #d69600; /* Ensure text is white for readability */
     text-decoration: none;
   }
   
@@ -425,4 +425,107 @@ img, .image-container img {
 
 .floor-plan img {
   width: 100%; /* Make floor plan image responsive */
+}
+
+
+
+
+/* Buttons styling inside the cards */
+.offer-card button {
+  padding: 12px 24px;
+  background-color: #d69600; /* Gold */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.offer-card button:hover {
+  background-color: #c88500;
+}
+
+
+
+/* Cards container for the offers */
+.offer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin: 40px 0;
+}
+
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+/* Offer Cards Styling */
+.offer-card {
+  flex: 1 1 50%;  /* 50% of screen width on desktop */
+  max-width: 400px; /* Set max-width to control card size */
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  color: #333;
+  display: flex;
+  flex-direction: column;  /* Stack elements vertically */
+  justify-content: center;  /* Center elements vertically */
+  align-items: center;  /* Center elements horizontally */
+  box-sizing: border-box; /* Ensure padding and borders are included in total width/height */
+}
+
+.offer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Ensure internal elements don't overflow */
+.offer-card * {
+  max-width: 100%; /* Make sure child elements do not exceed card width */
+  word-wrap: break-word; /* Prevent long text from overflowing */
+}
+
+/* For specific card colors */
+.offer-card.gold {
+  background-color: #d69600;
+  color: white;
+}
+
+.offer-card.purple {
+  background-color: #6a1b9a;
+  color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .offer-card {
+    flex: 1 1 100%;  /* Full width on mobile */
+    max-width: 100%;
+    margin-bottom: 20px;  /* Add spacing between cards on mobile */
+  }
+}
+
+
+
+/* Heading Styling */
+h2, h3, h4 {
+  color: #d69600; /* Gold color for both h2 and h3 */
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* Specific styling for h3 */
+h3 {
+  font-size: 1.5rem;
+  text-transform: uppercase; /* Optional: Makes h3 headings uppercase like h2 */
 }

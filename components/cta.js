@@ -1,6 +1,13 @@
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function CTA() {
+  const router = useRouter(); // Initialize router from Next.js
+
+  const handleGetInTouch = () => {
+    router.push('/contact'); // Route to the contact page
+  };
+
   return (
     <section className="py-20 bg-gray-200">
       <div className="container mx-auto flex flex-col lg:flex-row items-center">
@@ -11,7 +18,7 @@ export default function CTA() {
           </p>
           <button
             className="mt-6 px-6 py-3 bg-[#D69600] text-white font-semibold rounded hover:bg-[#7B61FF]"
-            onClick={() => document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth' })}
+            onClick={handleGetInTouch} // Use the function to route to the contact page
           >
             Get In Touch
           </button>
@@ -30,3 +37,4 @@ export default function CTA() {
     </section>
   );
 }
+

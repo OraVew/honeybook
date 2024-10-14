@@ -1,0 +1,74 @@
+/* Section Styling */
+.confirmationSection {
+    background-color: #f7fafc; /* Light gray background */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+  }
+  
+  /* Container Styling */
+  .container {
+    background-color: #ffffff; /* White background */
+    max-width: 600px; /* Responsive max width */
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12); /* Soft shadow */
+    text-align: center;
+  }
+  
+  /* Heading Styling */
+  .heading {
+    font-size: 2.5rem; /* Large heading */
+    color: #2d3748; /* Dark gray */
+    margin-bottom: 24px;
+    font-weight: bold;
+    letter-spacing: 1px; /* Slight letter spacing for clean look */
+  }
+  
+  /* Text Styling */
+  .text {
+    font-size: 1.125rem; /* Slightly larger body text */
+    color: #718096; /* Muted gray text */
+    margin-bottom: 40px;
+    line-height: 1.6; /* Increase readability */
+  }
+  
+  /* Button Styling */
+  .button {
+    background: linear-gradient(90deg, #7b61ff, #d69600); /* Orange to yellow gradient */
+    color: white; /* White text */
+    font-size: 1.125rem; /* Slightly larger font size */
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+    cursor: pointer;
+    border: none;
+  }
+  
+  .button:hover {
+    background: linear-gradient(90deg, #7b61ff, #d69600); /* Brighter gradient on hover */
+  }
+  
+  /* Responsive Styling */
+  @media (max-width: 768px) {
+    .container {
+      padding: 20px;
+    }
+  
+    .heading {
+      font-size: 2rem;
+    }
+  
+    .text {
+      font-size: 1rem;
+    }
+  
+    .button {
+      font-size: 1rem;
+      padding: 10px 20px;
+    }
+  }
+  

@@ -1,9 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // Import useRouter
 import Image from 'next/image';
 
 export default function Hero() {
+  const router = useRouter(); // Initialize the router
+
   // Array of image URLs located in the public folder or via external URLs
   const images = [
     '/hero1.webp',       // Convert images to WebP format
@@ -30,6 +33,14 @@ export default function Hero() {
     // Cleanup the interval on component unmount
     return () => clearInterval(interval);
   }, [images.length]);
+
+  // Scroll down handler
+  const handleScrollDown = () => {
+    window.scrollTo({
+      top: window.innerHeight,
+      behavior: 'smooth',
+    });
+  };
 
   return (
     <section className="relative h-screen overflow-hidden">
@@ -67,16 +78,20 @@ export default function Hero() {
           <h1 className="mt-4 text-6xl font-bold text-white">
             Design your custom event without the stress.
           </h1>
-          <button
-            className="mt-8 px-6 py-3 bg-[#D69600] text-white font-semibold rounded hover:bg-[#7B61FF]"
-            onClick={() =>
-              document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth' })
-            }
-          >
-            Get quote
-          </button>
+
+          {/* Scroll Down Animation (Using GIF) */}
+          <div className="mt-8 flex justify-center items-center cursor-pointer" onClick={handleScrollDown}>
+            {/* Add your scroll down GIF */}
+            <img
+              src="/Test.gif" // Ensure the GIF is in the public folder
+              alt="Scroll Down"
+              className="w-24 h-24 bg-transparent" // Double the size of the GIF
+              style={{ backgroundColor: 'transparent' }} // Extra transparency styling
+            />
+          </div>
         </div>
       </div>
     </section>
   );
 }
+

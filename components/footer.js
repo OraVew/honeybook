@@ -30,7 +30,7 @@ export default function Footer() {
           {/* Navigation Links */}
           <div className="lg:w-1/3 flex justify-center mb-6 lg:mb-0">
             <nav className="space-x-6">
-            <Link href="#contactForm" onClick={scrollToContactForm} className="text-gray-600 hover:text-gray-800">
+            <Link href="/contact" className="text-gray-600 hover:text-gray-800">
                 Contact
               </Link>
               <a

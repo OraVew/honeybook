@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link'; // Import Link for routing
 
 export default function Offerings() {
   return (
@@ -45,6 +46,15 @@ export default function Offerings() {
               We offer flexible pricing for weekdays and weekends to fit the exact needs of your custom event.
             </p>
           </div>
+        </div>
+        
+        {/* Add Learn More button below the offerings */}
+        <div className="text-center mt-10">
+          <Link href="/event-offerings">
+            <a className="inline-block px-6 py-3 bg-[#D69600] text-white font-semibold rounded hover:bg-[#7B61FF]">
+              Learn More
+            </a>
+          </Link>
         </div>
       </div>
     </section>

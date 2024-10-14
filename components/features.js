@@ -1,6 +1,9 @@
 import Image from 'next/image';
+import { useRouter } from 'next/navigation'; // Import useRouter
 
 export default function Features() {
+  const router = useRouter(); // Initialize the router
+
   return (
     <section className="py-20 bg-gray-100">
       <div className="container mx-auto h-full">
@@ -22,7 +25,7 @@ export default function Features() {
             </p>
             <button
               className="mt-6 px-6 py-3 bg-[#D69600] text-white font-semibold rounded hover:bg-[#7B61FF]"
-              onClick={() => document.getElementById('contactForm').scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => router.push('/event-offerings')} // Route to Event Offerings page
             >
               Learn More
             </button>
@@ -32,3 +35,4 @@ export default function Features() {
     </section>
   );
 }
+

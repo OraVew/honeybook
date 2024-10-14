@@ -59,9 +59,11 @@ form .space-y-3 {
   margin-bottom: 2rem;
 }
 
+/* Apply the same styling to all input types including type="number" */
 form input[type='text'],
 form input[type='email'],
 form input[type='tel'],
+form input[type='number'], /* Include number input here */
 form select { /* Add select styling here */
   width: 100%;
   padding: 1rem;
@@ -74,6 +76,7 @@ form select { /* Add select styling here */
   background-color: #fff;
   color: #333;
 }
+
 
 form select {
   background: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"%3E%3Cpath fill="%23333" d="M5 7L0 0h10z"/%3E%3C/svg%3E') no-repeat right 1rem center;
