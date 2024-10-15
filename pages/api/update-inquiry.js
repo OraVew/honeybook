@@ -11,8 +11,17 @@ export default async function handler(req, res) {
       const client = await clientPromise;
       const db = client.db("BookOraVew");
 
-      // Extract the inquiryId and updated inquiry data from the request body
-      const { inquiryId, webhookUrl, ...updatedInquiry } = req.body;  // Destructure and exclude webhookUrl
+      // Extract the inquiryId and webhookUrl from the request body
+      const { inquiryId, webhookUrl, ...updatedInquiry } = req.body;
+
+      // Log the received webhookUrl to check if it's being passed correctly
+      console.log('Received Webhook URL:', webhookUrl);
+
+      // Ensure webhookUrl is defined, if not, return an error
+      if (!webhookUrl) {
+        console.error('Webhook URL is missing');
+        return res.status(400).json({ error: 'Webhook URL is required' });
+      }
 
       // Ensure inquiryId is present
       if (!inquiryId) {
