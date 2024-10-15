@@ -1,5 +1,5 @@
 export default function DownsellComponent({ hoursNeeded, dayType, timeOfDay, handleSubmit, budget, eventTime }) {
-  const cleaningFee = 125;
+  const cleaningFee = 150;
 
   const startHour = eventTime ? parseInt(eventTime.split(':')[0], 10) : 0;
 

@@ -5,7 +5,7 @@ export default function UpsellComponent({ hoursNeeded, dayType, timeOfDay, handl
     marqueeLights: 100,
   };
 
-  const cleaningFee = 125;
+  const cleaningFee = 150;
 
   const startHour = eventTime ? parseInt(eventTime.split(':')[0], 10) : 0;
 

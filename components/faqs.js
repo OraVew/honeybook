@@ -31,7 +31,7 @@ export default function FAQs() {
     },
     {
       heading: "Will furniture be provided or can I bring my own?",
-      body: "45 dinner chairs, 8 rectangle tables, and 4 tall boys. Feel free to bring additional furniture.",
+      body: "35 dinner chairs, 8 rectangle tables, and 4 tall boys. Feel free to bring additional furniture.",
     },
     {
       heading: "Does The Celebration Loft have a time minimum?",
