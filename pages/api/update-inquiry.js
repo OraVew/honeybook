@@ -19,19 +19,31 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Inquiry ID is required' });
       }
 
+      // Validate if inquiryId is a valid ObjectId
+      let objectId;
+      try {
+        objectId = new ObjectId(inquiryId);
+      } catch (e) {
+        console.error('Invalid inquiryId:', inquiryId);
+        return res.status(400).json({ error: 'Invalid Inquiry ID' });
+      }
+
       // Log the inquiry ID and data before updating
       console.log('Updating inquiry with ID:', inquiryId);
       console.log('Updated inquiry data:', updatedInquiry);
 
       // Update the inquiry in MongoDB (without the webhookUrl)
       const result = await db.collection("Inquiry").updateOne(
-        { _id: new ObjectId(inquiryId) }, // Convert to ObjectId
+        { _id: objectId }, // Use the validated ObjectId
         { $set: updatedInquiry } // Only store fields other than webhookUrl
       );
 
       if (result.matchedCount === 0) {
+        console.error('Inquiry not found:', inquiryId);
         return res.status(404).json({ error: 'Inquiry not found' });
       }
+
+      console.log('Inquiry updated in MongoDB:', updatedInquiry);
 
       // Send the updated data to the specified Zapier webhook (including webhookUrl)
       const zapResponse = await fetch(webhookUrl, {
@@ -44,9 +56,11 @@ export default async function handler(req, res) {
 
       // Check if the Zapier response is successful
       if (!zapResponse.ok) {
-        console.error('Zapier webhook failed', zapResponse.statusText);
+        console.error('Zapier webhook failed:', zapResponse.statusText);
         return res.status(500).json({ error: 'Failed to trigger Zapier webhook' });
       }
+
+      console.log('Zapier webhook triggered successfully.');
 
       // Respond with success message
       return res.status(200).json({
@@ -62,4 +76,3 @@ export default async function handler(req, res) {
     res.status(405).json({ error: 'Method not allowed' });
   }
 }
-

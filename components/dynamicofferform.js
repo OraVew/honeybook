@@ -141,7 +141,7 @@ export default function DynamicOfferForm() {
 
   const handleSubmit = async (offerName, offerDetails) => {
     const inquiryDate = new Date();
-    const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/21h7vza/'; // Dynamic Offer Zapier URL
+    const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/21h7vza/';
   
     // Include the selected offer as an object within the inquiry data
     const offerObject = {
@@ -151,13 +151,13 @@ export default function DynamicOfferForm() {
     };
   
     try {
+      // First, update the inquiry in MongoDB
       const response = await fetch(`/api/update-inquiry?inquiryId=${formData.inquiryId}`, {
         method: 'PUT',
         body: JSON.stringify({
-          ...formData,                // Include all form data including customerProfile
+          ...formData,                // Include all form data except webhookUrl
           inquiryDate: inquiryDate.toISOString(),
-          selectedOffer: offerObject,  // Add the offer object to the inquiry data
-          webhookUrl: zapierWebhookUrl, // Pass the webhook URL here
+          selectedOffer: offerObject  // Add the offer object to the inquiry data
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -168,12 +168,30 @@ export default function DynamicOfferForm() {
         throw new Error('Failed to update inquiry in MongoDB');
       }
   
+      // Trigger Zapier webhook separately (after MongoDB update succeeds)
+      const zapResponse = await fetch(zapierWebhookUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+          ...formData,
+          selectedOffer: offerObject  // Only pass necessary data to Zapier
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!zapResponse.ok) {
+        console.error('Zapier webhook failed', zapResponse.statusText);
+        return;
+      }
+  
       // Redirect to the event brochure page
       router.push(`/event-brochure?id=${formData.inquiryId}`);
     } catch (error) {
       console.error('Error submitting offer:', error);
     }
   };
+  
   
 
   return (
