@@ -1,4 +1,4 @@
-
+// /api/save-inquiry.js
 import clientPromise from '../../lib/mongodb';
 
 export default async function handler(req, res) {
@@ -12,17 +12,7 @@ export default async function handler(req, res) {
       // Insert the inquiry data into the "Inquiry" collection in MongoDB
       const result = await db.collection("Inquiry").insertOne(inquiryData);
 
-      // Send the data to Zapier webhook
-      const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/26vc7il/';
-      await fetch(zapierWebhookUrl, {
-        method: 'POST',
-        body: JSON.stringify(inquiryData),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      // Respond with success
+      // Respond with success (No Zapier call here, let /api/qualifyproxy handle it)
       res.status(201).json({ message: 'Inquiry saved successfully', id: result.insertedId });
     } catch (error) {
       console.error('Error saving inquiry:', error);
