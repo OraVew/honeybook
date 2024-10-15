@@ -28,6 +28,7 @@ export default function LeadForm() {
     lookingFrom: '',
     planningToBook: '',
     customerProfile: '',  // Add customerProfile to the form data
+    isAvailable: ''
   });
 
   const router = useRouter();
@@ -138,6 +139,13 @@ export default function LeadForm() {
       return;
     }
 
+    // Check availability before submitting
+    const { isAvailable } = await checkAvailability(formData.startTime, formData.hoursNeeded);
+    if (!isAvailable) {
+      window.alert('The venue is not available at your selected time.');
+      return;
+    }
+    
     // Determine customer profile before submission
     const customerProfile = determineProfile(formData);
     
@@ -146,6 +154,7 @@ export default function LeadForm() {
       ...formData,
       customerProfile, // Add customer profile to the data being sent
       startTime: formData.startTime.toISOString(),
+      isAvailable,
     };
 
     const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/2tyjxvh/';

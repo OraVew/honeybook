@@ -61,7 +61,7 @@ export default function ContactForm() {
         const inquiryId = result.id;
 
         // 4. Send data to Zapier (including the inquiryId)
-        const zapierWebhookUrl = '/api/qualifyproxy'; // Replace with your actual Zapier webhook URL
+        const zapierWebhookUrl = '/api/proxy'; // Replace with your actual Zapier webhook URL
         await fetch(zapierWebhookUrl, {
           method: 'POST',
           body: JSON.stringify({
