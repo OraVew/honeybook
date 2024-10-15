@@ -230,7 +230,7 @@ export default function ContactForm() {
             type="submit"
             className="w-full py-3 bg-[#D69600] text-white font-bold rounded hover:bg-[#7B61FF] transition duration-300 ease-in-out"
           >
-            Check Availability
+            Send
           </button>
         </form>
       </div>

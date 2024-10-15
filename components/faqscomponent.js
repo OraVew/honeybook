@@ -110,7 +110,7 @@ export default function FAQsComponent({ formData, handleSubmit }) {
       />
 
       <button className={styles.submitButton} onClick={handleModalOpen} disabled={!isFormValid()}>
-        Ask Your Question
+        Message Hosts
       </button>
 
       {modalOpen && (
