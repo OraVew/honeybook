@@ -283,7 +283,11 @@ export default function DynamicOfferForm() {
 
       {/* Customer Profile: Not Ideal */}
       {customerProfile === 'NotIdeal' && (
+        <>
         <NotIdealComponent />
+        <FAQsComponent handleSubmit={handleSubmit} />
+        </>
+        
       )}
     </section>
   );
