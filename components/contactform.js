@@ -177,13 +177,15 @@ export default function ContactForm() {
               Budget
             </label>
             <input
-              type="text"
+              type="number"
               name="budget"
               placeholder="E.g. $1000"
               value={formData.budget}
               onChange={handleChange}
               className="w-full p-2 border input-field rounded"
               required
+              min="0" // Optional: Set a minimum value for budget
+              step="1" // Optional: Ensure that only whole numbers are entered
             />
           </div>
           <div className="mb-6">
