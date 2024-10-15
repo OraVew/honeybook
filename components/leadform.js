@@ -62,12 +62,18 @@ export default function LeadForm() {
 
   const handleTimeChange = (time) => {
     if (formData.eventDate && time) {
-      const combinedDateTime = moment.tz(`${moment(formData.eventDate).format('YYYY-MM-DD')} ${moment(time).format('HH:mm')}`, 'America/Chicago').toDate();
+      const combinedDateTime = moment.tz(
+        `${moment(formData.eventDate).format('YYYY-MM-DD')} ${moment(time).format('HH:mm')}`,
+        'America/Chicago'
+      ).toDate();
       
+      const eventTimeCST = moment(time).tz('America/Chicago').format('h:mm A'); // Extract time in CST
+  
       setFormData((prevData) => ({
         ...prevData,
         eventTime: time,
         startTime: combinedDateTime,
+        eventTimeCST,  // Store the time part as "Event Time CST"
       }));
     } else {
       console.error('Invalid date or time');
@@ -155,6 +161,7 @@ export default function LeadForm() {
       customerProfile, // Add customer profile to the data being sent
       startTime: formData.startTime.toISOString(),
       isAvailable,
+      eventTimeCST: formData.eventTimeCST, // Include Event Time CST
     };
 
     const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/2tyjxvh/';
