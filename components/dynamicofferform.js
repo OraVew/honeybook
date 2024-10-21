@@ -221,7 +221,6 @@ export default function hmykyDynamicOfferForm() {
       {customerProfile === 'Middle' && (
         <>
           <h2>We have some great options for you!</h2>
-          <FAQsComponent handleSubmit={handleSubmit} />
           {['Birthday', 'Baby Shower'].includes(formData.eventType) && (
             <SpecialPackagesComponent 
               eventType={formData.eventType} 
@@ -246,6 +245,8 @@ export default function hmykyDynamicOfferForm() {
             budget={formData.budget} 
             eventTime={formData.eventTime}
           />
+          <FAQsComponent handleSubmit={handleSubmit} />
+         
         </>
       )}
 
@@ -253,7 +254,6 @@ export default function hmykyDynamicOfferForm() {
       {(customerProfile === 'Low' || customerProfile === 'Super Low') && (
         <>
           <h2>We’re still a fit! Check these options:</h2>
-          <FAQsComponent handleSubmit={handleSubmit} />
           <DownsellComponent 
             handleSubmit={handleSubmit} 
             hoursNeeded={formData.hoursNeeded} 
@@ -278,6 +278,7 @@ export default function hmykyDynamicOfferForm() {
             eventTime={formData.eventTime} 
             discount={25}
           />
+          <FAQsComponent handleSubmit={handleSubmit} />
         </>
       )}
 
