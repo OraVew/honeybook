@@ -285,7 +285,6 @@ export default function hmykyDynamicOfferForm() {
       {customerProfile === 'NotIdeal' && (
         <>
         <NotIdealComponent />
-        <FAQsComponent handleSubmit={handleSubmit} />
         {['Birthday', 'Baby Shower'].includes(formData.eventType) && (
             <SpecialPackagesComponent 
               eventType={formData.eventType} 
@@ -310,6 +309,7 @@ export default function hmykyDynamicOfferForm() {
             budget={formData.budget} 
             eventTime={formData.eventTime}
           />
+          <FAQsComponent handleSubmit={handleSubmit} />
         </>
         
       )}
