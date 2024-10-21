@@ -267,9 +267,9 @@ export default function LeadForm() {
               required
             >
               <option value="" disabled selected>Select an option</option>
-              <option value="Started today">Started today</option>
-              <option value="1 week">1 week</option>
-              <option value="A while">It's been a while</option>
+              <option value="One week">One week or less</option>
+              <option value="Two weeks">Two weeks to a month</option>
+              <option value="A month">Over a month</option>
             </select>
           </div>
 
@@ -283,9 +283,9 @@ export default function LeadForm() {
               required
             >
               <option value="" disabled selected>Select an option</option>
-              <option value="Right now">Right now</option>
-              <option value="This week">This week</option>
-              <option value="Not soon">Not soon</option>
+              <option value="One week">One week or less</option>
+              <option value="Two weeks">Two weeks to a month</option>
+              <option value="A month">Over a month</option>
             </select>
           </div>
 
