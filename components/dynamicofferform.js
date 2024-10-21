@@ -10,7 +10,7 @@ import SpecialPackagesComponent from './specialpackagescomponent';
 import moment from 'moment';  // Import moment.js for time calculations
 import './deposittour.css'; // Import the new CSS file
 
-export default function DynamicOfferForm() {
+export default function hmykyDynamicOfferForm() {
   const router = useRouter();
   const [customerProfile, setCustomerProfile] = useState(''); 
   const [timeOfDay, setTimeOfDay] = useState('');  
@@ -286,6 +286,30 @@ export default function DynamicOfferForm() {
         <>
         <NotIdealComponent />
         <FAQsComponent handleSubmit={handleSubmit} />
+        {['Birthday', 'Baby Shower'].includes(formData.eventType) && (
+            <SpecialPackagesComponent 
+              eventType={formData.eventType} 
+              timeOfDay={timeOfDay} 
+              handleSubmit={handleSubmit} 
+            />
+          )}
+          <UpsellComponent 
+            handleSubmit={handleSubmit} 
+            hoursNeeded={formData.hoursNeeded} 
+            dayType={dayType} 
+            timeOfDay={timeOfDay} 
+            budget={formData.budget} 
+            eventTime={formData.eventTime} 
+            discount={20}
+          />
+          <DownsellComponent 
+            handleSubmit={handleSubmit} 
+            hoursNeeded={formData.hoursNeeded} 
+            dayType={dayType} 
+            timeOfDay={timeOfDay} 
+            budget={formData.budget} 
+            eventTime={formData.eventTime}
+          />
         </>
         
       )}
