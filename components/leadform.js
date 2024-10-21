@@ -88,8 +88,8 @@ export default function LeadForm() {
       data.budget >= 500 &&
       data.guestCount <= 60 &&
       data.hoursNeeded >= 3 &&
-      (data.lookingFrom === '1 week' || data.lookingFrom === 'A while') &&
-      (data.planningToBook === 'This week' || data.planningToBook === 'Right now') &&
+      (data.lookingFrom === 'One week' || data.lookingFrom === 'Two weeks' || data.lookingFrom === 'A month') &&
+      (data.planningToBook === 'One week' || data.planningToBook === 'Two weeks') &&
       data.helpNeeded === 'Make a reservation'
     ) {
       profile = 'Ideal';
@@ -97,27 +97,27 @@ export default function LeadForm() {
       data.budget >= 500 &&
       data.guestCount <= 60 &&
       data.hoursNeeded >= 3 &&
-      (data.lookingFrom === '1 week' || data.lookingFrom === 'A while') &&
-      (data.planningToBook === 'This week' || data.planningToBook === 'Right now') &&
-      data.helpNeeded === 'Ask the team a question'
+      (data.lookingFrom === 'One week' || data.lookingFrom === 'Two weeks' || data.lookingFrom === 'A month') &&
+      (data.planningToBook === 'One week' || data.planningToBook === 'Two weeks') &&
+      (data.helpNeeded === 'Ask the team a question' || data.helpNeeded === 'Learn more about this venue')
     ) {
       profile = 'Middle';
     } else if (
       data.budget >= 500 &&
       data.guestCount <= 60 &&
       data.hoursNeeded >= 3 &&
-      (data.lookingFrom === '1 week' || data.lookingFrom === 'A while') &&
-      (data.planningToBook === 'Not soon' || data.planningToBook === 'This week') &&
-      data.helpNeeded === 'Ask the team a question'
+      (data.lookingFrom === 'One week' || data.lookingFrom === 'Two weeks') &&
+      (data.planningToBook === 'Two weeks' || data.planningToBook === 'A month') &&
+      (data.helpNeeded === 'Ask the team a question'  || data.helpNeeded === 'Learn more about this venue' || data.helpNeeded === 'Make a reservation')
     ) {
       profile = 'Low';
     } else if (
       data.budget >= 500 &&
       data.guestCount <= 60 &&
       data.hoursNeeded >= 3 &&
-      (data.lookingFrom === 'Started today') &&
-      (data.planningToBook === 'Not soon' || data.planningToBook === 'This week' || data.planningToBook === 'Right now') &&
-      (data.helpNeeded === 'Ask the team a question' || data.helpNeeded === 'Learn more about this venue' || data.helpNeeded === 'Make a reservation')
+      (data.lookingFrom === 'One week') &&
+      (data.planningToBook === 'A month' || data.planningToBook === 'Two weeks') &&
+      (data.helpNeeded === 'Ask the team a question' || data.helpNeeded === 'Learn more about this venue')
     ) {
       profile = 'Super Low';
     } else {
