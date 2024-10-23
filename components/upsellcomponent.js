@@ -55,7 +55,7 @@ export default function UpsellComponent({ hoursNeeded, dayType, timeOfDay, handl
     })
   }
 >
-        Choose this offer
+Learn more about this offer
       </button>
     </div>
   );

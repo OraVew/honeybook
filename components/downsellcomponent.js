@@ -39,7 +39,7 @@ export default function DownsellComponent({ hoursNeeded, dayType, timeOfDay, han
       })
     }
   >
-        Choose this offer
+        Learn more about this offer
       </button>
     </div>
   );

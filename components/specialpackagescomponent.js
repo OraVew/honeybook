@@ -31,7 +31,7 @@ export default function SpecialPackagesComponent({ eventType, timeOfDay, handleS
       </ul>
       <h4>Total Price: ${totalPrice}</h4>
       <button onClick={() => handleSubmit(`${eventType} Package`, { descriptionItems, totalPrice })}>
-        Choose this offer
+      Learn more about this offer
       </button>
     </div>
   );
