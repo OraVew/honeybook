@@ -27,11 +27,16 @@ export default function Home() {
       {/* What Makes OraVew Different Section */}
       <UniqueValue />
 
+      {/* Lead Entry Point */}
+      <ContactForm />
+
+      {/* Reviews */}
       <ReviewList/>
 
       {/* Offerings Section */}
       <Offerings />
 
+      {/* Photos Section */}
       <Gallery/>
 
       {/* Call-to-Action (CTA) Section */}
