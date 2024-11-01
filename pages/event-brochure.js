@@ -197,10 +197,6 @@ export default function BuildEventBrochure() {
             <p>Lock the date now, and discuss the details later with our venue manager.</p>
           </div>
         </div>
-        <div className="cards-container mt-10">
-        <FAQsComponent formData={formData} // Pass formData as a prop 
-  handleSubmit={handleSubmit} />
-        </div>
 
          {/* About OraVew */}
          <section className="section">
@@ -355,6 +351,11 @@ export default function BuildEventBrochure() {
           </form>
         </div>
         </section>
+
+        <div className="cards-container mt-10">
+        <FAQsComponent formData={formData} // Pass formData as a prop 
+  handleSubmit={handleSubmit} />
+        </div>
 
         {/* Recent Event Images */}
         <section className="section">
