@@ -18,7 +18,7 @@ export default function DownsellComponent({ hoursNeeded, dayType, timeOfDay, han
   const totalBasePrice = calculateBasePrice(hoursNeeded, timeOfDay, startHour);
   const totalWithCleaning = totalBasePrice + cleaningFee;
 
-  const finalPrice = totalWithCleaning > budget ? Math.min(totalWithCleaning, budget) : totalWithCleaning;
+  const finalPrice = totalWithCleaning * 0.90; // Apply a 10% discount directly
 
   return (
     <div className="offer-card">
