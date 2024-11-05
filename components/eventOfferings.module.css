@@ -256,3 +256,26 @@
     height: auto;
   }
 }
+
+/* VIP Experience Section Styling */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.gridItem {
+  text-align: center;
+}
+
+.image {
+  border-radius: 12px;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile: Stack vertically */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr; /* Stack on mobile */
+  }
+}

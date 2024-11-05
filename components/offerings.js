@@ -9,7 +9,7 @@ export default function Offerings() {
         <div className="flex flex-wrap justify-around mt-10">
           <div className="max-w-xs bg-white p-6 rounded-lg shadow-lg">
             <Image
-              src="/standard2.png"
+              src="/openhero.webp"
               alt="Expert Team"
               width={300}
               height={300}
@@ -22,7 +22,7 @@ export default function Offerings() {
           </div>
           <div className="max-w-xs bg-white p-6 rounded-lg shadow-lg">
             <Image
-              src="/gameroom5.JPG"
+              src="/photobooth.webp"
               alt="Amenities"
               width={300}
               height={300}
@@ -35,7 +35,7 @@ export default function Offerings() {
           </div>
           <div className="max-w-xs bg-white p-6 rounded-lg shadow-lg">
             <Image
-              src="/bday5.JPG"
+              src="/gameroom.webp"
               alt="Hourly Pricing"
               width={300}
               height={300}

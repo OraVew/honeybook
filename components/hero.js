@@ -9,14 +9,17 @@ export default function Hero() {
 
   // Array of image URLs located in the public folder or via external URLs
   const images = [
-    '/hero1.webp',       // Convert images to WebP format
+    '/hero1.webp', 
+    '/marquee.webp',
+    '/openhero.webp',
+    '/newhero.webp',
+    '/photobooth.webp',
+    '/gameroom.webp',
     '/bdayhero.webp',
     '/cocktailhero.webp',
     '/babyhero2.webp',
     '/babyhero.webp',
     '/zenfest.webp',
-    '/bday6.webp',
-    '/bday1.webp',
     '/hero.webp',
     // Add more image URLs as needed
   ];

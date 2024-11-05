@@ -53,7 +53,7 @@ export default function EventOfferings() {
             </div>
             <div className={styles.imageContainer}>
               <Image
-                src="/hero.webp"
+                src="/newhero.webp"
                 alt="Event Amenities"
                 width={600}
                 height={400}
@@ -63,6 +63,46 @@ export default function EventOfferings() {
           </div>
         </div>
       </section>
+
+      {/* VIP Experience Section */}
+<section id="vip-experience" className={`${styles.section} bg-white`}>
+  <div className={styles.container}>
+    <h2 className={styles.heading}>VIP Experience</h2>
+    <div className={`${styles.grid} md:flex-row gap-8`}>
+      
+      {/* Game Room Component */}
+      <div className={styles.gridItem}>
+        <Image
+          src="/gameroom.webp"
+          alt="Game Room"
+          width={600}
+          height={400}
+          className={styles.image}
+        />
+        <h3 className={styles.subheading}>Game Room</h3>
+        <p className={styles.paragraph}>
+          Enjoy a dedicated game room with a variety of options to keep your guests entertained.
+        </p>
+      </div>
+      
+      {/* Photo Booth Component */}
+      <div className={styles.gridItem}>
+        <Image
+          src="/photobooth.webp"
+          alt="Photo Booth"
+          width={600}
+          height={400}
+          className={styles.image}
+        />
+        <h3 className={styles.subheading}>Photo Booth</h3>
+        <p className={styles.paragraph}>
+          Capture memories with our modern photo booth setup, complete with props and custom backdrops.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       {/* Pricing Section with Background Image, Dark Overlay, and White Card */}
       <section
@@ -98,14 +138,14 @@ export default function EventOfferings() {
               <strong>Happy Birthday Package</strong>
             </p>
             <ul className={styles.list}>
-              <li className={styles.listItem}>6 hours, Game Room, Photo Lounge, and Marquee Lights</li>
+              <li className={styles.listItem}>6 hours, Game Room, Photo Booth, and Marquee Lights</li>
               <li className={styles.listItem}>$1000 before 10pm or $1128 for hours after 10pm</li>
               </ul>
             <p className={styles.paragraph}>
               <strong>Baby Shower Package</strong>
             </p>
             <ul className={styles.list}>
-              <li className={styles.listItem}>4 hours, Game Room, Photo Lounge, and Baby Block decor centerpieces</li>
+              <li className={styles.listItem}>4 hours, Game Room, Photo Booth, and Baby Block decor centerpieces</li>
               <li className={styles.listItem}>$700 before 6pm or $825 after 6pm</li>
               </ul>
           </div>

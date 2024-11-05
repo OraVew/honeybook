@@ -48,7 +48,7 @@ export default function Footer() {
           <div className="lg:w-1/3 text-center lg:text-right">
             <p className="text-gray-600">1000 N Halsted St, Chicago, IL 60642</p>
             <p className="text-gray-600 mt-2">
-              Phone: <a href="tel:312-544-9613" className="underline">312-544-9613</a>
+              Phone: <a href="tel:312-544-9613" className="underline">312-815-3713</a>
             </p>
             <p className="text-gray-600 mt-2">
               Email: <a href="mailto:liv@oravew.com" className="underline">liv@oravew.com</a>
@@ -61,7 +61,7 @@ export default function Footer() {
           <div className="flex space-x-4 overflow-x-scroll scrollbar-hide">
             <div className="flex-shrink-0 w-64 h-48 bg-gray-300 rounded-lg">
               <Image
-                src="/gameroom.jpg"
+                src="/birthday2.jpg"
                 alt="Placeholder Image 1"
                 width={256}
                 height={192}
@@ -88,7 +88,7 @@ export default function Footer() {
             </div>
             <div className="flex-shrink-0 w-64 h-48 bg-gray-300 rounded-lg">
               <Image
-                src="/standard5.png"
+                src="/newhero.webp"
                 alt="Placeholder Image 4"
                 width={256}
                 height={192}
@@ -97,7 +97,7 @@ export default function Footer() {
             </div>
             <div className="flex-shrink-0 w-64 h-48 bg-gray-300 rounded-lg">
               <Image
-                src="/gameroom2.jpg"
+                src="/photobooth.webp"
                 alt="Placeholder Image 5"
                 width={256}
                 height={192}
@@ -106,7 +106,7 @@ export default function Footer() {
             </div>
             <div className="flex-shrink-0 w-64 h-48 bg-gray-300 rounded-lg">
               <Image
-                src="/photolounge.png"
+                src="/4.webp"
                 alt="Placeholder Image 6"
                 width={256}
                 height={192}
