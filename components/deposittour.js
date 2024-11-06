@@ -1,129 +1,117 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
-import './deposittour.css'; // Import the new CSS file
+import './deposittour2.0.css';
 
 export default function DepositTour() {
   const router = useRouter();
-  const [userData, setUserData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-  });
-
+  const [formData, setFormData] = useState(null);
   const [estimatedTotal, setEstimatedTotal] = useState(0);
   const [breakdown, setBreakdown] = useState({});
-  const [showPriorityPass, setShowPriorityPass] = useState(false); // Show/Hide Priority Pass Calendly widget
-  const [showEventConsultation, setShowEventConsultation] = useState(false); // Show/Hide Event Consultation Calendly widget
+  const [showModal, setShowModal] = useState(false); // Show/Hide the modal
+  const [calendlyUrl, setCalendlyUrl] = useState(''); // Store the Calendly URL
+  const calendlyRef = useRef(null); // Reference for the Calendly widget container
 
-  // Create a reference for the Calendly widget container
-  const calendlyRef = useRef(null);
-
+  // Fetch form data using inquiryId from the query
   useEffect(() => {
-    const { name, email, phone, estimatedTotal, estimatedBreakdown } = router.query;
-
-    setUserData({
-      name: name || '',
-      email: email || '',
-      phone: phone || '',
-    });
-
-    setEstimatedTotal(Number(estimatedTotal) || 0);
-    setBreakdown(JSON.parse(estimatedBreakdown) || {});
+    const fetchData = async () => {
+      const { inquiryId } = router.query;
+      if (inquiryId) {
+        try {
+          const response = await fetch(`/api/get-inquiry?id=${inquiryId}`);
+          const data = await response.json();
+          if (data) {
+            setFormData(data);
+            setEstimatedTotal(data.estimatedTotal || 0);
+            setBreakdown(data.breakdown || {});
+          }
+        } catch (error) {
+          console.error('Error fetching inquiry data:', error);
+        }
+      }
+    };
+    fetchData();
   }, [router.query]);
 
+  // Load the Calendly widget script when the modal is open
   useEffect(() => {
-    if (showPriorityPass || showEventConsultation) {
+    if (showModal) {
       const script = document.createElement('script');
       script.src = 'https://assets.calendly.com/assets/external/widget.js';
       script.async = true;
       document.body.appendChild(script);
 
-      // Scroll to the Calendly widget container when the widget is shown
       calendlyRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
       return () => {
         document.body.removeChild(script);
       };
     }
-  }, [showPriorityPass, showEventConsultation]);
+  }, [showModal]);
 
-  const handleCardClick = (widgetType) => {
-    // Reset visibility of both widgets
-    setShowPriorityPass(false);
-    setShowEventConsultation(false);
+  // Handle opening the modal with the correct Calendly URL
+const handleCardClick = (widgetType) => {
+  if (!formData) return;
 
-    // Show the appropriate widget based on the card clicked
-    if (widgetType === 'priorityPass') {
-      setShowPriorityPass(true);
-    } else if (widgetType === 'eventConsultation') {
-      setShowEventConsultation(true);
-    }
+  // Ensure the phone number starts with "1" for a US number
+  let formattedPhone = formData.phone;
+  if (formattedPhone && !formattedPhone.startsWith('1')) {
+    formattedPhone = `1${formattedPhone}`;
+  }
+
+  // Set the appropriate Calendly URL based on the widget type
+  if (widgetType === 'priorityPass') {
+    setCalendlyUrl(
+      `https://calendly.com/oravew/visit?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=d69600&name=${encodeURIComponent(
+        formData.name
+      )}&email=${encodeURIComponent(formData.email)}&a1=${encodeURIComponent(formattedPhone)}&guests=cscallender78@gmail.com`
+    );
+  } else if (widgetType === 'eventConsultation') {
+    setCalendlyUrl(
+      `https://calendly.com/oravew/schedule-a-call?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=d69600&name=${encodeURIComponent(
+        formData.name
+      )}&email=${encodeURIComponent(formData.email)}&a1=${encodeURIComponent(formattedPhone)}&guests=cscallender78@gmail.com`
+    );
+  }
+
+  setShowModal(true); // Show the modal
+};
+
+
+  // Handle closing the modal
+  const closeModal = () => {
+    setShowModal(false);
+    setCalendlyUrl(''); // Clear the Calendly URL
   };
 
-  const eventPlannerEmail = 'cscallender78@gmail.com';
-
-  const priorityPassUrl = `https://calendly.com/oravew/virtual-tour-with-a-member-of-our-team-clone?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=d69600&name=${encodeURIComponent(
-    userData.name
-  )}&email=${encodeURIComponent(userData.email)}&a1=${encodeURIComponent(userData.phone)}`;
-
-  const eventConsultationUrl = `https://calendly.com/oravew/event-consultation?hide_event_type_details=1&hide_gdpr_banner=1&primary_color=d69600&name=${encodeURIComponent(
-    userData.name
-  )}&email=${encodeURIComponent(userData.email)}&a1=${encodeURIComponent(userData.phone)}&guests=${encodeURIComponent(eventPlannerEmail)}`;
+  if (!formData) return <p>Loading...</p>;
 
   return (
     <section className="section bg-gray-100 py-10">
       <div className="container mx-auto px-4 max-w-4xl">
-        {/* Estimated Total and Breakdown */}
-        <div className="breakdown-container">
-          <h3>Estimated Venue Total</h3>
-          <ul>
-            {Object.entries(breakdown).map(([key, value]) => (
-              <li key={key}>
-                <span>{key}</span>
-                <span>{value.toLocaleString()}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="breakdown-total">
-            <span>Total</span>
-            <span>${estimatedTotal.toLocaleString()}</span>
-          </div>
-        </div>
-
         {/* Options Section */}
         <div className="cards-container">
-          {/* Priority Pass Appointment */}
-          <div
-            className="card gold"
-            onClick={() => handleCardClick('priorityPass')}
-          >
-            <h3>Schedule a Reservation Call</h3>
-            <p>
-              Schedule a virtual tour with our venue manager to finalize details for your reservation.
-            </p>
+          <div className="card gold" onClick={() => handleCardClick('priorityPass')}>
+            <h3>Schedule an in-person tour</h3>
+            <p>Schedule your walkthrough to finalize details for your reservation.</p>
           </div>
 
-          {/* Event Consultation */}
-          <div
-            className="card purple"
-            onClick={() => handleCardClick('eventConsultation')}
-          >
-            <h3>Speak with Event Planner Instead</h3>
-            <p>
-              Schedule a virtual consultation and walk-through with our event planner to discuss your event details.
-            </p>
+          <div className="card purple" onClick={() => handleCardClick('eventConsultation')}>
+            <h3>Schedule a virtual tour</h3>
+            <p>Schedule a virtual consultation to discuss your reservation.</p>
           </div>
         </div>
 
-        {/* Calendly Inline Widgets */}
-        <div ref={calendlyRef}>
-          {showPriorityPass && (
-            <div className="calendly-inline-widget" data-url={priorityPassUrl}></div>
-          )}
-          {showEventConsultation && (
-            <div className="calendly-inline-widget" data-url={eventConsultationUrl}></div>
-          )}
-        </div>
+        {/* Modal for Calendly Widget */}
+        {showModal && (
+          <div className="modal">
+            <div className="modal-content">
+              <span className="close" onClick={closeModal}>
+                &times;
+              </span>
+              <div ref={calendlyRef} className="calendly-inline-widget" data-url={calendlyUrl}></div>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

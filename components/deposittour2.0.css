@@ -248,10 +248,7 @@ h2, h3, h4 {
   
   /* Responsive Design */
   @media (max-width: 768px) {
-    .container, .section, .offer-card {
-      width: 100%;
-      padding: 40px 10px;
-    }
+    
   
     /* Make sure images are full-width on mobile */
     .image-grid {
@@ -267,10 +264,7 @@ h2, h3, h4 {
     }
   }
   @media (max-width: 400px) {
-    .container, .section, .offer-card {
-      width: 100%;
-      padding: 40px 10px;
-    }
+    
   
     /* Make sure images are full-width on mobile */
     .image-grid {

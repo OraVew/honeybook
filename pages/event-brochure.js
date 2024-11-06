@@ -8,6 +8,7 @@ import FAQsComponent from '@/components/faqscomponent';
 import FAQs from '@/components/faqs';
 import Footer from '@/components/footer';
 import Header from '@/components/header';
+import Deposit from '@/components/deposit';
 
 export default function BuildEventBrochure() {
   const router = useRouter();
@@ -100,39 +101,46 @@ export default function BuildEventBrochure() {
 
   const handleSubmit = async (offerName, offerDetails) => {
     const inquiryDate = new Date();
-    const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/21h7vza/'; // Dynamic Offer Zapier URL
-
-    // Include the selected offer as an object within the inquiry data
+    const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/21h7vza/';
+  
+    // Construct the offer object
     const offerObject = {
       name: offerName,
       totalPrice: offerDetails.totalPrice,
       descriptionItems: offerDetails.descriptionItems,
     };
-
+  
     try {
+      // Update inquiry data in the database
       const response = await fetch(`/api/update-inquiry?inquiryId=${formData.inquiryId}`, {
         method: 'PUT',
         body: JSON.stringify({
           ...formData,
           inquiryDate: inquiryDate.toISOString(),
-          selectedOffer: offerObject,  // Add the offer object to the inquiry data
-          webhookUrl: zapierWebhookUrl, // Pass the webhook URL here
+          selectedOffer: offerObject,
+          webhookUrl: zapierWebhookUrl,
         }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to update inquiry in MongoDB');
       }
-
-      // Redirect to the event brochure page
-      router.push(`/event-brochure?id=${formData.inquiryId}`);
+  
+      // Redirect to the confirmation page with formData as query parameters
+      router.push({
+        pathname: '/confirmation',
+        query: {
+          formData: formData,
+        },
+      });
     } catch (error) {
       console.error('Error submitting offer:', error);
     }
   };
+  
   
 
   const formatDate = (dateStr) => {
@@ -192,9 +200,9 @@ export default function BuildEventBrochure() {
 
         {/* Next Steps: Priority Pass or Event Consultation */}
         <div className="cards-container mt-10">
-          <div className="card gold" onClick={() => handleCardClick('priorityPass')}>
+          <div className="card gold">
             <h3 className="text-white">Reserve Now for $25</h3>
-            <p>Lock the date now, and discuss the details later with our venue manager.</p>
+            <Deposit formData={formData}/>
           </div>
         </div>
 

@@ -7,7 +7,7 @@ import './deposit.css'; // Import the CSS file
 // Load Stripe outside of a component's render to avoid recreating the Stripe object on every render.
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
-function CheckoutForm({ name, email, phone, pricingOption, startTime, eventType }) {
+function CheckoutForm({ name, email, phone, startTime, eventType, formData }) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -48,8 +48,8 @@ function CheckoutForm({ name, email, phone, pricingOption, startTime, eventType 
         },
         body: JSON.stringify({
           paymentMethodId: paymentMethod.id,
-          amount: 5000, // $10 in cents
-          bookingDetails: { name, email, phone, pricingOption, startTime, eventType },
+          amount: 2500, // $10 in cents
+          bookingDetails: { name, email, phone, startTime, eventType },
         }),
       });
 
@@ -69,41 +69,26 @@ function CheckoutForm({ name, email, phone, pricingOption, startTime, eventType 
           name,
           email,
           phone,
-          pricingOption,
           startTime,
           eventType,
           paymentIntentId: paymentData.paymentIntentId,
         }),
       });
 
-      // Redirect to confirmation page upon successful payment
-      router.push({
-        pathname: '/confirmation',
-        query: {
-          name,
-          email,
-          phone,
-          pricingOption,
-          startTime,
-          eventType,
-        },
-      });
-    } catch (err) {
-      console.error('Payment error:', err);
-      setError('There was an issue processing your payment. Please try again.');
-      setLoading(false);
-    }
-  };
+      
 
-  const handleVirtualTour = () => {
+      // Redirect to confirmation page upon successful payment, passing only the inquiryId
     router.push({
-      pathname: '/virtualtour',
+      pathname: '/confirmation',
       query: {
-        name,
-        email,
-        phone,
+        inquiryId: formData.inquiryId, // Pass only inquiryId
       },
     });
+  } catch (err) {
+    console.error('Payment error:', err);
+    setError('There was an issue processing your payment. Please try again.');
+    setLoading(false);
+  }
   };
 
   return (
@@ -134,42 +119,34 @@ function CheckoutForm({ name, email, phone, pricingOption, startTime, eventType 
       >
         {loading ? 'Processing...' : 'Reserve Now'}
       </button>
-      <button
-        type="button"
-        onClick={handleVirtualTour}
-        className="virtual-tour-button"
-      >
-        Schedule an Event Consultation Instead
-      </button>
     </form>
   );
 }
 
-export default function Deposit() {
+export default function Deposit({ formData }) {
   const router = useRouter();
-  const { name, email, phone, pricingOption, startTime, eventType } = router.query;
+  const { name, email, phone, startTime, eventType } = router.query;
 
   return (
-    <div className="page-container">
+   
       <div className="card-container">
-        <h1 className="heading">Reserve Your Event Date?</h1>
         <p className="paragraph">
-          We have checked our calendar for your event date, start time, and duration to confirm that we currently have that window open.
+          We have checked our calendar for your event date, start time, and duration to confirm that we are available.
           <br />
-          This is a refundable priority fee that guarantees your selected event date and time will be reserved exclusively until your tour with our venue manager in person or virtually. We operate on a first-come, first-served basis, and this $50 deposit will hold your reservation from now until your tour with us, ensuring no one else can book it while you’re deciding. Once the deposit is received, we will reach out to schedule your tour. To complete your reservation, a 50% deposit will be required after your tour. Finally, the balance is due 7 days before your reserved event date.
+          This is a refundable priority fee that reserves your event until your tour with our venue in person or virtually. We operate on a first-come, first-served basis. Ensure no one else can book it while you’re deciding. Once the deposit is received, we will reach out to schedule your tour.
         </p>
         <Elements stripe={stripePromise}>
           <CheckoutForm
             name={name}
             email={email}
             phone={phone}
-            pricingOption={pricingOption}
             startTime={startTime}
             eventType={eventType}
+            formData={formData}
           />
         </Elements>
       </div>
-    </div>
+  
   );
 }
 
