@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         amount,
         currency: 'usd',
         payment_method: paymentMethodId,
-        description: `Deposit for ${bookingDetails.eventType} on ${new Date(bookingDetails.startTime).toLocaleString('en-US', { timeZone: 'America/Chicago' })}`,
+        description: `Deposit for ${bookingDetails.name}'s ${bookingDetails.eventType} on ${new Date(bookingDetails.startTime).toLocaleString('en-US', { timeZone: 'America/Chicago' })}`,
         receipt_email: bookingDetails.email,
         confirm: true,
         return_url: process.env.NEXT_PUBLIC_CONFIRMATION_URL, // Use environment variable
