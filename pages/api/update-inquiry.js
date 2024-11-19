@@ -42,7 +42,7 @@ export default async function handler(req, res) {
       console.log('Updated inquiry data:', updatedInquiry);
 
       // Update the inquiry in MongoDB (without the webhookUrl)
-      const result = await db.collection("Inquiry").updateOne(
+      const result = await db.collection("ChannelManager").updateOne(
         { _id: objectId }, // Use the validated ObjectId
         { $set: updatedInquiry } // Only store fields other than webhookUrl
       );
@@ -85,3 +85,4 @@ export default async function handler(req, res) {
     res.status(405).json({ error: 'Method not allowed' });
   }
 }
+

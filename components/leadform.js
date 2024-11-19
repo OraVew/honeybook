@@ -2,34 +2,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import './leadform.css'; // Importing the new CSS file
-import moment from 'moment-timezone'; // Import moment-timezone for timezone handling
-import UrgencyMeter from './urgencymeter.js'; // Adjust path as needed
-import clientPromise from '../lib/mongodb'; // Import MongoDB client
-
-// Helper function to update the inquiry in ChannelManager
-async function updateInquiryInChannelManager(inquiryId, updatedInquiry) {
-  try {
-    const client = await clientPromise;
-    const db = client.db("BookOraVew");
-    const collection = db.collection("ChannelManager");
-
-    // Update the inquiry data in the ChannelManager collection
-    const result = await collection.updateOne(
-      { inquiryId: inquiryId },
-      { $set: updatedInquiry }
-    );
-
-    if (result.matchedCount === 0) {
-      console.error('Inquiry not found:', inquiryId);
-      throw new Error('Inquiry not found');
-    }
-    console.log("Inquiry updated successfully in ChannelManager.");
-  } catch (error) {
-    console.error("Error updating inquiry in ChannelManager:", error);
-    throw new Error("Database operation failed.");
-  }
-}
+import './leadform.css';
+import moment from 'moment-timezone';
+import UrgencyMeter from './urgencymeter.js';
 
 export default function LeadForm() {
   const [formData, setFormData] = useState({
@@ -92,20 +67,19 @@ export default function LeadForm() {
         'America/Chicago'
       ).toDate();
 
-      const eventTimeCST = moment(time).tz('America/Chicago').format('h:mm A'); // Extract time in CST
+      const eventTimeCST = moment(time).tz('America/Chicago').format('h:mm A');
 
       setFormData((prevData) => ({
         ...prevData,
         eventTime: time,
         startTime: combinedDateTime,
-        eventTimeCST, // Store the time part as "Event Time CST"
+        eventTimeCST,
       }));
     } else {
       console.error('Invalid date or time');
     }
   };
 
-  // Function to determine the customer profile based on form data
   const determineProfile = (data) => {
     let profile = '';
 
@@ -155,7 +129,6 @@ export default function LeadForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Ensure that inquiryId exists
     const inquiryId = formData.inquiryId;
     if (!inquiryId) {
       console.error('Inquiry ID is missing');
@@ -163,24 +136,20 @@ export default function LeadForm() {
       return;
     }
 
-    // Ensure that startTime is valid before proceeding
     if (!formData.startTime || isNaN(new Date(formData.startTime).getTime())) {
       console.error('Invalid startTime');
       window.alert('Please provide a valid start time and date.');
       return;
     }
 
-    // Check availability before submitting
     const { isAvailable } = await checkAvailability(formData.startTime, formData.hoursNeeded);
     if (!isAvailable) {
       window.alert('The venue is not available at your selected time.');
       return;
     }
 
-    // Determine customer profile before submission
     const customerProfile = determineProfile(formData);
 
-    // Construct a guestMessage from form submission details
     const guestMessage = `
       Updated Event Details: 
       Name: ${formData.name}, 
@@ -195,7 +164,6 @@ export default function LeadForm() {
       Planning to Book: ${formData.planningToBook}.
     `;
 
-    // Update form data with customer profile and additional details
     const updatedInquiry = {
       ...formData,
       customerProfile,
@@ -212,28 +180,24 @@ export default function LeadForm() {
       ],
     };
 
-    const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/2tyjxvh/';
+    const zapierWebhookUrl = '/api/qualifyproxy';
 
     try {
-      // Update the inquiry in the ChannelManager collection
-      await updateInquiryInChannelManager(inquiryId, updatedInquiry);
-
-      // Send the updated data to the specified Zapier webhook
-      const zapResponse = await fetch(zapierWebhookUrl, {
-        method: 'POST',
-        body: JSON.stringify(updatedInquiry),
+      const response = await fetch(`/api/update-inquiry?inquiryId=${inquiryId}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          ...updatedInquiry,
+          webhookUrl: zapierWebhookUrl,
+        }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      if (!zapResponse.ok) {
-        throw new Error('Failed to trigger Zapier webhook');
+      if (!response.ok) {
+        throw new Error('Failed to update inquiry in MongoDB');
       }
 
-      console.log('Zapier webhook triggered successfully.');
-
-      // Redirect to the next page with the updated inquiry data
       const encodedFormData = encodeURIComponent(JSON.stringify(updatedInquiry));
       router.push({
         pathname: '/dynamicoffer',
@@ -270,8 +234,6 @@ export default function LeadForm() {
       return { isAvailable: false };
     }
   };
-
-
 
   return (
     <section className="py-20 bg-gray-100 flex items-center justify-center min-h-screen">
@@ -322,7 +284,7 @@ export default function LeadForm() {
               className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             >
-              <option value="" disabled selected>Select an option</option>
+              <option value="" disabled>Select an option</option>
               <option value="One week">One week or less</option>
               <option value="Two weeks">Two weeks to a month</option>
               <option value="A month">Over a month</option>
@@ -338,7 +300,7 @@ export default function LeadForm() {
               className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             >
-              <option value="" disabled selected>Select an option</option>
+              <option value="" disabled>Select an option</option>
               <option value="One week">One week or less</option>
               <option value="Two weeks">Two weeks to a month</option>
               <option value="A month">Over a month</option>
@@ -354,7 +316,7 @@ export default function LeadForm() {
               className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             >
-              <option value="" disabled selected>Select an option</option>
+              <option value="" disabled>Select an option</option>
               <option value="Learn more about this venue">Learn more about this venue</option>
               <option value="Ask the team a question">Ask the team a question</option>
               <option value="Make a reservation">Make a reservation</option>
@@ -372,3 +334,4 @@ export default function LeadForm() {
     </section>
   );
 }
+

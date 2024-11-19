@@ -1,39 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-
-// Components for different customer types
 import UpsellComponent from './upsellcomponent';
 import DownsellComponent from './downsellcomponent';
 import FAQsComponent from './faqscomponent';
 import NotIdealComponent from './notidealcomponent';
 import SpecialPackagesComponent from './specialpackagescomponent';
-import moment from 'moment'; // Import moment.js for time calculations
-import './deposittour.css'; // Import the new CSS file
-import clientPromise from '../lib/mongodb'; // Import MongoDB client
-
-// Helper function to update the inquiry in ChannelManager
-async function updateInquiryInChannelManager(inquiryId, updatedInquiry) {
-  try {
-    const client = await clientPromise;
-    const db = client.db("BookOraVew");
-    const collection = db.collection("ChannelManager");
-
-    // Update the inquiry data in the ChannelManager collection
-    const result = await collection.updateOne(
-      { inquiryId: inquiryId },
-      { $set: updatedInquiry }
-    );
-
-    if (result.matchedCount === 0) {
-      console.error('Inquiry not found:', inquiryId);
-      throw new Error('Inquiry not found');
-    }
-    console.log("Inquiry updated successfully in ChannelManager.");
-  } catch (error) {
-    console.error("Error updating inquiry in ChannelManager:", error);
-    throw new Error("Database operation failed.");
-  }
-}
+import moment from 'moment';
+import './deposittour.css';
 
 export default function hmykyDynamicOfferForm() {
   const router = useRouter();
@@ -64,7 +37,6 @@ export default function hmykyDynamicOfferForm() {
     if (router.query.data) {
       try {
         const decodedData = JSON.parse(decodeURIComponent(router.query.data));
-
         setFormData({
           eventDate: decodedData.eventDate || '',
           name: decodedData.name || '',
@@ -83,7 +55,6 @@ export default function hmykyDynamicOfferForm() {
           lookingFrom: decodedData.lookingFrom || '',
           planningToBook: decodedData.planningToBook || '',
         });
-
         calculateTimeOfDay(decodedData.eventTime, decodedData.hoursNeeded);
         calculateDayType(decodedData.eventDate);
         determineProfile(decodedData);
@@ -163,21 +134,21 @@ export default function hmykyDynamicOfferForm() {
   const handleSubmit = async (offerName, offerDetails) => {
     const inquiryDate = new Date();
     const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/21h7vza/';
-
+  
     // Include the selected offer as an object within the inquiry data
     const offerObject = {
       name: offerName,
       totalPrice: offerDetails.totalPrice,
       descriptionItems: offerDetails.descriptionItems,
     };
-
+  
     // Construct a guestMessage from form submission details
     const guestMessage = `
       Final Offer Selected: ${offerName}.
       Total Price: $${offerDetails.totalPrice}.
       Event Details: ${formData.name}, Email: ${formData.email}, Phone: ${formData.phone}, Event Date: ${formData.eventDate ? formData.eventDate.toDateString() : 'Not specified'}, Start Time: ${formData.eventTime || 'Not specified'}, Budget: $${formData.budget}.
     `;
-
+  
     const updatedInquiry = {
       ...formData,
       inquiryDate: inquiryDate.toISOString(),
@@ -191,32 +162,34 @@ export default function hmykyDynamicOfferForm() {
         },
       ],
     };
-
+  
     try {
-      // Update the inquiry in the ChannelManager collection
-      await updateInquiryInChannelManager(formData.inquiryId, updatedInquiry);
-
-      // Send the updated data to the specified Zapier webhook
-      const zapResponse = await fetch(zapierWebhookUrl, {
-        method: 'POST',
-        body: JSON.stringify(updatedInquiry),
+      // Call the existing update-inquiry API route
+      const response = await fetch('/api/update-inquiry', {
+        method: 'PUT',
+        body: JSON.stringify({
+          inquiryId: formData.inquiryId,
+          webhookUrl: zapierWebhookUrl, // Include the webhook URL
+          ...updatedInquiry, // Spread the updated inquiry data
+        }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
-      if (!zapResponse.ok) {
-        throw new Error('Failed to trigger Zapier webhook');
+  
+      if (!response.ok) {
+        throw new Error('Failed to update inquiry in the database');
       }
-
-      console.log('Zapier webhook triggered successfully.');
-
+  
+      console.log('Inquiry updated successfully.');
+  
       // Redirect to the event brochure page
       router.push(`/event-brochure?id=${formData.inquiryId}`);
     } catch (error) {
       console.error('Error submitting offer:', error);
     }
   };
+  
   
   
   
