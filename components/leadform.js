@@ -31,7 +31,7 @@ export default function LeadForm() {
     isAvailable: ''
   });
 
-  const [isLoading, setIsLoading] = useState(false); // State for loading overlay
+  const [isLoading, setIsLoading] = useState(false); // Loading state
   const router = useRouter();
 
   useEffect(() => {
@@ -66,13 +66,13 @@ export default function LeadForm() {
         'America/Chicago'
       ).toDate();
       
-      const eventTimeCST = moment(time).tz('America/Chicago').format('h:mm A'); 
+      const eventTimeCST = moment(time).tz('America/Chicago').format('h:mm A');
 
       setFormData((prevData) => ({
         ...prevData,
         eventTime: time,
         startTime: combinedDateTime,
-        eventTimeCST, 
+        eventTimeCST,
       }));
     } else {
       console.error('Invalid date or time');
@@ -106,7 +106,7 @@ export default function LeadForm() {
       data.hoursNeeded >= 3 &&
       (data.lookingFrom === 'One week' || data.lookingFrom === 'Two weeks') &&
       (data.planningToBook === 'Two weeks' || data.planningToBook === 'A month') &&
-      (data.helpNeeded === 'Ask the team a question'  || data.helpNeeded === 'Learn more about this venue' || data.helpNeeded === 'Make a reservation')
+      (data.helpNeeded === 'Ask the team a question' || data.helpNeeded === 'Learn more about this venue' || data.helpNeeded === 'Make a reservation')
     ) {
       profile = 'Low';
     } else if (
@@ -158,11 +158,11 @@ export default function LeadForm() {
       customerProfile,
       startTime: formData.startTime.toISOString(),
       isAvailable,
-      eventTimeCST: formData.eventTimeCST, 
+      eventTimeCST: formData.eventTimeCST,
     };
 
     const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/2tyjxvh/';
-    
+
     try {
       await fetch(`/api/update-inquiry?inquiryId=${inquiryId}`, {
         method: 'PUT',
@@ -217,7 +217,7 @@ export default function LeadForm() {
   return (
     <section className="py-20 bg-gray-100 flex items-center justify-center min-h-screen relative">
       {isLoading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
           <div className="text-white text-lg font-bold">Loading...</div>
         </div>
       )}
@@ -269,7 +269,7 @@ export default function LeadForm() {
               className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             >
-              <option value="" disabled>Select an option</option>
+              <option value="" disabled selected>Select an option</option>
               <option value="One week">One week or less</option>
               <option value="Two weeks">Two weeks to a month</option>
               <option value="A month">Over a month</option>
@@ -285,7 +285,7 @@ export default function LeadForm() {
               className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             >
-              <option value="" disabled>Select an option</option>
+              <option value="" disabled selected>Select an option</option>
               <option value="One week">One week or less</option>
               <option value="Two weeks">Two weeks to a month</option>
               <option value="A month">Over a month</option>
@@ -301,7 +301,7 @@ export default function LeadForm() {
               className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             >
-              <option value="" disabled>Select an option</option>
+              <option value="" disabled selected>Select an option</option>
               <option value="Learn more about this venue">Learn more about this venue</option>
               <option value="Ask the team a question">Ask the team a question</option>
               <option value="Make a reservation">Make a reservation</option>
