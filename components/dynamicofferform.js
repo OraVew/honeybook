@@ -141,7 +141,7 @@ export default function hmykyDynamicOfferForm() {
 
   const handleSubmit = async (offerName, offerDetails) => {
     const inquiryDate = new Date();
-    const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/21h7vza/'; // Ensure the correct Zapier Webhook URL is used
+    const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/21h7vza/';
   
     // Include the selected offer as an object within the inquiry data
     const offerObject = {
@@ -165,20 +165,22 @@ export default function hmykyDynamicOfferForm() {
     // Prepare the new message to be appended to the existing inquiry
     const newMessage = {
       timeSent: new Date(),
-      guestMessage: guestMessage.trim(), // Trim any extra whitespace
+      guestMessage: guestMessage.trim(),
       sender: 'Customer',
-      threadId: `${formData.name}-${formData.inquiryId}-Website`, // Constructed threadId
+      threadId: `${formData.name}-${formData.inquiryId}-Book.OraVew.com`,
     };
   
     try {
-      // First, update the inquiry in MongoDB
-      const response = await fetch(`/api/update-inquiry?inquiryId=${formData.inquiryId}`, {
+      // Update the inquiry in MongoDB
+      const response = await fetch(`/api/update-inquiry`, {
         method: 'PUT',
         body: JSON.stringify({
-          ...formData, // Include all form data
+          _id: formData._id, // Use _id for the Inquiry collection
+          inquiryId: formData.inquiryId,
+          ...formData,
           inquiryDate: inquiryDate.toISOString(),
-          selectedOffer: offerObject, // Add the offer object to the inquiry data
-          webhookUrl: zapierWebhookUrl, // Ensure webhookUrl is included in the request
+          selectedOffer: offerObject,
+          webhookUrl: zapierWebhookUrl,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -193,7 +195,7 @@ export default function hmykyDynamicOfferForm() {
       await fetch(`/api/update-channel-manager-inquiry`, {
         method: 'PUT',
         body: JSON.stringify({
-          inquiryId: formData.inquiryId,
+          inquiryId: formData.inquiryId, // Use inquiryId for ChannelManager
           newMessage,
         }),
         headers: {
@@ -207,6 +209,8 @@ export default function hmykyDynamicOfferForm() {
       console.error('Error submitting offer:', error);
     }
   };
+  
+  
   
   
   

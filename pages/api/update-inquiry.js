@@ -11,8 +11,8 @@ export default async function handler(req, res) {
       const client = await clientPromise;
       const db = client.db("BookOraVew");
 
-      // Extract the inquiryId and webhookUrl from the request body
-      const { inquiryId, webhookUrl, ...updatedInquiry } = req.body;
+      // Extract the _id, inquiryId, and webhookUrl from the request body
+      const { _id, inquiryId, webhookUrl, ...updatedInquiry } = req.body;
 
       // Log the received webhookUrl to check if it's being passed correctly
       console.log('Received Webhook URL:', webhookUrl);
@@ -23,22 +23,22 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Webhook URL is required' });
       }
 
-      // Ensure inquiryId is present
-      if (!inquiryId) {
-        return res.status(400).json({ error: 'Inquiry ID is required' });
+      // Ensure _id is present
+      if (!_id) {
+        return res.status(400).json({ error: '_id is required' });
       }
 
-      // Validate if inquiryId is a valid ObjectId
+      // Convert _id to ObjectId
       let objectId;
       try {
-        objectId = new ObjectId(inquiryId);
+        objectId = new ObjectId(_id); // Use the correct _id from the Inquiry collection
       } catch (e) {
-        console.error('Invalid inquiryId:', inquiryId);
-        return res.status(400).json({ error: 'Invalid Inquiry ID' });
+        console.error('Invalid _id:', _id);
+        return res.status(400).json({ error: 'Invalid _id' });
       }
 
       // Log the inquiry ID and data before updating
-      console.log('Updating inquiry with ID:', inquiryId);
+      console.log('Updating inquiry with ID:', _id);
       console.log('Updated inquiry data:', updatedInquiry);
 
       // Update the inquiry in MongoDB (without the webhookUrl)
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
       );
 
       if (result.matchedCount === 0) {
-        console.error('Inquiry not found:', inquiryId);
+        console.error('Inquiry not found:', _id);
         return res.status(404).json({ error: 'Inquiry not found' });
       }
 

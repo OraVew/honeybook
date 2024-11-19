@@ -7,7 +7,7 @@ export default async function handler(req, res) {
       const db = client.db('BookOraVew');
 
       // Extract the inquiryId and new message from the request body
-      const { inquiryId, newMessage } = JSON.parse(req.body);
+      const { inquiryId, newMessage } = req.body; // No need for JSON.parse
 
       // Ensure inquiryId and newMessage are provided
       if (!inquiryId || !newMessage) {

@@ -130,11 +130,11 @@ export default function LeadForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // Ensure that inquiryId exists
-    const inquiryId = formData.inquiryId;
-    if (!inquiryId) {
-      console.error('Inquiry ID is missing');
-      window.alert('Inquiry ID is missing. Please try again.');
+    // Ensure that _id exists
+    const _id = formData._id; // This should be the _id from the Inquiry collection
+    if (!_id) {
+      console.error('_id is missing');
+      window.alert('_id is missing. Please try again.');
       return;
     }
   
@@ -178,16 +178,18 @@ export default function LeadForm() {
       timeSent: new Date(),
       guestMessage: guestMessage.trim(), // Trim any extra whitespace
       sender: 'Customer',
-      threadId: `${formData.name}-${inquiryId}-Website`, // Constructed threadId
+      threadId: `${formData.name}-${formData.inquiryId}-Book.OraVew.com`, // Constructed threadId
     };
   
     const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/2tyjxvh/';
   
     try {
       // Call the existing update-inquiry API to handle other updates
-      await fetch(`/api/update-inquiry?inquiryId=${inquiryId}`, {
+      await fetch(`/api/update-inquiry`, {
         method: 'PUT',
         body: JSON.stringify({
+          _id, // Use _id for the Inquiry collection
+          inquiryId: formData.inquiryId,
           ...formData,
           customerProfile,
           isAvailable,
@@ -204,7 +206,7 @@ export default function LeadForm() {
       await fetch(`/api/update-channel-manager-inquiry`, {
         method: 'PUT',
         body: JSON.stringify({
-          inquiryId,
+          inquiryId: formData.inquiryId,
           newMessage,
         }),
         headers: {
@@ -216,7 +218,7 @@ export default function LeadForm() {
       await fetch(zapierWebhookUrl, {
         method: 'POST',
         body: JSON.stringify({
-          inquiryId,
+          inquiryId: formData.inquiryId,
           ...formData,
           customerProfile,
           isAvailable,
@@ -233,7 +235,7 @@ export default function LeadForm() {
       const encodedFormData = encodeURIComponent(JSON.stringify(formData));
       router.push({
         pathname: '/dynamicoffer',
-        query: { data: encodedFormData, inquiryId },
+        query: { data: encodedFormData, inquiryId: formData.inquiryId },
       });
     } catch (error) {
       console.error('Error updating inquiry:', error);
