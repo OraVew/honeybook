@@ -1,3 +1,4 @@
+// /api/update-inquiry.js
 import clientPromise from '../../lib/mongodb';
 import { ObjectId } from 'mongodb';
 
@@ -41,7 +42,7 @@ export default async function handler(req, res) {
       console.log('Updating inquiry with ID:', inquiryId);
       console.log('Updated inquiry data:', updatedInquiry);
 
-      // Update the inquiry in MongoDB (without the webhookUrl)
+      // Update the inquiry in the "Inquiry" collection (without the webhookUrl)
       const result = await db.collection("Inquiry").updateOne(
         { _id: objectId }, // Use the validated ObjectId
         { $set: updatedInquiry } // Only store fields other than webhookUrl
@@ -53,6 +54,47 @@ export default async function handler(req, res) {
       }
 
       console.log('Inquiry updated in MongoDB:', updatedInquiry);
+
+      // Prepare the new message to append
+      const newMessage = {
+        timeSent: new Date(),
+        guestMessage: `Updated Inquiry Details:
+        - Name: ${updatedInquiry.name}
+        - Email: ${updatedInquiry.email}
+        - Phone: ${updatedInquiry.phone}
+        - Event Date: ${updatedInquiry.eventDate}
+        - Event Time (CST): ${updatedInquiry.eventTimeCST || 'N/A'}
+        - Start Time: ${updatedInquiry.startTime ? new Date(updatedInquiry.startTime).toLocaleString() : 'N/A'}
+        - Event Duration: ${updatedInquiry.eventDuration || 'N/A'} hours
+        - Venue Search Duration: ${updatedInquiry.venueSearchDuration || 'N/A'}
+        - Secure Venue Urgency: ${updatedInquiry.secureVenueUrgency || 'N/A'}
+        - Help Needed: ${updatedInquiry.helpNeeded || 'N/A'}
+        - Guest Count: ${updatedInquiry.guestCount}
+        - Budget: $${updatedInquiry.budget}
+        - How Did You Find Us: ${updatedInquiry.howDidYouFindUs || 'N/A'}
+        - Event Type: ${updatedInquiry.eventType || 'N/A'}
+        - Inquiry Date: ${updatedInquiry.inquiryDate ? new Date(updatedInquiry.inquiryDate).toLocaleString() : 'N/A'}
+        - Hours Needed: ${updatedInquiry.hoursNeeded}
+        - Looking From: ${updatedInquiry.lookingFrom || 'N/A'}
+        - Planning to Book: ${updatedInquiry.planningToBook || 'N/A'}
+        - Customer Profile: ${updatedInquiry.customerProfile || 'N/A'}
+        - Availability Status: ${updatedInquiry.isAvailable ? 'Available' : 'Not Available'}`,
+        sender: 'Customer',
+        threadId: inquiryId,
+      };
+
+      // Update the "ChannelManager" collection to append the new message
+      const channelManagerUpdateResult = await db.collection("ChannelManager").updateOne(
+        { inquiryId: inquiryId }, // Use the inquiryId to find the correct document
+        { $push: { messages: newMessage }, $set: { lastUpdatedAt: new Date() } } // Append the new message and update lastUpdatedAt
+      );
+
+      if (channelManagerUpdateResult.matchedCount === 0) {
+        console.error('ChannelManager entry not found:', inquiryId);
+        return res.status(404).json({ error: 'ChannelManager entry not found' });
+      }
+
+      console.log('ChannelManager entry updated successfully with new message.');
 
       // Send the updated data to the specified Zapier webhook (including webhookUrl)
       const zapResponse = await fetch(webhookUrl, {

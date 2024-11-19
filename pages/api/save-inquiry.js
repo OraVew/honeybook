@@ -9,10 +9,37 @@ export default async function handler(req, res) {
 
       const inquiryData = req.body;
 
-      // Insert the inquiry data into the "Inquiry" collection in MongoDB
+      // Insert the inquiry data into the "Inquiry" collection
       const result = await db.collection("Inquiry").insertOne(inquiryData);
 
-      // Respond with success (No Zapier call here, let /api/qualifyproxy handle it)
+      // Create a structured object for the "ChannelManager" collection
+      const channelManagerData = {
+        inquiryId: result.insertedId.toString(), // Unique identifier
+        customerName: inquiryData.name,
+        replyTo: inquiryData.phone, // Using phone as 'replyTo'
+        eventDateAndTime: new Date(inquiryData.eventDate),
+        attendeeCount: parseInt(inquiryData.guestCount, 10),
+        payout: inquiryData.budget,
+        addOns: '', // Fill this in as needed
+        platform: 'Book.OraVew.com', // Fill this in as needed
+        threadId: result.insertedId.toString(), // Fill this in as needed or generate one if necessary
+        inquiryStatus: 'open', // Default status
+        messages: [
+          {
+            timeSent: new Date(),
+            guestMessage: `Initial inquiry: ${inquiryData.eventType}, ${inquiryData.budget}, ${inquiryData.bestTimeToContact}`,
+            sender: 'Customer',
+            threadId: result.insertedId.toString(), // Same as above or use a placeholder
+          },
+        ],
+        createdAt: new Date(),
+        lastUpdatedAt: new Date(),
+      };
+
+      // Insert the structured object into the "ChannelManager" collection
+      await db.collection("ChannelManager").insertOne(channelManagerData);
+
+      // Respond with success
       res.status(201).json({ message: 'Inquiry saved successfully', id: result.insertedId });
     } catch (error) {
       console.error('Error saving inquiry:', error);
