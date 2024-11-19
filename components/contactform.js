@@ -19,9 +19,6 @@ export default function ContactForm() {
   });
 
 
-  const formattedEventDate = moment(formData.eventDate)
-  .tz('America/Chicago')
-  .format('MMMM Do, YYYY'); // Format in CST
 
   const [isEmailFilled, setIsEmailFilled] = useState(false);
   const router = useRouter();
@@ -48,27 +45,32 @@ export default function ContactForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // Ensure the eventDate is properly formatted in CST before submission
+    const formattedEventDate = formData.eventDate
+      ? moment(formData.eventDate).tz('America/Chicago').format('MMMM Do, YYYY')
+      : 'Not specified';
+  
     const inquiryDate = new Date();
-
+  
     // Construct the guest message
     const guestMessage = `
       Name: ${formData.name}, 
       Phone: ${formData.phone}, 
       Email: ${formData.email}, 
-      Event Date: ${formData.eventDate ? formData.eventDate.toDateString() : 'Not specified'}, 
+      Event Date: ${formattedEventDate}, 
       Guest Count: ${formData.guestCount}, 
       Budget: $${formData.budget}, 
       Best Time to Contact: ${formData.bestTimeToContact}, 
       Event Type: ${formData.eventType}.
     `;
-
+  
     // Prepare the inquiry data according to your schema
     const inquiryData = {
       inquiryId: `${Date.now()}-${formData.name}`,
       customerName: formData.name,
       replyTo: formData.email,
-      eventDateAndTime: formattedEventDate,
+      eventDateAndTime: formattedEventDate, // Use the formatted date
       attendeeCount: Number(formData.guestCount),
       payout: `$${formData.budget}`,
       addOns: '', // Customize as needed
@@ -89,7 +91,7 @@ export default function ContactForm() {
       bestTimeToContact: formData.bestTimeToContact,
       eventType: formData.eventType,
     };
-
+  
     try {
       // Send data to the API
       const response = await fetch('/api/save-inquiry', {
@@ -99,11 +101,11 @@ export default function ContactForm() {
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (response.ok) {
         const result = await response.json();
         const inquiryId = result.id;
-
+  
         // Optionally, send data to Zapier or other services
         const zapierWebhookUrl = '/api/proxy';
         await fetch(zapierWebhookUrl, {
@@ -117,7 +119,7 @@ export default function ContactForm() {
             'Content-Type': 'application/json',
           },
         });
-
+  
         // Navigate to the inquiry page
         const encodedFormData = encodeURIComponent(
           JSON.stringify({ ...formData, inquiryDate: inquiryDate.toISOString(), inquiryId })
@@ -130,6 +132,7 @@ export default function ContactForm() {
       console.error('Error submitting form data:', error);
     }
   };
+  
 
   return (
     <section id="contactForm" className="py-20 bg-gray-100">
