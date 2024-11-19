@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './leadform.css'; // Importing the new CSS file
 import moment from 'moment-timezone'; // Import moment-timezone for timezone handling
 import UrgencyMeter from './urgencymeter.js'; // Adjust path as needed
-import clientPromise from '../../lib/mongodb'; // Import MongoDB client
+import clientPromise from '../lib/mongodb'; // Import MongoDB client
 
 // Helper function to update the inquiry in ChannelManager
 async function updateInquiryInChannelManager(inquiryId, updatedInquiry) {

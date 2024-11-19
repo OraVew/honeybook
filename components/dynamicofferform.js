@@ -9,7 +9,7 @@ import NotIdealComponent from './notidealcomponent';
 import SpecialPackagesComponent from './specialpackagescomponent';
 import moment from 'moment'; // Import moment.js for time calculations
 import './deposittour.css'; // Import the new CSS file
-import clientPromise from '../../lib/mongodb'; // Import MongoDB client
+import clientPromise from '../lib/mongodb'; // Import MongoDB client
 
 // Helper function to update the inquiry in ChannelManager
 async function updateInquiryInChannelManager(inquiryId, updatedInquiry) {

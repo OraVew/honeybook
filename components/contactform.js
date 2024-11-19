@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './contactform.css';
 import { useRouter } from 'next/router';
-import clientPromise from '../../lib/mongodb'; // Import MongoDB client
+import clientPromise from '../lib/mongodb'; // Import MongoDB client
 
 // Helper function to save the inquiry to ChannelManager
 async function saveInquiryToChannelManager(inquiryData) {
