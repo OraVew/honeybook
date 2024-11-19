@@ -3,6 +3,21 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './contactform.css';
 import { useRouter } from 'next/router';
+import clientPromise from '../../lib/mongodb'; // Import MongoDB client
+
+// Helper function to save the inquiry to ChannelManager
+async function saveInquiryToChannelManager(inquiryData) {
+  try {
+    const client = await clientPromise;
+    const db = client.db("BookOraVew");
+    const collection = db.collection("ChannelManager");
+
+    await collection.insertOne(inquiryData);
+    console.log("Inquiry saved successfully in ChannelManager.");
+  } catch (error) {
+    console.error("Error saving inquiry to ChannelManager:", error);
+  }
+}
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -45,6 +60,18 @@ export default function ContactForm() {
     const inquiryDate = new Date();
     const apiUrl = '/api/save-inquiry';
 
+    // Construct a guestMessage from form submission details
+    const guestMessage = `
+      Name: ${formData.name}, 
+      Phone: ${formData.phone}, 
+      Email: ${formData.email}, 
+      Event Date: ${formData.eventDate ? formData.eventDate.toDateString() : 'Not specified'}, 
+      Guest Count: ${formData.guestCount}, 
+      Budget: $${formData.budget}, 
+      Best Time to Contact: ${formData.bestTimeToContact}, 
+      Event Type: ${formData.eventType}.
+    `;
+
     try {
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -61,6 +88,34 @@ export default function ContactForm() {
 
       if (response.ok && result.id) {
         const inquiryId = result.id;
+
+        // Create inquiry object for ChannelManager
+        const inquiryData = {
+          inquiryId,
+          customerName: formData.name,
+          replyTo: formData.email,
+          eventDateAndTime: formData.eventDate,
+          attendeeCount: Number(formData.guestCount),
+          payout: formData.budget,
+          addOns: '', // Customize as needed
+          platform: 'Direct Lead',
+          threadId: `${formData.name}-${inquiryId}-DirectLead`,
+          inquiryStatus: 'open',
+          messages: [
+            {
+              timeSent: new Date(),
+              guestMessage: guestMessage.trim(),
+              sender: 'Customer',
+              threadId: `${formData.name}-${inquiryId}-DirectLead`,
+            },
+          ],
+          createdAt: new Date(),
+          lastUpdatedAt: new Date(),
+        };
+
+        // Save to ChannelManager
+        await saveInquiryToChannelManager(inquiryData);
+
         const zapierWebhookUrl = '/api/proxy';
         await fetch(zapierWebhookUrl, {
           method: 'POST',
@@ -241,3 +296,4 @@ export default function ContactForm() {
     </section>
   );
 }
+

@@ -7,63 +7,86 @@ import DownsellComponent from './downsellcomponent';
 import FAQsComponent from './faqscomponent';
 import NotIdealComponent from './notidealcomponent';
 import SpecialPackagesComponent from './specialpackagescomponent';
-import moment from 'moment';  // Import moment.js for time calculations
+import moment from 'moment'; // Import moment.js for time calculations
 import './deposittour.css'; // Import the new CSS file
+import clientPromise from '../../lib/mongodb'; // Import MongoDB client
+
+// Helper function to update the inquiry in ChannelManager
+async function updateInquiryInChannelManager(inquiryId, updatedInquiry) {
+  try {
+    const client = await clientPromise;
+    const db = client.db("BookOraVew");
+    const collection = db.collection("ChannelManager");
+
+    // Update the inquiry data in the ChannelManager collection
+    const result = await collection.updateOne(
+      { inquiryId: inquiryId },
+      { $set: updatedInquiry }
+    );
+
+    if (result.matchedCount === 0) {
+      console.error('Inquiry not found:', inquiryId);
+      throw new Error('Inquiry not found');
+    }
+    console.log("Inquiry updated successfully in ChannelManager.");
+  } catch (error) {
+    console.error("Error updating inquiry in ChannelManager:", error);
+    throw new Error("Database operation failed.");
+  }
+}
 
 export default function hmykyDynamicOfferForm() {
   const router = useRouter();
-  const [customerProfile, setCustomerProfile] = useState(''); 
-  const [timeOfDay, setTimeOfDay] = useState('');  
-  const [dayType, setDayType] = useState(''); 
+  const [customerProfile, setCustomerProfile] = useState('');
+  const [timeOfDay, setTimeOfDay] = useState('');
+  const [dayType, setDayType] = useState('');
   const [formData, setFormData] = useState({
     eventDate: '',
-    name: '',     
+    name: '',
     email: '',
-    phone: '',    
-    eventTime: '',   
-    startTime: '',    
-    helpNeeded: '',    
-    inquiryId: '',  
+    phone: '',
+    eventTime: '',
+    startTime: '',
+    helpNeeded: '',
+    inquiryId: '',
     guestCount: 0,
     budget: 0,
     howDidYouFindUs: '',
     eventType: '',
-    inquiryDate: '',   
+    inquiryDate: '',
     hoursNeeded: 0,
     lookingFrom: '',
     planningToBook: '',
     customerProfile: '',
   });
-  
 
   useEffect(() => {
     if (router.query.data) {
       try {
         const decodedData = JSON.parse(decodeURIComponent(router.query.data));
-  
+
         setFormData({
-          eventDate: decodedData.eventDate || '',         // Event Date
-          name: decodedData.name || '',                   // Name
-          email: decodedData.email || '',                 // Email
-          phone: decodedData.phone || '',                 // Phone
-          eventTime: decodedData.eventTime || '',         // Event Time
-          startTime: decodedData.startTime || '',         // Start Time
-          helpNeeded: decodedData.helpNeeded || '',       // Help Needed
-          inquiryId: decodedData.inquiryId || '',         // Inquiry ID
-          guestCount: Number(decodedData.guestCount) || 0, // Guest Count
-          budget: Number(decodedData.budget) || 0,        // Budget
-          howDidYouFindUs: decodedData.howDidYouFindUs || '', // How Did You Find Us
-          eventType: decodedData.eventType || '',         // Event Type
-          inquiryDate: decodedData.inquiryDate || '',     // Inquiry Date
-          hoursNeeded: Number(decodedData.hoursNeeded) || 0, // Hours Needed
-          lookingFrom: decodedData.lookingFrom || '',     // Looking From
-          planningToBook: decodedData.planningToBook || '', // Planning To Book
+          eventDate: decodedData.eventDate || '',
+          name: decodedData.name || '',
+          email: decodedData.email || '',
+          phone: decodedData.phone || '',
+          eventTime: decodedData.eventTime || '',
+          startTime: decodedData.startTime || '',
+          helpNeeded: decodedData.helpNeeded || '',
+          inquiryId: decodedData.inquiryId || '',
+          guestCount: Number(decodedData.guestCount) || 0,
+          budget: Number(decodedData.budget) || 0,
+          howDidYouFindUs: decodedData.howDidYouFindUs || '',
+          eventType: decodedData.eventType || '',
+          inquiryDate: decodedData.inquiryDate || '',
+          hoursNeeded: Number(decodedData.hoursNeeded) || 0,
+          lookingFrom: decodedData.lookingFrom || '',
+          planningToBook: decodedData.planningToBook || '',
         });
-        
-  
+
         calculateTimeOfDay(decodedData.eventTime, decodedData.hoursNeeded);
         calculateDayType(decodedData.eventDate);
-        determineProfile(decodedData);  
+        determineProfile(decodedData);
       } catch (error) {
         console.error('Error decoding data:', error);
       }
@@ -73,7 +96,7 @@ export default function hmykyDynamicOfferForm() {
   const calculateTimeOfDay = (startTime, hours) => {
     if (!startTime || !hours) return;
     const startMoment = moment(startTime, 'HH:mm');
-    const endMoment = startMoment.clone().add(hours, 'hours');  
+    const endMoment = startMoment.clone().add(hours, 'hours');
     if (endMoment.isAfter(moment('22:00', 'HH:mm'))) {
       setTimeOfDay('after-10pm');
     } else {
@@ -83,7 +106,7 @@ export default function hmykyDynamicOfferForm() {
 
   const calculateDayType = (eventDate) => {
     const eventMoment = moment(eventDate, 'YYYY-MM-DD');
-    const isWeekend = eventMoment.isoWeekday() >= 6; 
+    const isWeekend = eventMoment.isoWeekday() >= 6;
     setDayType(isWeekend ? 'weekend' : 'weekday');
   };
 
@@ -113,7 +136,7 @@ export default function hmykyDynamicOfferForm() {
       data.hoursNeeded >= 3 &&
       (data.lookingFrom === 'One week' || data.lookingFrom === 'Two weeks') &&
       (data.planningToBook === 'Two weeks' || data.planningToBook === 'A month') &&
-      (data.helpNeeded === 'Ask the team a question'  || data.helpNeeded === 'Learn more about this venue' || data.helpNeeded === 'Make a reservation')
+      (data.helpNeeded === 'Ask the team a question' || data.helpNeeded === 'Learn more about this venue' || data.helpNeeded === 'Make a reservation')
     ) {
       profile = 'Low';
     } else if (
@@ -128,47 +151,66 @@ export default function hmykyDynamicOfferForm() {
     } else {
       profile = 'NotIdeal';
     }
-  
-    // Set customer profile in the formData state
+
     setFormData((prevData) => ({
       ...prevData,
-      customerProfile: profile,  // Include customer profile in form data
+      customerProfile: profile,
     }));
-  
-    setCustomerProfile(profile); // Keep the existing setCustomerProfile call
+
+    setCustomerProfile(profile);
   };
-  
 
   const handleSubmit = async (offerName, offerDetails) => {
     const inquiryDate = new Date();
-    const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/21h7vza/'; // Ensure the correct Zapier Webhook URL is used
-    
+    const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/21h7vza/';
+
     // Include the selected offer as an object within the inquiry data
     const offerObject = {
       name: offerName,
       totalPrice: offerDetails.totalPrice,
-      descriptionItems: offerDetails.descriptionItems
+      descriptionItems: offerDetails.descriptionItems,
     };
-  
+
+    // Construct a guestMessage from form submission details
+    const guestMessage = `
+      Final Offer Selected: ${offerName}.
+      Total Price: $${offerDetails.totalPrice}.
+      Event Details: ${formData.name}, Email: ${formData.email}, Phone: ${formData.phone}, Event Date: ${formData.eventDate ? formData.eventDate.toDateString() : 'Not specified'}, Start Time: ${formData.eventTime || 'Not specified'}, Budget: $${formData.budget}.
+    `;
+
+    const updatedInquiry = {
+      ...formData,
+      inquiryDate: inquiryDate.toISOString(),
+      selectedOffer: offerObject,
+      messages: [
+        {
+          timeSent: new Date(),
+          guestMessage: guestMessage.trim(),
+          sender: 'Customer',
+          threadId: `${formData.name}-${formData.inquiryId}-DirectLead`,
+        },
+      ],
+    };
+
     try {
-      // First, update the inquiry in MongoDB, and ensure webhookUrl is passed in the request body
-      const response = await fetch(`/api/update-inquiry?inquiryId=${formData.inquiryId}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          ...formData,                // Include all form data
-          inquiryDate: inquiryDate.toISOString(),
-          selectedOffer: offerObject,  // Add the offer object to the inquiry data
-          webhookUrl: zapierWebhookUrl, // Ensure webhookUrl is included in the request
-        }),
+      // Update the inquiry in the ChannelManager collection
+      await updateInquiryInChannelManager(formData.inquiryId, updatedInquiry);
+
+      // Send the updated data to the specified Zapier webhook
+      const zapResponse = await fetch(zapierWebhookUrl, {
+        method: 'POST',
+        body: JSON.stringify(updatedInquiry),
         headers: {
           'Content-Type': 'application/json',
         },
       });
-  
-      if (!response.ok) {
-        throw new Error('Failed to update inquiry in MongoDB');
+
+      if (!zapResponse.ok) {
+        throw new Error('Failed to trigger Zapier webhook');
       }
-  
+
+      console.log('Zapier webhook triggered successfully.');
+
       // Redirect to the event brochure page
       router.push(`/event-brochure?id=${formData.inquiryId}`);
     } catch (error) {

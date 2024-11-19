@@ -5,29 +5,54 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './leadform.css'; // Importing the new CSS file
 import moment from 'moment-timezone'; // Import moment-timezone for timezone handling
 import UrgencyMeter from './urgencymeter.js'; // Adjust path as needed
+import clientPromise from '../../lib/mongodb'; // Import MongoDB client
+
+// Helper function to update the inquiry in ChannelManager
+async function updateInquiryInChannelManager(inquiryId, updatedInquiry) {
+  try {
+    const client = await clientPromise;
+    const db = client.db("BookOraVew");
+    const collection = db.collection("ChannelManager");
+
+    // Update the inquiry data in the ChannelManager collection
+    const result = await collection.updateOne(
+      { inquiryId: inquiryId },
+      { $set: updatedInquiry }
+    );
+
+    if (result.matchedCount === 0) {
+      console.error('Inquiry not found:', inquiryId);
+      throw new Error('Inquiry not found');
+    }
+    console.log("Inquiry updated successfully in ChannelManager.");
+  } catch (error) {
+    console.error("Error updating inquiry in ChannelManager:", error);
+    throw new Error("Database operation failed.");
+  }
+}
 
 export default function LeadForm() {
   const [formData, setFormData] = useState({
-    eventDate: '',        
+    eventDate: '',
     name: '',
     email: '',
     phone: '',
-    eventTime: null,       
-    startTime: null,       
-    eventDuration: '',     
-    venueSearchDuration: '', 
-    secureVenueUrgency: '',  
-    helpNeeded: '',        
-    inquiryId: '',         
+    eventTime: null,
+    startTime: null,
+    eventDuration: '',
+    venueSearchDuration: '',
+    secureVenueUrgency: '',
+    helpNeeded: '',
+    inquiryId: '',
     guestCount: 0,
     budget: 0,
     howDidYouFindUs: '',
     eventType: '',
-    inquiryDate: '',   
+    inquiryDate: '',
     hoursNeeded: 0,
     lookingFrom: '',
     planningToBook: '',
-    customerProfile: '',  // Add customerProfile to the form data
+    customerProfile: '',
     isAvailable: ''
   });
 
@@ -66,14 +91,14 @@ export default function LeadForm() {
         `${moment(formData.eventDate).format('YYYY-MM-DD')} ${moment(time).format('HH:mm')}`,
         'America/Chicago'
       ).toDate();
-      
+
       const eventTimeCST = moment(time).tz('America/Chicago').format('h:mm A'); // Extract time in CST
-  
+
       setFormData((prevData) => ({
         ...prevData,
         eventTime: time,
         startTime: combinedDateTime,
-        eventTimeCST,  // Store the time part as "Event Time CST"
+        eventTimeCST, // Store the time part as "Event Time CST"
       }));
     } else {
       console.error('Invalid date or time');
@@ -108,7 +133,7 @@ export default function LeadForm() {
       data.hoursNeeded >= 3 &&
       (data.lookingFrom === 'One week' || data.lookingFrom === 'Two weeks') &&
       (data.planningToBook === 'Two weeks' || data.planningToBook === 'A month') &&
-      (data.helpNeeded === 'Ask the team a question'  || data.helpNeeded === 'Learn more about this venue' || data.helpNeeded === 'Make a reservation')
+      (data.helpNeeded === 'Ask the team a question' || data.helpNeeded === 'Learn more about this venue' || data.helpNeeded === 'Make a reservation')
     ) {
       profile = 'Low';
     } else if (
@@ -129,7 +154,7 @@ export default function LeadForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Ensure that inquiryId exists
     const inquiryId = formData.inquiryId;
     if (!inquiryId) {
@@ -151,33 +176,62 @@ export default function LeadForm() {
       window.alert('The venue is not available at your selected time.');
       return;
     }
-    
+
     // Determine customer profile before submission
     const customerProfile = determineProfile(formData);
-    
-    // Update form data with customer profile
+
+    // Construct a guestMessage from form submission details
+    const guestMessage = `
+      Updated Event Details: 
+      Name: ${formData.name}, 
+      Email: ${formData.email}, 
+      Phone: ${formData.phone}, 
+      Event Date: ${formData.eventDate ? formData.eventDate.toDateString() : 'Not specified'}, 
+      Start Time: ${formData.eventTimeCST || 'Not specified'}, 
+      Hours Needed: ${formData.hoursNeeded}, 
+      Budget: $${formData.budget}, 
+      Help Needed: ${formData.helpNeeded}, 
+      Looking From: ${formData.lookingFrom}, 
+      Planning to Book: ${formData.planningToBook}.
+    `;
+
+    // Update form data with customer profile and additional details
     const updatedInquiry = {
       ...formData,
-      customerProfile, // Add customer profile to the data being sent
+      customerProfile,
       startTime: formData.startTime.toISOString(),
       isAvailable,
-      eventTimeCST: formData.eventTimeCST, // Include Event Time CST
+      eventTimeCST: formData.eventTimeCST,
+      messages: [
+        {
+          timeSent: new Date(),
+          guestMessage: guestMessage.trim(),
+          sender: 'Customer',
+          threadId: `${formData.name}-${inquiryId}-DirectLead`,
+        },
+      ],
     };
 
     const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/2tyjxvh/';
-    
 
     try {
-      await fetch(`/api/update-inquiry?inquiryId=${inquiryId}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-          ...updatedInquiry,
-          webhookUrl: zapierWebhookUrl,
-        }),
+      // Update the inquiry in the ChannelManager collection
+      await updateInquiryInChannelManager(inquiryId, updatedInquiry);
+
+      // Send the updated data to the specified Zapier webhook
+      const zapResponse = await fetch(zapierWebhookUrl, {
+        method: 'POST',
+        body: JSON.stringify(updatedInquiry),
         headers: {
           'Content-Type': 'application/json',
         },
       });
+
+      if (!zapResponse.ok) {
+        throw new Error('Failed to trigger Zapier webhook');
+      }
+
+      console.log('Zapier webhook triggered successfully.');
 
       // Redirect to the next page with the updated inquiry data
       const encodedFormData = encodeURIComponent(JSON.stringify(updatedInquiry));
@@ -216,6 +270,8 @@ export default function LeadForm() {
       return { isAvailable: false };
     }
   };
+
+
 
   return (
     <section className="py-20 bg-gray-100 flex items-center justify-center min-h-screen">

@@ -9,8 +9,8 @@ export default async function handler(req, res) {
 
       const inquiryData = req.body;
 
-      // Insert the inquiry data into the "Inquiry" collection in MongoDB
-      const result = await db.collection("Inquiry").insertOne(inquiryData);
+      // Insert the inquiry data into the "ChannelManager" collection in MongoDB
+      const result = await db.collection("ChannelManager").insertOne(inquiryData);
 
       // Respond with success (No Zapier call here, let /api/qualifyproxy handle it)
       res.status(201).json({ message: 'Inquiry saved successfully', id: result.insertedId });
