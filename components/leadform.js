@@ -221,7 +221,7 @@ export default function LeadForm() {
           <div className="text-white text-lg font-bold">Loading...</div>
         </div>
       )}
-      <div className="container mx-auto max-w-lg bg-white p-10 rounded shadow-lg">
+      <div className="container mx-auto max-w-lg bg-white p-10 rounded shadow-lg relative z-10">
         <div className="text-center">
           <h2 className="text-4xl font-bold text-yellow-600 uppercase">
             Great News, Your Date Has Some Availability <span className="text-red-600">But</span>
@@ -230,6 +230,7 @@ export default function LeadForm() {
         </div>
 
         <form className="mt-10" onSubmit={handleSubmit}>
+          {/* Form fields */}
           <div className="mb-8">
             <label className="block text-lg text-gray-800 font-bold mb-2">Ideal Event Start Time (CST)</label>
             <DatePicker
