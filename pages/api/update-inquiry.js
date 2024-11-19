@@ -42,10 +42,10 @@ export default async function handler(req, res) {
       console.log('Updating inquiry with ID:', inquiryId);
       console.log('Updated inquiry data:', updatedInquiry);
 
-      // Update the inquiry in the "Inquiry" collection (without the webhookUrl)
+      // Update the inquiry in the "Inquiry" collection, including selectedOffer
       const result = await db.collection("Inquiry").updateOne(
         { _id: objectId }, // Use the validated ObjectId
-        { $set: updatedInquiry } // Only store fields other than webhookUrl
+        { $set: { ...updatedInquiry, selectedOffer } } // Include all form data and selectedOffer
       );
 
       if (result.matchedCount === 0) {
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
         return res.status(404).json({ error: 'Inquiry not found' });
       }
 
-      console.log('Inquiry updated in MongoDB:', updatedInquiry);
+      console.log('Inquiry updated in MongoDB:', { ...updatedInquiry, selectedOffer });
 
       // Construct the guestMessage, including offer details
       const offerDetails = selectedOffer
@@ -98,7 +98,7 @@ export default async function handler(req, res) {
       // Send the updated data to the specified Zapier webhook (including webhookUrl)
       const zapResponse = await fetch(webhookUrl, {
         method: 'POST',
-        body: JSON.stringify(updatedInquiry), // Send full data to Zapier
+        body: JSON.stringify({ ...updatedInquiry, selectedOffer }), // Send full data, including selectedOffer, to Zapier
         headers: {
           'Content-Type': 'application/json',
         },
@@ -115,7 +115,7 @@ export default async function handler(req, res) {
       // Respond with success message
       return res.status(200).json({
         message: 'Inquiry updated successfully',
-        updatedInquiry,
+        updatedInquiry: { ...updatedInquiry, selectedOffer },
       });
 
     } catch (error) {
