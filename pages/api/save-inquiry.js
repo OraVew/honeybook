@@ -25,6 +25,7 @@ export default async function handler(req, res) {
         inquiryId: result.insertedId.toString(), // Unique identifier
         customerName: inquiryData.name,
         replyTo: inquiryData.phone, // Using phone as 'replyTo'
+        phone: inquiryData.phone, //
         eventDateAndTime: formattedEventDate, // Human-readable format
         attendeeCount: parseInt(inquiryData.guestCount, 10),
         payout: inquiryData.budget,
