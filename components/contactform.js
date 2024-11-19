@@ -17,6 +17,7 @@ export default function ContactForm() {
   });
 
   const [isEmailFilled, setIsEmailFilled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // State to manage loading overlay
   const router = useRouter();
 
   const handleDateChange = (date) => {
@@ -41,6 +42,7 @@ export default function ContactForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Show loading overlay
 
     const inquiryDate = new Date();
     const apiUrl = '/api/save-inquiry';
@@ -91,12 +93,19 @@ export default function ContactForm() {
       }
     } catch (error) {
       console.error('Error submitting form data:', error);
+    } finally {
+      setIsLoading(false); // Hide loading overlay
     }
   };
 
   return (
     <section id="contactForm" className="py-20 bg-gray-100">
-      <div className="container mx-auto max-w-lg bg-white p-8 rounded shadow-lg">
+      <div className="container mx-auto max-w-lg bg-white p-8 rounded shadow-lg relative">
+        {isLoading && (
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+            <div className="text-white text-lg font-bold">Loading...</div>
+          </div>
+        )}
         <div className="text-center">
           <h2 className="text-4xl font-bold text-gray-800">Check if we're a match!</h2>
           <p className="mt-4 text-lg text-gray-600">
