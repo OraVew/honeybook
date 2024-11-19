@@ -3,6 +3,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './contactform.css';
 import { useRouter } from 'next/router';
+import moment from 'moment-timezone'; // Import moment-timezone for time formatting
+
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -15,6 +17,11 @@ export default function ContactForm() {
     bestTimeToContact: '',
     eventType: '',
   });
+
+
+  const formattedEventDate = moment(formData.eventDate)
+  .tz('America/Chicago')
+  .format('MMMM Do, YYYY'); // Format in CST
 
   const [isEmailFilled, setIsEmailFilled] = useState(false);
   const router = useRouter();
@@ -61,7 +68,7 @@ export default function ContactForm() {
       inquiryId: `${Date.now()}-${formData.name}`,
       customerName: formData.name,
       replyTo: formData.email,
-      eventDateAndTime: formData.eventDate,
+      eventDateAndTime: formattedEventDate,
       attendeeCount: Number(formData.guestCount),
       payout: `$${formData.budget}`,
       addOns: '', // Customize as needed
@@ -70,7 +77,7 @@ export default function ContactForm() {
       inquiryStatus: 'open',
       messages: [
         {
-          timeSent: new Date(),
+          timeSent: new Date(), // Ensure this is set correctly
           guestMessage: guestMessage.trim(),
           sender: 'Customer',
           threadId: `${formData.name}-${Date.now()}-DirectLead`,

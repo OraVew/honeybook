@@ -175,6 +175,7 @@ export default function LeadForm() {
           threadId: `${formData.name}-${inquiryId}-DirectLead`,
         },
       ],
+      lastUpdatedAt: new Date(), // Ensure this is also updated
     };
 
     const zapierWebhookUrl = '/api/qualifyproxy';

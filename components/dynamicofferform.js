@@ -172,6 +172,7 @@ export default function hmykyDynamicOfferForm() {
           threadId: `${formData.name}-${formData.inquiryId}-DirectLead`,
         },
       ],
+      lastUpdatedAt: new Date(), // Ensure this is also updated
     };
 
     try {
