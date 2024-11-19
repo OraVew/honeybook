@@ -150,18 +150,14 @@ export default function LeadForm() {
 
     const customerProfile = determineProfile(formData);
 
-    const guestMessage = `
-      Updated Event Details: 
-      Name: ${formData.name}, 
-      Email: ${formData.email}, 
-      Phone: ${formData.phone}, 
-      Event Date: ${formData.eventDate ? formData.eventDate.toDateString() : 'Not specified'}, 
-      Start Time: ${formData.eventTimeCST || 'Not specified'}, 
-      Hours Needed: ${formData.hoursNeeded}, 
-      Budget: $${formData.budget}, 
-      Help Needed: ${formData.helpNeeded}, 
-      Looking From: ${formData.lookingFrom}, 
-      Planning to Book: ${formData.planningToBook}.
+    // Construct the new guest message with the additional information
+    const newGuestMessage = `
+      Additional Event Details: 
+      Event Duration: ${formData.eventDuration || 'Not specified'},
+      Venue Search Duration: ${formData.venueSearchDuration || 'Not specified'},
+      Urgency to Secure Venue: ${formData.secureVenueUrgency || 'Not specified'},
+      How You Found Us: ${formData.howDidYouFindUs || 'Not specified'},
+      Event Type: ${formData.eventType || 'Not specified'}.
     `;
 
     const updatedInquiry = {
@@ -171,9 +167,10 @@ export default function LeadForm() {
       isAvailable,
       eventTimeCST: formData.eventTimeCST,
       messages: [
+        ...(formData.messages || []),
         {
           timeSent: new Date(),
-          guestMessage: guestMessage.trim(),
+          guestMessage: newGuestMessage.trim(),
           sender: 'Customer',
           threadId: `${formData.name}-${inquiryId}-DirectLead`,
         },

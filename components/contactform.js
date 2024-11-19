@@ -44,7 +44,7 @@ export default function ContactForm() {
 
     const inquiryDate = new Date();
 
-    // Construct a guestMessage from form submission details
+    // Construct the guest message
     const guestMessage = `
       Name: ${formData.name}, 
       Phone: ${formData.phone}, 
@@ -56,20 +56,35 @@ export default function ContactForm() {
       Event Type: ${formData.eventType}.
     `;
 
-    // Prepare the inquiry data to be sent to the API
+    // Prepare the inquiry data according to your schema
     const inquiryData = {
-      ...formData,
-      inquiryDate: inquiryDate.toISOString(),
+      inquiryId: `${Date.now()}-${formData.name}`,
+      customerName: formData.name,
+      replyTo: formData.email,
+      eventDateAndTime: formData.eventDate,
+      attendeeCount: Number(formData.guestCount),
+      payout: `$${formData.budget}`,
+      addOns: '', // Customize as needed
+      platform: 'Direct Lead',
+      threadId: `${formData.name}-${Date.now()}-DirectLead`,
+      inquiryStatus: 'open',
       messages: [
         {
           timeSent: new Date(),
           guestMessage: guestMessage.trim(),
           sender: 'Customer',
+          threadId: `${formData.name}-${Date.now()}-DirectLead`,
         },
       ],
+      createdAt: new Date(),
+      lastUpdatedAt: new Date(),
+      // Additional form fields
+      bestTimeToContact: formData.bestTimeToContact,
+      eventType: formData.eventType,
     };
 
     try {
+      // Send data to the API
       const response = await fetch('/api/save-inquiry', {
         method: 'POST',
         body: JSON.stringify(inquiryData),
@@ -78,12 +93,11 @@ export default function ContactForm() {
         },
       });
 
-      const result = await response.json();
-
-      if (response.ok && result.id) {
+      if (response.ok) {
+        const result = await response.json();
         const inquiryId = result.id;
 
-        // Send data to Zapier if needed
+        // Optionally, send data to Zapier or other services
         const zapierWebhookUrl = '/api/proxy';
         await fetch(zapierWebhookUrl, {
           method: 'POST',
@@ -97,19 +111,11 @@ export default function ContactForm() {
           },
         });
 
-        // Navigate to the inquiry page with encoded form data
+        // Navigate to the inquiry page
         const encodedFormData = encodeURIComponent(
-          JSON.stringify({
-            ...formData,
-            inquiryDate: inquiryDate.toISOString(),
-            inquiryId,
-          })
+          JSON.stringify({ ...formData, inquiryDate: inquiryDate.toISOString(), inquiryId })
         );
-
-        router.push({
-          pathname: '/inquiry',
-          query: { data: encodedFormData, inquiryId },
-        });
+        router.push({ pathname: '/inquiry', query: { data: encodedFormData, inquiryId } });
       } else {
         throw new Error('Failed to save inquiry');
       }

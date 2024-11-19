@@ -134,26 +134,37 @@ export default function hmykyDynamicOfferForm() {
   const handleSubmit = async (offerName, offerDetails) => {
     const inquiryDate = new Date();
     const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/21h7vza/';
-  
+
     // Include the selected offer as an object within the inquiry data
     const offerObject = {
       name: offerName,
       totalPrice: offerDetails.totalPrice,
       descriptionItems: offerDetails.descriptionItems,
     };
-  
-    // Construct a guestMessage from form submission details
+
+    // Construct a new guestMessage with the updated details
     const guestMessage = `
       Final Offer Selected: ${offerName}.
       Total Price: $${offerDetails.totalPrice}.
-      Event Details: ${formData.name}, Email: ${formData.email}, Phone: ${formData.phone}, Event Date: ${formData.eventDate ? formData.eventDate.toDateString() : 'Not specified'}, Start Time: ${formData.eventTime || 'Not specified'}, Budget: $${formData.budget}.
+      Event Details: 
+      Name: ${formData.name}, 
+      Email: ${formData.email}, 
+      Phone: ${formData.phone}, 
+      Event Date: ${formData.eventDate ? formData.eventDate.toDateString() : 'Not specified'}, 
+      Event Time: ${formData.eventTime || 'Not specified'}, 
+      Budget: $${formData.budget}, 
+      Help Needed: ${formData.helpNeeded || 'Not specified'}, 
+      Hours Needed: ${formData.hoursNeeded || 'Not specified'}, 
+      Looking From: ${formData.lookingFrom || 'Not specified'}, 
+      Planning to Book: ${formData.planningToBook || 'Not specified'}.
     `;
-  
+
     const updatedInquiry = {
       ...formData,
       inquiryDate: inquiryDate.toISOString(),
       selectedOffer: offerObject,
       messages: [
+        ...(formData.messages || []),
         {
           timeSent: new Date(),
           guestMessage: guestMessage.trim(),
@@ -162,27 +173,27 @@ export default function hmykyDynamicOfferForm() {
         },
       ],
     };
-  
+
     try {
       // Call the existing update-inquiry API route
       const response = await fetch('/api/update-inquiry', {
         method: 'PUT',
         body: JSON.stringify({
           inquiryId: formData.inquiryId,
-          webhookUrl: zapierWebhookUrl, // Include the webhook URL
-          ...updatedInquiry, // Spread the updated inquiry data
+          webhookUrl: zapierWebhookUrl,
+          ...updatedInquiry,
         }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to update inquiry in the database');
       }
-  
+
       console.log('Inquiry updated successfully.');
-  
+
       // Redirect to the event brochure page
       router.push(`/event-brochure?id=${formData.inquiryId}`);
     } catch (error) {
