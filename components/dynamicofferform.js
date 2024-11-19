@@ -12,6 +12,7 @@ import './deposittour.css'; // Import the new CSS file
 
 export default function hmykyDynamicOfferForm() {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false); // State for loading overlay
   const [customerProfile, setCustomerProfile] = useState(''); 
   const [timeOfDay, setTimeOfDay] = useState('');  
   const [dayType, setDayType] = useState(''); 
@@ -34,7 +35,6 @@ export default function hmykyDynamicOfferForm() {
     planningToBook: '',
     customerProfile: '',
   });
-  
 
   useEffect(() => {
     if (router.query.data) {
@@ -42,25 +42,24 @@ export default function hmykyDynamicOfferForm() {
         const decodedData = JSON.parse(decodeURIComponent(router.query.data));
   
         setFormData({
-          eventDate: decodedData.eventDate || '',         // Event Date
-          name: decodedData.name || '',                   // Name
-          email: decodedData.email || '',                 // Email
-          phone: decodedData.phone || '',                 // Phone
-          eventTime: decodedData.eventTime || '',         // Event Time
-          startTime: decodedData.startTime || '',         // Start Time
-          helpNeeded: decodedData.helpNeeded || '',       // Help Needed
-          inquiryId: decodedData.inquiryId || '',         // Inquiry ID
-          guestCount: Number(decodedData.guestCount) || 0, // Guest Count
-          budget: Number(decodedData.budget) || 0,        // Budget
-          howDidYouFindUs: decodedData.howDidYouFindUs || '', // How Did You Find Us
-          eventType: decodedData.eventType || '',         // Event Type
-          inquiryDate: decodedData.inquiryDate || '',     // Inquiry Date
-          hoursNeeded: Number(decodedData.hoursNeeded) || 0, // Hours Needed
-          lookingFrom: decodedData.lookingFrom || '',     // Looking From
-          planningToBook: decodedData.planningToBook || '', // Planning To Book
+          eventDate: decodedData.eventDate || '',         
+          name: decodedData.name || '',                   
+          email: decodedData.email || '',                 
+          phone: decodedData.phone || '',                 
+          eventTime: decodedData.eventTime || '',         
+          startTime: decodedData.startTime || '',         
+          helpNeeded: decodedData.helpNeeded || '',       
+          inquiryId: decodedData.inquiryId || '',         
+          guestCount: Number(decodedData.guestCount) || 0, 
+          budget: Number(decodedData.budget) || 0,        
+          howDidYouFindUs: decodedData.howDidYouFindUs || '', 
+          eventType: decodedData.eventType || '',         
+          inquiryDate: decodedData.inquiryDate || '',     
+          hoursNeeded: Number(decodedData.hoursNeeded) || 0, 
+          lookingFrom: decodedData.lookingFrom || '',     
+          planningToBook: decodedData.planningToBook || '',
         });
         
-  
         calculateTimeOfDay(decodedData.eventTime, decodedData.hoursNeeded);
         calculateDayType(decodedData.eventDate);
         determineProfile(decodedData);  
@@ -129,21 +128,19 @@ export default function hmykyDynamicOfferForm() {
       profile = 'NotIdeal';
     }
   
-    // Set customer profile in the formData state
     setFormData((prevData) => ({
       ...prevData,
-      customerProfile: profile,  // Include customer profile in form data
+      customerProfile: profile,
     }));
   
-    setCustomerProfile(profile); // Keep the existing setCustomerProfile call
+    setCustomerProfile(profile);
   };
-  
 
   const handleSubmit = async (offerName, offerDetails) => {
+    setIsLoading(true); // Show loading overlay
     const inquiryDate = new Date();
-    const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/21h7vza/'; // Ensure the correct Zapier Webhook URL is used
+    const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/21h7vza/';
     
-    // Include the selected offer as an object within the inquiry data
     const offerObject = {
       name: offerName,
       totalPrice: offerDetails.totalPrice,
@@ -151,14 +148,13 @@ export default function hmykyDynamicOfferForm() {
     };
   
     try {
-      // First, update the inquiry in MongoDB, and ensure webhookUrl is passed in the request body
       const response = await fetch(`/api/update-inquiry?inquiryId=${formData.inquiryId}`, {
         method: 'PUT',
         body: JSON.stringify({
-          ...formData,                // Include all form data
+          ...formData,
           inquiryDate: inquiryDate.toISOString(),
-          selectedOffer: offerObject,  // Add the offer object to the inquiry data
-          webhookUrl: zapierWebhookUrl, // Ensure webhookUrl is included in the request
+          selectedOffer: offerObject,
+          webhookUrl: zapierWebhookUrl,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -169,19 +165,21 @@ export default function hmykyDynamicOfferForm() {
         throw new Error('Failed to update inquiry in MongoDB');
       }
   
-      // Redirect to the event brochure page
       router.push(`/event-brochure?id=${formData.inquiryId}`);
     } catch (error) {
       console.error('Error submitting offer:', error);
+    } finally {
+      setIsLoading(false); // Hide loading overlay
     }
   };
-  
-  
-  
-  
 
   return (
-    <section className="offer-section">
+    <section className="offer-section relative">
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="text-white text-lg font-bold">Loading...</div>
+        </div>
+      )}
       {/* Customer Profile: Ideal */}
       {customerProfile === 'Ideal' && (
         <>

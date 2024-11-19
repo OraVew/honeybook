@@ -102,7 +102,7 @@ export default function ContactForm() {
     <section id="contactForm" className="py-20 bg-gray-100">
       <div className="container mx-auto max-w-lg bg-white p-8 rounded shadow-lg relative">
         {isLoading && (
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="text-white text-lg font-bold">Loading...</div>
           </div>
         )}
@@ -250,3 +250,4 @@ export default function ContactForm() {
     </section>
   );
 }
+

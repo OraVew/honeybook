@@ -27,14 +27,14 @@ export default function LeadForm() {
     hoursNeeded: 0,
     lookingFrom: '',
     planningToBook: '',
-    customerProfile: '',  // Add customerProfile to the form data
+    customerProfile: '',  
     isAvailable: ''
   });
 
+  const [isLoading, setIsLoading] = useState(false); // State for loading overlay
   const router = useRouter();
 
   useEffect(() => {
-    // Decode the inquiry data passed through the route and set it into the form
     if (router.query.data) {
       const decodedData = JSON.parse(decodeURIComponent(router.query.data));
       setFormData((prevData) => ({
@@ -43,7 +43,6 @@ export default function LeadForm() {
       }));
     }
 
-    // Also capture the inquiryId from the route if available
     if (router.query.inquiryId) {
       setFormData((prevData) => ({
         ...prevData,
@@ -67,20 +66,19 @@ export default function LeadForm() {
         'America/Chicago'
       ).toDate();
       
-      const eventTimeCST = moment(time).tz('America/Chicago').format('h:mm A'); // Extract time in CST
-  
+      const eventTimeCST = moment(time).tz('America/Chicago').format('h:mm A'); 
+
       setFormData((prevData) => ({
         ...prevData,
         eventTime: time,
         startTime: combinedDateTime,
-        eventTimeCST,  // Store the time part as "Event Time CST"
+        eventTimeCST, 
       }));
     } else {
       console.error('Invalid date or time');
     }
   };
 
-  // Function to determine the customer profile based on form data
   const determineProfile = (data) => {
     let profile = '';
 
@@ -129,44 +127,42 @@ export default function LeadForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Ensure that inquiryId exists
+    setIsLoading(true); // Show loading overlay
+
     const inquiryId = formData.inquiryId;
     if (!inquiryId) {
       console.error('Inquiry ID is missing');
       window.alert('Inquiry ID is missing. Please try again.');
+      setIsLoading(false);
       return;
     }
 
-    // Ensure that startTime is valid before proceeding
     if (!formData.startTime || isNaN(new Date(formData.startTime).getTime())) {
       console.error('Invalid startTime');
       window.alert('Please provide a valid start time and date.');
+      setIsLoading(false);
       return;
     }
 
-    // Check availability before submitting
     const { isAvailable } = await checkAvailability(formData.startTime, formData.hoursNeeded);
     if (!isAvailable) {
       window.alert('The venue is not available at your selected time.');
+      setIsLoading(false);
       return;
     }
-    
-    // Determine customer profile before submission
+
     const customerProfile = determineProfile(formData);
-    
-    // Update form data with customer profile
+
     const updatedInquiry = {
       ...formData,
-      customerProfile, // Add customer profile to the data being sent
+      customerProfile,
       startTime: formData.startTime.toISOString(),
       isAvailable,
-      eventTimeCST: formData.eventTimeCST, // Include Event Time CST
+      eventTimeCST: formData.eventTimeCST, 
     };
 
     const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/2tyjxvh/';
     
-
     try {
       await fetch(`/api/update-inquiry?inquiryId=${inquiryId}`, {
         method: 'PUT',
@@ -179,7 +175,6 @@ export default function LeadForm() {
         },
       });
 
-      // Redirect to the next page with the updated inquiry data
       const encodedFormData = encodeURIComponent(JSON.stringify(updatedInquiry));
       router.push({
         pathname: '/dynamicoffer',
@@ -187,6 +182,8 @@ export default function LeadForm() {
       });
     } catch (error) {
       console.error('Error updating inquiry:', error);
+    } finally {
+      setIsLoading(false); // Hide loading overlay
     }
   };
 
@@ -218,7 +215,12 @@ export default function LeadForm() {
   };
 
   return (
-    <section className="py-20 bg-gray-100 flex items-center justify-center min-h-screen">
+    <section className="py-20 bg-gray-100 flex items-center justify-center min-h-screen relative">
+      {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="text-white text-lg font-bold">Loading...</div>
+        </div>
+      )}
       <div className="container mx-auto max-w-lg bg-white p-10 rounded shadow-lg">
         <div className="text-center">
           <h2 className="text-4xl font-bold text-yellow-600 uppercase">
@@ -266,7 +268,7 @@ export default function LeadForm() {
               className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             >
-              <option value="" disabled selected>Select an option</option>
+              <option value="" disabled>Select an option</option>
               <option value="One week">One week or less</option>
               <option value="Two weeks">Two weeks to a month</option>
               <option value="A month">Over a month</option>
@@ -282,7 +284,7 @@ export default function LeadForm() {
               className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             >
-              <option value="" disabled selected>Select an option</option>
+              <option value="" disabled>Select an option</option>
               <option value="One week">One week or less</option>
               <option value="Two weeks">Two weeks to a month</option>
               <option value="A month">Over a month</option>
@@ -298,7 +300,7 @@ export default function LeadForm() {
               className="w-full p-4 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
               required
             >
-              <option value="" disabled selected>Select an option</option>
+              <option value="" disabled>Select an option</option>
               <option value="Learn more about this venue">Learn more about this venue</option>
               <option value="Ask the team a question">Ask the team a question</option>
               <option value="Make a reservation">Make a reservation</option>
