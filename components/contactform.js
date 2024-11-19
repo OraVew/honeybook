@@ -46,7 +46,7 @@ export default function ContactForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // Ensure the eventDate is properly formatted in CST before submission
+    // Ensure the eventDate is properly formatted in CST before submission, excluding time
     const formattedEventDate = formData.eventDate
       ? moment(formData.eventDate).tz('America/Chicago').format('MMMM Do, YYYY')
       : 'Not specified';
@@ -70,7 +70,7 @@ export default function ContactForm() {
       inquiryId: `${Date.now()}-${formData.name}`,
       customerName: formData.name,
       replyTo: formData.email,
-      eventDateAndTime: formattedEventDate, // Use the formatted date
+      eventDateAndTime: formattedEventDate, // Use the formatted date without time
       attendeeCount: Number(formData.guestCount),
       payout: `$${formData.budget}`,
       addOns: '', // Customize as needed
@@ -132,6 +132,7 @@ export default function ContactForm() {
       console.error('Error submitting form data:', error);
     }
   };
+  
   
 
   return (
