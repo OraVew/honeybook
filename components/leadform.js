@@ -216,13 +216,12 @@ export default function LeadForm() {
 
   return (
     <section className="py-20 bg-gray-100 flex items-center justify-center min-h-screen relative">
-      <div className="container mx-auto max-w-lg bg-white p-8 rounded shadow-lg relative">
       {isLoading && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="text-white text-lg font-bold">Loading...</div>
-          </div>
-        )}
-     
+        <div className="loading-overlay">
+          <div className="loading-text">Loading...</div>
+        </div>
+      )}
+      <div className="container mx-auto max-w-lg bg-white p-8 rounded shadow-lg relative">
         <div className="text-center">
           <h2 className="text-4xl font-bold text-yellow-600 uppercase">
             Great News, Your Date Has Some Availability <span className="text-red-600">But</span>
