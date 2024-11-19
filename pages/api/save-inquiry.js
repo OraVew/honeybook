@@ -9,6 +9,14 @@ export default async function handler(req, res) {
 
       const inquiryData = req.body;
 
+      // Format eventDateAndTime to a human-readable format
+      const eventDate = new Date(inquiryData.eventDate);
+      const formattedEventDate = eventDate.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      });
+
       // Insert the inquiry data into the "Inquiry" collection
       const result = await db.collection("Inquiry").insertOne(inquiryData);
 
@@ -17,7 +25,7 @@ export default async function handler(req, res) {
         inquiryId: result.insertedId.toString(), // Unique identifier
         customerName: inquiryData.name,
         replyTo: inquiryData.phone, // Using phone as 'replyTo'
-        eventDateAndTime: new Date(inquiryData.eventDate),
+        eventDateAndTime: formattedEventDate, // Human-readable format
         attendeeCount: parseInt(inquiryData.guestCount, 10),
         payout: inquiryData.budget,
         addOns: '', // Fill this in as needed

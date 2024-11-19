@@ -12,8 +12,8 @@ export default async function handler(req, res) {
       const client = await clientPromise;
       const db = client.db("BookOraVew");
 
-      // Extract the inquiryId and webhookUrl from the request body
-      const { inquiryId, webhookUrl, ...updatedInquiry } = req.body;
+      // Extract the inquiryId, webhookUrl, and the rest of the updated inquiry data
+      const { inquiryId, webhookUrl, selectedOffer, ...updatedInquiry } = req.body;
 
       // Log the received webhookUrl to check if it's being passed correctly
       console.log('Received Webhook URL:', webhookUrl);
@@ -55,6 +55,13 @@ export default async function handler(req, res) {
 
       console.log('Inquiry updated in MongoDB:', updatedInquiry);
 
+      // Construct the guestMessage, including offer details
+      const offerDetails = selectedOffer
+        ? `Offer Name: ${selectedOffer.name}
+        - Total Price: $${selectedOffer.totalPrice}
+        - Description: ${selectedOffer.descriptionItems.join(', ')}`
+        : 'No offer selected';
+
       // Prepare the new message to append
       const newMessage = {
         timeSent: new Date(),
@@ -62,23 +69,15 @@ export default async function handler(req, res) {
         - Name: ${updatedInquiry.name}
         - Email: ${updatedInquiry.email}
         - Phone: ${updatedInquiry.phone}
-        - Event Date: ${updatedInquiry.eventDate}
         - Event Time (CST): ${updatedInquiry.eventTimeCST || 'N/A'}
-        - Start Time: ${updatedInquiry.startTime ? new Date(updatedInquiry.startTime).toLocaleString() : 'N/A'}
-        - Event Duration: ${updatedInquiry.eventDuration || 'N/A'} hours
-        - Venue Search Duration: ${updatedInquiry.venueSearchDuration || 'N/A'}
-        - Secure Venue Urgency: ${updatedInquiry.secureVenueUrgency || 'N/A'}
         - Help Needed: ${updatedInquiry.helpNeeded || 'N/A'}
-        - Guest Count: ${updatedInquiry.guestCount}
-        - Budget: $${updatedInquiry.budget}
-        - How Did You Find Us: ${updatedInquiry.howDidYouFindUs || 'N/A'}
         - Event Type: ${updatedInquiry.eventType || 'N/A'}
-        - Inquiry Date: ${updatedInquiry.inquiryDate ? new Date(updatedInquiry.inquiryDate).toLocaleString() : 'N/A'}
         - Hours Needed: ${updatedInquiry.hoursNeeded}
         - Looking From: ${updatedInquiry.lookingFrom || 'N/A'}
         - Planning to Book: ${updatedInquiry.planningToBook || 'N/A'}
         - Customer Profile: ${updatedInquiry.customerProfile || 'N/A'}
-        - Availability Status: ${updatedInquiry.isAvailable ? 'Available' : 'Not Available'}`,
+        - Availability Status: ${updatedInquiry.isAvailable ? 'Available' : 'Not Available'}
+        - ${offerDetails}`,
         sender: 'Customer',
         threadId: inquiryId,
       };
