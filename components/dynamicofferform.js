@@ -142,22 +142,42 @@ export default function hmykyDynamicOfferForm() {
   const handleSubmit = async (offerName, offerDetails) => {
     const inquiryDate = new Date();
     const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/21h7vza/'; // Ensure the correct Zapier Webhook URL is used
-    
+  
     // Include the selected offer as an object within the inquiry data
     const offerObject = {
       name: offerName,
       totalPrice: offerDetails.totalPrice,
-      descriptionItems: offerDetails.descriptionItems
+      descriptionItems: offerDetails.descriptionItems,
+    };
+  
+    // Construct a comprehensive guest message with new information
+    const guestMessage = `
+      Selected Offer: ${offerName}
+      Total Price: ${offerDetails.totalPrice}
+      Offer Details: ${offerDetails.descriptionItems.join(', ')}
+      Help Needed: ${formData.helpNeeded}
+      Event Date: ${formData.eventDate}
+      Event Time: ${formData.eventTime}
+      Hours Needed: ${formData.hoursNeeded}
+      Customer Profile: ${formData.customerProfile}
+    `;
+  
+    // Prepare the new message to be appended to the existing inquiry
+    const newMessage = {
+      timeSent: new Date(),
+      guestMessage: guestMessage.trim(), // Trim any extra whitespace
+      sender: 'Customer',
+      threadId: `${formData.name}-${formData.inquiryId}-Website`, // Constructed threadId
     };
   
     try {
-      // First, update the inquiry in MongoDB, and ensure webhookUrl is passed in the request body
+      // First, update the inquiry in MongoDB
       const response = await fetch(`/api/update-inquiry?inquiryId=${formData.inquiryId}`, {
         method: 'PUT',
         body: JSON.stringify({
-          ...formData,                // Include all form data
+          ...formData, // Include all form data
           inquiryDate: inquiryDate.toISOString(),
-          selectedOffer: offerObject,  // Add the offer object to the inquiry data
+          selectedOffer: offerObject, // Add the offer object to the inquiry data
           webhookUrl: zapierWebhookUrl, // Ensure webhookUrl is included in the request
         }),
         headers: {
@@ -169,12 +189,25 @@ export default function hmykyDynamicOfferForm() {
         throw new Error('Failed to update inquiry in MongoDB');
       }
   
+      // Append the new message to the ChannelManager collection
+      await fetch(`/api/update-channel-manager-inquiry`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          inquiryId: formData.inquiryId,
+          newMessage,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
       // Redirect to the event brochure page
       router.push(`/event-brochure?id=${formData.inquiryId}`);
     } catch (error) {
       console.error('Error submitting offer:', error);
     }
   };
+  
   
   
   

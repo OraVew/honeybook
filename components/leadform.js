@@ -137,50 +137,100 @@ export default function LeadForm() {
       window.alert('Inquiry ID is missing. Please try again.');
       return;
     }
-
+  
     // Ensure that startTime is valid before proceeding
     if (!formData.startTime || isNaN(new Date(formData.startTime).getTime())) {
       console.error('Invalid startTime');
       window.alert('Please provide a valid start time and date.');
       return;
     }
-
+  
     // Check availability before submitting
     const { isAvailable } = await checkAvailability(formData.startTime, formData.hoursNeeded);
     if (!isAvailable) {
       window.alert('The venue is not available at your selected time.');
       return;
     }
-    
+  
     // Determine customer profile before submission
     const customerProfile = determineProfile(formData);
-    
-    // Update form data with customer profile
-    const updatedInquiry = {
-      ...formData,
-      customerProfile, // Add customer profile to the data being sent
-      startTime: formData.startTime.toISOString(),
-      isAvailable,
-      eventTimeCST: formData.eventTimeCST, // Include Event Time CST
+  
+    // Construct a comprehensive guest message
+    const guestMessage = `
+      Event Type: ${formData.eventType}
+      Guest Count: ${formData.guestCount}
+      Budget: ${formData.budget}
+      Event Date: ${formData.eventDate}
+      Event Time: ${formData.eventTime ? formData.eventTime.toLocaleTimeString() : 'Not specified'}
+      Venue Search Duration: ${formData.venueSearchDuration}
+      Secure Venue Urgency: ${formData.secureVenueUrgency}
+      Help Needed: ${formData.helpNeeded}
+      How Did You Find Us: ${formData.howDidYouFindUs}
+      Hours Needed: ${formData.hoursNeeded}
+      Looking From: ${formData.lookingFrom}
+      Planning to Book: ${formData.planningToBook}
+      Customer Profile: ${customerProfile}
+      Availability: ${isAvailable ? 'Yes' : 'No'}
+    `;
+  
+    // Prepare the new message to be added to the existing inquiry
+    const newMessage = {
+      timeSent: new Date(),
+      guestMessage: guestMessage.trim(), // Trim any extra whitespace
+      sender: 'Customer',
+      threadId: `${formData.name}-${inquiryId}-Website`, // Constructed threadId
     };
-
+  
     const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/2tyjxvh/';
-    
-
+  
     try {
+      // Call the existing update-inquiry API to handle other updates
       await fetch(`/api/update-inquiry?inquiryId=${inquiryId}`, {
         method: 'PUT',
         body: JSON.stringify({
-          ...updatedInquiry,
-          webhookUrl: zapierWebhookUrl,
+          ...formData,
+          customerProfile,
+          isAvailable,
+          startTime: formData.startTime.toISOString(),
+          eventTimeCST: formData.eventTimeCST,
+          webhookUrl: zapierWebhookUrl, // Ensure webhookUrl is included in the request
         }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
+  
+      // Call the new API to add the message to the ChannelManager collection
+      await fetch(`/api/update-channel-manager-inquiry`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          inquiryId,
+          newMessage,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      // Trigger the Zapier webhook
+      await fetch(zapierWebhookUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+          inquiryId,
+          ...formData,
+          customerProfile,
+          isAvailable,
+          startTime: formData.startTime.toISOString(),
+          eventTimeCST: formData.eventTimeCST,
+          guestMessage: guestMessage.trim(),
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
       // Redirect to the next page with the updated inquiry data
-      const encodedFormData = encodeURIComponent(JSON.stringify(updatedInquiry));
+      const encodedFormData = encodeURIComponent(JSON.stringify(formData));
       router.push({
         pathname: '/dynamicoffer',
         query: { data: encodedFormData, inquiryId },
@@ -189,6 +239,7 @@ export default function LeadForm() {
       console.error('Error updating inquiry:', error);
     }
   };
+  
 
   const checkAvailability = async (startTime, eventDuration) => {
     const endDateTime = new Date(startTime.getTime() + eventDuration * 60 * 60 * 1000);

@@ -3,6 +3,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './contactform.css';
 import { useRouter } from 'next/router';
+import { v4 as uuidv4 } from 'uuid'; // Import uuidv4 for generating unique IDs
+
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -39,60 +41,106 @@ export default function ContactForm() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    const inquiryDate = new Date();
-    const apiUrl = '/api/save-inquiry';
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const response = await fetch(apiUrl, {
+  // Generate unique inquiryId and threadId
+  const inquiryId = uuidv4();
+  const customerName = formData.name;
+  const sanitizedReplyTo = formData.phone; // Assuming phone is the preferred contact
+  const platform = 'Book.OraVew.com';
+  const threadId = `${customerName}-${inquiryId}-${platform}`;
+  const timestamp = new Date();
+
+  // Construct the initial message
+  const guestMessage = `Event Inquiry: ${formData.eventType} with ${formData.guestCount} guests. Budget: ${formData.budget}`;
+  const initialMessage = {
+    timeSent: timestamp,
+    guestMessage,
+    threadId,
+    sender: 'Customer',
+  };
+
+  const apiUrl = '/api/save-inquiry';
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      body: JSON.stringify({
+        ...formData,
+        inquiryId,
+        threadId,
+        inquiryDate: timestamp.toISOString(),
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+
+    if (response.ok && result.id) {
+      const zapierWebhookUrl = '/api/proxy';
+      await fetch(zapierWebhookUrl, {
         method: 'POST',
         body: JSON.stringify({
           ...formData,
-          inquiryDate: inquiryDate.toISOString(),
+          inquiryId,
+          threadId,
+          inquiryDate: timestamp.toISOString(),
         }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
 
-      const result = await response.json();
+      // Additional logic to store in ChannelManager collection
+      const channelManagerApiUrl = '/api/save-channel-manager-inquiry';
+      await fetch(channelManagerApiUrl, {
+        method: 'POST',
+        body: JSON.stringify({
+          inquiryId,
+          customerName,
+          replyTo: sanitizedReplyTo,
+          eventDateAndTime: new Date(formData.eventDate),
+          attendeeCount: parseInt(formData.guestCount, 10),
+          payout: formData.budget,
+          addOns: '', // Populate with actual add-ons if available
+          platform,
+          threadId,
+          inquiryStatus: 'open',
+          messages: [initialMessage], // Add the initial message
+          createdAt: timestamp,
+          lastUpdatedAt: timestamp,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-      if (response.ok && result.id) {
-        const inquiryId = result.id;
-        const zapierWebhookUrl = '/api/proxy';
-        await fetch(zapierWebhookUrl, {
-          method: 'POST',
-          body: JSON.stringify({
-            ...formData,
-            inquiryId,
-            inquiryDate: inquiryDate.toISOString(),
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+      const encodedFormData = encodeURIComponent(
+        JSON.stringify({
+          ...formData,
+          inquiryDate: timestamp.toISOString(),
+          inquiryId,
+          threadId,
+        })
+      );
 
-        const encodedFormData = encodeURIComponent(
-          JSON.stringify({
-            ...formData,
-            inquiryDate: inquiryDate.toISOString(),
-            inquiryId,
-          })
-        );
-
-        router.push({
-          pathname: '/inquiry',
-          query: { data: encodedFormData, inquiryId },
-        });
-      } else {
-        throw new Error('Failed to save inquiry');
-      }
-    } catch (error) {
-      console.error('Error submitting form data:', error);
+      router.push({
+        pathname: '/inquiry',
+        query: { data: encodedFormData, inquiryId },
+      });
+    } else {
+      throw new Error('Failed to save inquiry');
     }
-  };
+  } catch (error) {
+    console.error('Error submitting form data:', error);
+  }
+};
+
+  
 
   return (
     <section id="contactForm" className="py-20 bg-gray-100">
