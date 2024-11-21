@@ -1,13 +1,24 @@
 // /api/save-inquiry.js
 import clientPromise from '../../lib/mongodb';
+import { formatPhoneNumberToE164 } from '../../services/phoneNumberService';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       const client = await clientPromise;
-      const db = client.db("BookOraVew");
+      const db = client.db('BookOraVew');
 
       const inquiryData = req.body;
+
+      // Format phone and replyTo fields to E.164
+      let formattedPhone;
+      try {
+        formattedPhone = formatPhoneNumberToE164(inquiryData.phone);
+        console.log('Formatted Phone Number:', formattedPhone);
+      } catch (error) {
+        console.error('Phone number formatting error:', error.message);
+        return res.status(400).json({ error: 'Invalid phone number format.' });
+      }
 
       // Format eventDateAndTime to a human-readable format
       const eventDate = new Date(inquiryData.eventDate);
@@ -18,14 +29,17 @@ export default async function handler(req, res) {
       });
 
       // Insert the inquiry data into the "Inquiry" collection
-      const result = await db.collection("Inquiry").insertOne(inquiryData);
+      const result = await db.collection('Inquiry').insertOne({
+        ...inquiryData,
+        phone: formattedPhone, // Save formatted phone
+      });
 
       // Create a structured object for the "ChannelManager" collection
       const channelManagerData = {
         inquiryId: result.insertedId.toString(), // Unique identifier
         customerName: inquiryData.name,
-        replyTo: inquiryData.phone, // Using phone as 'replyTo'
-        phone: inquiryData.phone, //
+        replyTo: formattedPhone, // Using formatted phone as 'replyTo'
+        phone: formattedPhone, // Save formatted phone
         eventDateAndTime: formattedEventDate, // Human-readable format
         attendeeCount: parseInt(inquiryData.guestCount, 10),
         payout: inquiryData.budget,
@@ -46,7 +60,7 @@ export default async function handler(req, res) {
       };
 
       // Insert the structured object into the "ChannelManager" collection
-      await db.collection("ChannelManager").insertOne(channelManagerData);
+      await db.collection('ChannelManager').insertOne(channelManagerData);
 
       // Respond with success
       res.status(201).json({ message: 'Inquiry saved successfully', id: result.insertedId });
