@@ -27,7 +27,7 @@ export default async function handler(req, res) {
 
       console.log('Updating inquiry with ID:', inquiryId);
 
-      // Update the inquiry in the "Inquiry" collection
+      // Update the inquiry in the "Inquiry"
       const result = await db.collection('Inquiry').updateOne(
         { _id: objectId },
         { $set: { ...updatedInquiry, selectedOffer } }
