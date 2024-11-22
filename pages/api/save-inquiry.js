@@ -1,6 +1,7 @@
 // /api/save-inquiry.js
 import clientPromise from '../../lib/mongodb';
 import { formatPhoneNumberToE164 } from '../../services/phoneNumberService';
+import { notifyTeam } from '../../services/twilioService';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -61,6 +62,9 @@ export default async function handler(req, res) {
 
       // Insert the structured object into the "ChannelManager" collection
       await db.collection('ChannelManager').insertOne(channelManagerData);
+
+      // Send notification to the staff
+      await notifyTeam(`New inquiry created for ${inquiryData.name}. Check it out here: https://channel.oravew.com/inquiries`);
 
       // Respond with success
       res.status(201).json({ message: 'Inquiry saved successfully', id: result.insertedId });

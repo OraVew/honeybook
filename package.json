@@ -28,7 +28,8 @@
     "react-stripe-checkout": "^2.6.3",
     "sharp": "^0.33.5",
     "stripe": "^16.9.0",
-    "swiper": "^11.1.14"
+    "swiper": "^11.1.14",
+    "twilio": "^5.3.6"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
