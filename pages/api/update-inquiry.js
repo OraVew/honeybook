@@ -47,7 +47,7 @@ export default async function handler(req, res) {
 
       const newMessage = {
         timeSent: new Date(),
-        guestMessage: `Hi! ${updatedInquiry.name} here. I need help with ${updatedInquiry.helpNeeded}. I have been looking for ${updatedInquiry.hoursNeeded} for my event since ${updatedInquiry.lookingFrom} ago. I plan to make a booking ${updatedInquiry.planningToBook} from now. I am an ${updatedInquiry.customerProfile} customer. And I want your ${offerDetails}`,
+        guestMessage: `Hi! ${updatedInquiry.name} here. I need help with ${updatedInquiry.helpNeeded}. I have been looking for ${updatedInquiry.hoursNeeded} hours for my event since ${updatedInquiry.lookingFrom} ago. I plan to make a booking ${updatedInquiry.planningToBook} from now. I am an ${updatedInquiry.customerProfile} interest customer. And I want your ${offerDetails} all included in the package.`,
         sender: 'Customer',
         threadId: inquiryId,
       };
