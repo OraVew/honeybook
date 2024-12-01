@@ -41,6 +41,7 @@ export default async function handler(req, res) {
         customerName: inquiryData.name,
         replyTo: formattedPhone, // Using formatted phone as 'replyTo'
         phone: formattedPhone, // Save formatted phone
+        email: inquiryData.email,
         eventDateAndTime: formattedEventDate, // Human-readable format
         attendeeCount: parseInt(inquiryData.guestCount, 10),
         payout: inquiryData.budget,
