@@ -51,7 +51,7 @@ export default async function handler(req, res) {
         messages: [
           {
             timeSent: new Date(),
-            guestMessage: `Initial inquiry: ${inquiryData.eventType}, ${inquiryData.budget}, ${inquiryData.bestTimeToContact}`,
+            guestMessage: `I am hosting a ${inquiryData.eventType}, with budget of ${inquiryData.budget}, requesting to be contacted by this ${inquiryData.bestTimeToContact}`,
             sender: 'Customer',
             threadId: result.insertedId.toString(), // Same as above or use a placeholder
           },

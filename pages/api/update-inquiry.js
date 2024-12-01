@@ -42,15 +42,12 @@ export default async function handler(req, res) {
 
       // Construct the guestMessage
       const offerDetails = selectedOffer
-        ? `Offer: ${selectedOffer.name} for $${selectedOffer.totalPrice}`
+        ? `Offer: ${selectedOffer.name} for $${selectedOffer.totalPrice} with ${selectedOffer.descriptionItems}  `
         : 'No offer selected';
 
       const newMessage = {
         timeSent: new Date(),
-        guestMessage: `More Event Inquiry Details:
-        - Name: ${updatedInquiry.name}
-        - Event Type: ${updatedInquiry.eventType || 'N/A'}
-        - ${offerDetails}`,
+        guestMessage: `Hi! ${updatedInquiry.name} here. I need help with ${updatedInquiry.helpNeeded}. I have been looking for ${updatedInquiry.hoursNeeded} for my event since ${updatedInquiry.lookingFrom} ago. I plan to make a booking ${updatedInquiry.planningToBook} from now. I am an ${updatedInquiry.customerProfile} customer. And I want your ${offerDetails}`,
         sender: 'Customer',
         threadId: inquiryId,
       };
