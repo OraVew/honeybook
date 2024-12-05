@@ -113,7 +113,7 @@ export default function EventOfferings() {
         <div className={styles.overlay}></div> {/* Dark overlay */}
         <div className={styles.pricingCard}>
           <h2 className={styles.heading}>PRICING</h2>
-          <p className={styles.paragraph}>Our rental fee is priced per hour. Four-hour minimum required.</p>
+          <p className={styles.paragraph}>Our rental fee is priced per hour. Four-hour minimum required. Cleaning fee is $150, but already included in our "Special Packages".</p>
 
           {/* Standard Pricing */}
           <div className="mt-8">
