@@ -172,12 +172,12 @@ export default function ContactForm() {
             <>
               <div className="mb-6">
                 <label className="block text-gray-700 font-bold mb-2" htmlFor="guestCount">
-                  Estimated Guest Count
+                  Estimated Guest Count (60 is our capacity)
                 </label>
                 <input
                   type="number"
                   name="guestCount"
-                  placeholder="E.g. 50"
+                  placeholder="60 is our capacity"
                   value={formData.guestCount}
                   onChange={handleChange}
                   className="w-full p-2 border input-field rounded"
