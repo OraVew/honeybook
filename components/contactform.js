@@ -18,6 +18,8 @@ export default function ContactForm() {
 
   const [isEmailFilled, setIsEmailFilled] = useState(false);
   const [isLoading, setIsLoading] = useState(false); // State to manage loading overlay
+  const [errorMessage, setErrorMessage] = useState('');
+
   const router = useRouter();
 
   const handleDateChange = (date) => {
@@ -43,6 +45,8 @@ export default function ContactForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true); // Show loading overlay
+    setErrorMessage(''); // Reset error message
+
 
     const inquiryDate = new Date();
     const apiUrl = '/api/save-inquiry';
@@ -89,11 +93,18 @@ export default function ContactForm() {
           query: { data: encodedFormData, inquiryId },
         });
       } else {
-        throw new Error('Failed to save inquiry');
+        // Check if error message is about phone number
+        const errorText = result?.error || 'Failed to save inquiry';
+        if (errorText.includes('Phone number formatting error')) {
+          setErrorMessage('Invalid phone number. Please use a valid US phone number format.');
+        } else {
+          setErrorMessage(errorText);
+        }
       }
     } catch (error) {
       console.error('Error submitting form data:', error);
-    } finally {
+      setErrorMessage('An unexpected error occurred. Please try again.');
+    }finally {
       setIsLoading(false); // Hide loading overlay
     }
   };
@@ -112,6 +123,11 @@ export default function ContactForm() {
             Tell us some basic details for your event and we'll share our availability, answer your questions, provide an instant quote, and customize a plan for you.
           </p>
         </div>
+        {errorMessage && (
+          <div className="text-red-600 text-center mb-4 font-semibold">
+            {errorMessage}
+          </div>
+        )}
         <form className="mt-10" onSubmit={handleSubmit}>
           <div className="mb-6">
             <label className="block text-gray-700 font-bold mb-2" htmlFor="eventDate">
