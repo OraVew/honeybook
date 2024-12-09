@@ -164,6 +164,15 @@ export default function LeadForm() {
     const zapierWebhookUrl = 'https://hooks.zapier.com/hooks/catch/17285769/2tyjxvh/';
 
     try {
+      await fetch('/api/qualifyproxy', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedInquiry),
+    });
+
+    
       await fetch(`/api/update-inquiry?inquiryId=${inquiryId}`, {
         method: 'PUT',
         body: JSON.stringify({

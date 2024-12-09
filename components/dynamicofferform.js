@@ -164,6 +164,19 @@ export default function hmykyDynamicOfferForm() {
       if (!response.ok) {
         throw new Error('Failed to update inquiry in MongoDB');
       }
+
+       // Send data to the dynamic proxy
+       await fetch('/api/dynamicproxy', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            ...formData,
+            selectedOffer: offerObject,
+            inquiryDate: inquiryDate.toISOString(),
+        }),
+    });
   
       router.push(`/event-brochure?id=${formData.inquiryId}`);
     } catch (error) {
