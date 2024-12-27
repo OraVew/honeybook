@@ -48,7 +48,7 @@ export default async function handler(req, res) {
         addOns: '', // Fill this in as needed
         platform: 'Book.OraVew.com', // Fill this in as needed
         threadId: result.insertedId.toString(), // Fill this in as needed or generate one if necessary
-        inquiryStatus: 'open', // Default status
+        inquiryStatus: 'new', // Default status
         messages: [
           {
             timeSent: new Date(),
