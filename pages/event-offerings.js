@@ -145,7 +145,7 @@ export default function EventOfferings() {
               <strong>Baby Shower Package</strong>
             </p>
             <ul className={styles.list}>
-              <li className={styles.listItem}>4 hours, Game Room, Photo Booth, and Baby Block decor centerpieces</li>
+              <li className={styles.listItem}>4 hours, Game Room, Photo Booth, and Baby Block decor centerpieces (Must setup decor yourself. Mateials will be provided. Easy to setup)</li>
               <li className={styles.listItem}>$700 before 4pm or $825 after 4pm</li>
               </ul>
           </div>
