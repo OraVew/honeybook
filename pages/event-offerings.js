@@ -146,7 +146,7 @@ export default function EventOfferings() {
             </p>
             <ul className={styles.list}>
               <li className={styles.listItem}>4 hours, Game Room, Photo Booth, and Baby Block decor centerpieces</li>
-              <li className={styles.listItem}>$700 before 6pm or $825 after 6pm</li>
+              <li className={styles.listItem}>$700 before 4pm or $825 after 4pm</li>
               </ul>
           </div>
           <br/>
