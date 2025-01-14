@@ -30,3 +30,9 @@ export async function notifyTeam(message) {
     await sendSMS(staffPhoneNumber, message);
 }
 
+export async function notifyAdmin(message) {
+    // Use only the staff phone number you specified
+    const adminPhoneNumber = '+13125449613'; 
+    await sendSMS(adminPhoneNumber, message);
+}
+

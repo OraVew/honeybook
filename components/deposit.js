@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import './deposit.css'; // Import the CSS file
+import { notifyAdmin } from '../services/twilioService'; // Import the new notifyAdmin function
+
+
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
@@ -79,6 +82,10 @@ function CheckoutForm({ formData }) {
           paymentIntentId: paymentData.paymentIntentId,
         }),
       });
+
+      // Notify admin about the paid lead
+      const adminMessage = `Book.OraVew Paid Lead: Customer Name: ${formData.name}, Phone: ${formData.phone}`;
+      await notifyAdmin(adminMessage);
 
       // Redirect to confirmation page, passing inquiryId
       router.push({
