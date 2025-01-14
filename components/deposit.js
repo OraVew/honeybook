@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import './deposit.css'; // Import the CSS file
-import { notifyAdmin } from '../services/twilioService'; // Import the new notifyAdmin function
 
 
 
@@ -84,8 +83,20 @@ function CheckoutForm({ formData }) {
       });
 
       // Notify admin about the paid lead
-      const adminMessage = `Book.OraVew Paid Lead: Customer Name: ${formData.name}, Phone: ${formData.phone}`;
-      await notifyAdmin(adminMessage);
+      const adminNotificationResponse = await fetch('/api/notify-admin', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: formData.name,
+            phone: formData.phone,
+        }),
+    });
+
+    if (!adminNotificationResponse.ok) {
+        throw new Error('Failed to notify admin');
+    }
 
       // Redirect to confirmation page, passing inquiryId
       router.push({
