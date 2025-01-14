@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const message = `Paid Lead: Customer Name: ${name}, Phone: ${phone}`;
+        const message = `Book.OraVew Paid Lead: Customer Name: ${name}, Phone: ${phone}`;
         const response = await client.messages.create({
             body: message,
             from: fromPhoneNumber,
