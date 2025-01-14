@@ -59,7 +59,7 @@ export default function Confirmation() {
           We operate on a first-come, first-served basis, and your $25 deposit has successfully held this reservation until your tour with us. We will reach out to you soon to schedule your tour.
         </p>
         <p className="confirmation-paragraph">
-          If you have any questions or need to make changes, please don't hesitate to contact us at 312-815-3713.
+          If you have any questions or need to make changes, please don't hesitate to contact us at 309-271-2734.
         </p>
         <button
           className="confirmation-button"
