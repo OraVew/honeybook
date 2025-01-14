@@ -278,7 +278,7 @@ export default function BuildEventBrochure() {
   <p className="text-center mt-4"><strong>Baby Shower Package</strong></p>
   <ul className="list-disc list-inside text-center">
     <li className="text-center">4 hours, Game Room, Photo Lounge, and Baby Block decor centerpieces</li>
-    <li className="text-center">$700 before 6pm or $825 after 6pm</li>
+    <li className="text-center">$700 before 4pm or $825 before 8pm</li>
   </ul>
 </div>
 

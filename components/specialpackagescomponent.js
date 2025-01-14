@@ -5,7 +5,7 @@ export default function SpecialPackagesComponent({ eventType, timeOfDay, handleS
   if (eventType === 'Birthday') {
     if (timeOfDay === 'before-10pm') {
       totalPrice = 1000;
-      descriptionItems = ['6 hours', 'Game Room', 'Photo Lounge', 'Marquee Lights', '20% discount', 'Cleaning fee'];
+      descriptionItems = ['Before 10PM Special', '6 hours', 'Game Room', 'Photo Lounge', 'Marquee Lights', '20% discount', 'Cleaning fee'];
     } else {
       totalPrice = 1128;
       descriptionItems = ['After 10PM Special', '6 hours', 'Game Room', 'Photo Lounge', 'Marquee Lights', '20% discount', 'Cleaning fee'];
@@ -13,10 +13,10 @@ export default function SpecialPackagesComponent({ eventType, timeOfDay, handleS
   } else if (eventType === 'Baby Shower') {
     if (timeOfDay === 'before-6pm') {
       totalPrice = 700;
-      descriptionItems = ['4 hours', 'Game Room', 'Photo Lounge', 'Baby Block decor centerpieces', '20% discount', 'Cleaning fee'];
+      descriptionItems = ['Before 4PM Special','4 hours', 'Game Room', 'Photo Lounge', 'Baby Block decor centerpieces', '20% discount', 'Cleaning fee'];
     } else {
       totalPrice = 825;
-      descriptionItems = ['After 6PM Special', '4 hours', 'Game Room', 'Photo Lounge', 'Baby Block decor centerpieces', '20% discount' , 'Cleaning fee'];
+      descriptionItems = ['Before 8PM Special', '4 hours', 'Game Room', 'Photo Lounge', 'Baby Block decor centerpieces', '20% discount' , 'Cleaning fee'];
     }
   }
 
