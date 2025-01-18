@@ -138,15 +138,22 @@ export default function EventOfferings() {
               <strong>Happy Birthday Package</strong>
             </p>
             <ul className={styles.list}>
-              <li className={styles.listItem}>6 hours, Game Room, Photo Booth, and Marquee Lights</li>
+              <li className={styles.listItem}>6 hours, Game Room, Photo Booth, and "Numbers" Marquee Lights</li>
               <li className={styles.listItem}>$1000 before 10pm or $1128 for hours after 10pm</li>
               </ul>
-            <p className={styles.paragraph}>
+              <p className={styles.paragraph}>
               <strong>Baby Shower Package</strong>
             </p>
             <ul className={styles.list}>
-              <li className={styles.listItem}>4 hours, Game Room, Photo Booth, and Baby Block decor centerpieces (Must setup decor yourself. Mateials will be provided. Easy to setup)</li>
-              <li className={styles.listItem}>$700 before 4pm or $825 before 8pm</li>
+              <li className={styles.listItem}>6 hours, Game Room, Photo Booth, and "BABY" Marquee Lights</li>
+              <li className={styles.listItem}>$900 before 4pm or $1025 after 4pm</li>
+              </ul>
+            <p className={styles.paragraph}>
+              <strong>Lite Baby Shower Package</strong>
+            </p>
+            <ul className={styles.list}>
+              <li className={styles.listItem}>4 hours, Game Room, Photo Booth, and "BABY" Marquee Lights</li>
+              <li className={styles.listItem}>$800 before 4pm or $925 before 8pm</li>
               </ul>
           </div>
           <br/>
