@@ -42,29 +42,94 @@ export default function ContactForm() {
     }
   };
 
+  const submitToUnibox = async (formData) => {
+    const API_URL = 'https://unibox-backend-bc5a3bd47124.herokuapp.com';
+    const API_KEY = '82784f7b166bba4e28a7b733e1bcdd8035150aee96be1f8406403f3a2f8016a0';
+    
+    try {
+      // Format the date from Date object to YYYY-MM-DD string
+      let formattedDate = '';
+      if (formData.eventDate) {
+        const date = new Date(formData.eventDate);
+        formattedDate = date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+      }
+      
+      // Format the phone number to E.164 format
+      const formattedPhone = formData.phone.startsWith('+') 
+        ? formData.phone 
+        : '+1' + formData.phone.replace(/\D/g, '');
+      
+      const response = await fetch(`${API_URL}/external/submissions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-KEY': API_KEY
+        },
+        body: JSON.stringify({
+          templateId: 100, // Book OraVew template ID
+          currentStep: 0,  // Single step in this template
+          stepData: {
+            fullName: formData.name,
+            email: formData.email,
+            phone: formattedPhone,
+            eventDate: formattedDate,
+            guestCount: formData.guestCount,
+            budget: formData.budget
+          },
+          async: false
+        })
+      });
+      
+      const result = await response.json();
+      console.log('Unibox API Response:', result);
+      
+      return {
+        success: result.status === 'completed' || result.status === 'in_progress',
+        inquiryId: result.inquiryId,
+        result: result
+      };
+    } catch (error) {
+      console.error('Error submitting to Unibox:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true); // Show loading overlay
-    setErrorMessage(''); // Reset error message
-
-
-    const inquiryDate = new Date();
-    const apiUrl = '/api/save-inquiry';
-
+    setIsLoading(true);
+    setErrorMessage('');
+  
     try {
+      // First submit to Unibox
+      const uniboxResult = await submitToUnibox(formData);
+      
+      if (!uniboxResult.success) {
+        setErrorMessage('Failed to submit your request to our booking system. Please try again.');
+        setIsLoading(false);
+        return;
+      }
+      
+      // Continue with your existing code to save inquiry
+      const inquiryDate = new Date();
+      const apiUrl = '/api/save-inquiry';
+  
       const response = await fetch(apiUrl, {
         method: 'POST',
         body: JSON.stringify({
           ...formData,
           inquiryDate: inquiryDate.toISOString(),
+          uniboxInquiryId: uniboxResult.inquiryId // Save the Unibox inquiry ID
         }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
+  
       const result = await response.json();
-
+  
       if (response.ok && result.id) {
         const inquiryId = result.id;
         const zapierWebhookUrl = '/api/proxy';
@@ -74,23 +139,29 @@ export default function ContactForm() {
             ...formData,
             inquiryId,
             inquiryDate: inquiryDate.toISOString(),
+            uniboxInquiryId: uniboxResult.inquiryId
           }),
           headers: {
             'Content-Type': 'application/json',
           },
         });
-
+  
         const encodedFormData = encodeURIComponent(
           JSON.stringify({
             ...formData,
             inquiryDate: inquiryDate.toISOString(),
             inquiryId,
+            uniboxInquiryId: uniboxResult.inquiryId
           })
         );
-
+  
         router.push({
           pathname: '/inquiry',
-          query: { data: encodedFormData, inquiryId },
+          query: { 
+            data: encodedFormData, 
+            inquiryId, 
+            uniboxInquiryId: uniboxResult.inquiryId 
+          },
         });
       } else {
         // Check if error message is about phone number
@@ -104,7 +175,7 @@ export default function ContactForm() {
     } catch (error) {
       console.error('Error submitting form data:', error);
       setErrorMessage('An unexpected error occurred. Please try again.');
-    }finally {
+    } finally {
       setIsLoading(false); // Hide loading overlay
     }
   };
