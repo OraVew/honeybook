@@ -14,16 +14,14 @@ export default function Footer() {
           {/* Logo and Basic Info */}
           <div className="lg:w-1/3 text-center lg:text-left mb-6 lg:mb-0">
             <Link href="/" className="text-gray-600 hover:text-gray-800">
-              <a>
-                <Image
-                  src="/logo.png"
-                  alt="Expert Team"
-                  width={150}
-                  height={75}
-                  className="rounded-lg"
-                />
-                <p className="text-gray-600 mt-2">Boutique Event & Venue Space</p>
-              </a>
+              <Image
+                src="/logo.png"
+                alt="Expert Team"
+                width={150}
+                height={75}
+                className="rounded-lg"
+              />
+              <p className="text-gray-600 mt-2">Boutique Event & Venue Space</p>
             </Link>
           </div>
 

@@ -2,7 +2,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import 'swiper/css';          // Core Swiper styles
 import 'swiper/css/autoplay'; // Optional: Swiper Autoplay module styles
-import '../styles/globals.css';
 import { Analytics } from "@vercel/analytics/react"
 const inter = Inter({ subsets: ["latin"] });
 

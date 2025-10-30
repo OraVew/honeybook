@@ -11,44 +11,38 @@ export default function Header() {
         {/* Logo */}
         <div className="flex items-center">
           <Link href="/">
-            <a>
-              <Image
-                src="/logo.png"
-                alt="Expert Team"
-                className="rounded-lg h-10"
-              />
-            </a>
+            <Image
+              src="/logo.png"
+              alt="Expert Team"
+              className="rounded-lg h-10"
+            />
           </Link>
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex space-x-6">
-          <Link href="/">
-            <a className="text-gray-600 hover:text-gray-800">Home</a>
+          <Link href="/" className="text-gray-600 hover:text-gray-800">
+            Home
           </Link>
-          <Link href="/event-offerings">
-            <a className="text-gray-600 hover:text-gray-800">Event Offerings</a>
+          <Link href="/event-offerings" className="text-gray-600 hover:text-gray-800">
+            Event Offerings
           </Link>
-          <Link href="/faq">
-            <a className="text-gray-600 hover:text-gray-800">FAQs</a>
+          <Link href="/faq" className="text-gray-600 hover:text-gray-800">
+            FAQs
           </Link>
-          <Link href="/contact">
-            <a className="text-gray-600 hover:text-gray-800">Contact</a>
+          <Link href="/contact" className="text-gray-600 hover:text-gray-800">
+            Contact
           </Link>
         </nav>
 
         {/* Instagram Icon */}
-        <Link href="https://www.instagram.com/theoravew" target="_blank" rel="noopener noreferrer">
-          <a className="hidden lg:block text-gray-600 hover:text-gray-800">
-            <i className="fab fa-instagram"></i>
-          </a>
+        <Link href="https://www.instagram.com/theoravew" target="_blank" rel="noopener noreferrer" className="hidden lg:block text-gray-600 hover:text-gray-800">
+          <i className="fab fa-instagram"></i>
         </Link>
 
         {/* Book Your Event Button */}
-        <Link href="/contact">
-          <a className="hidden lg:block ml-4 bg-[#D69600] text-white px-4 py-2 rounded hover:bg-[#7B61FF]">
-            Book Your Event
-          </a>
+        <Link href="/contact" className="hidden lg:block ml-4 bg-[#D69600] text-white px-4 py-2 rounded hover:bg-[#7B61FF]">
+          Book Your Event
         </Link>
 
         {/* Mobile Menu Button */}
@@ -66,22 +60,20 @@ export default function Header() {
       {isOpen && (
         <div className="lg:hidden bg-gray-100 p-4">
           <nav className="flex flex-col space-y-4">
-            <Link href="/">
-              <a className="text-gray-600 hover:text-gray-800">Home</a>
+            <Link href="/" className="text-gray-600 hover:text-gray-800">
+              Home
             </Link>
-            <Link href="/event-offerings">
-              <a className="text-gray-600 hover:text-gray-800">Event Offerings</a>
+            <Link href="/event-offerings" className="text-gray-600 hover:text-gray-800">
+              Event Offerings
             </Link>
-            <Link href="/faq">
-              <a className="text-gray-600 hover:text-gray-800">FAQs</a>
+            <Link href="/faq" className="text-gray-600 hover:text-gray-800">
+              FAQs
             </Link>
-            <Link href="/contact">
-              <a className="text-gray-600 hover:text-gray-800">Contact</a>
+            <Link href="/contact" className="text-gray-600 hover:text-gray-800">
+              Contact
             </Link>
-            <Link href="/contact">
-              <a className="bg-[#D69600] text-white px-4 py-2 rounded hover:bg-[#7B61FF]">
-                Book Your Event
-              </a>
+            <Link href="/contact" className="bg-[#D69600] text-white px-4 py-2 rounded hover:bg-[#7B61FF]">
+              Book Your Event
             </Link>
           </nav>
         </div>
